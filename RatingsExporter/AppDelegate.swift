@@ -16,6 +16,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        //Customize the global UI
+        setGlobalCustomUISettings()
+        
         return true
     }
 
@@ -41,6 +45,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-
+    //MARK: - Global UI Customization
+    func setGlobalCustomUISettings() {
+        let lightRedTintColor = UIColor(displayP3Red: 157/255, green: 23/255, blue: 1/255, alpha: 1.0)
+        let darkRedTintColor = UIColor(displayP3Red: 86/255, green: 13/255, blue: 0/255, alpha: 1.0)
+        
+        window!.tintColor = lightRedTintColor
+    }
 }
 
