@@ -12,15 +12,14 @@ import WebKit
 class NetflixLoginViewController: UIViewController {
     
     @IBOutlet weak var loginWebView: WKWebView!
+    
+    private var isLoggingIn = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
         
         //Load the Netflix login page
         loginWebView.navigationDelegate = self
-        loginWebView.isHidden = true
         let netflixLoginURL = URL(string: "https://www.netflix.com/login")!
         let myRequest = URLRequest(url: netflixLoginURL)
         loginWebView.load(myRequest)
@@ -33,8 +32,9 @@ class NetflixLoginViewController: UIViewController {
 }
 
 extension NetflixLoginViewController: WKNavigationDelegate {
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        print("Webkit loaded netflix page!")
-        loginWebView.isHidden = false
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        //detect if a redirect to Browse happened for if a login succeeded.
+        
+        decisionHandler(.allow)
     }
 }

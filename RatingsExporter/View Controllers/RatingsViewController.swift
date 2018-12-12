@@ -29,6 +29,7 @@ class RatingsViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        //This is just to test that the global tint color was applied to the control
         return tableView.dequeueReusableCell(withIdentifier: "NetflixRatingsCell", for: indexPath)
     }
 }

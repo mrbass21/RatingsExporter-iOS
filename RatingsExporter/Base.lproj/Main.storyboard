@@ -18,7 +18,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <wkWebView hidden="YES" opaque="NO" contentMode="scaleToFill" customUserAgent="NetflixRatingsExporter" translatesAutoresizingMaskIntoConstraints="NO" id="A0U-P8-3SD">
+                            <wkWebView opaque="NO" contentMode="scaleToFill" customUserAgent="NetflixRatingsExporter" translatesAutoresizingMaskIntoConstraints="NO" id="A0U-P8-3SD">
                                 <rect key="frame" x="0.0" y="20" width="320" height="548"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <wkWebViewConfiguration key="configuration" allowsAirPlayForMediaPlayback="NO" allowsPictureInPictureMediaPlayback="NO">
