@@ -9,6 +9,9 @@
 import UIKit
 
 class RatingsViewController: UITableViewController {
+    
+    //Debugging variable to keep an infinate loop of "logging in" view segues
+    var showOnce = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,7 +22,10 @@ class RatingsViewController: UITableViewController {
         super.viewDidAppear(animated)
         
         //For now we force load the NetflixLoginViewController to test logging in/grabbing the cookies.
-        performSegue(withIdentifier: "NetflixLoginSegue", sender: nil)
+        if !showOnce {
+            showOnce.toggle()
+            performSegue(withIdentifier: "NetflixLoginSegue", sender: nil)
+        }
     
     }
     
