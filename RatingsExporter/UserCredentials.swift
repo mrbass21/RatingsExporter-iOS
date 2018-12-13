@@ -30,15 +30,6 @@ struct UserCredentials {
             static let netflixID = "NetflixID"
             static let netflixSecretID = "NetflixSecretID"
         }
-        
-        static var addDictionary: [CFString: Any] {
-            let keychainAttributes: [CFString: Any] = [
-                kSecClass: kSecClassGenericPassword,
-                kSecAttrModificationDate: Date()
-                ]
-            
-            return keychainAttributes
-        }
     }
     
     //MARK: - External Access
@@ -125,13 +116,19 @@ struct UserCredentials {
     private func createCookieKeychainItem(name: String, value: String) throws {
         
         //Convert the value to UTF-8 data
-        let UTF8data = value.data(using: String.Encoding.utf8)
+        guard let UTF8data = value.data(using: String.Encoding.utf8) else {
+            throw Keychain.KeychainError.badData
+        }
         
         //Get a dictionary with the default values
-        var addAttributesDict = Keychain.addDictionary
-        addAttributesDict[kSecAttrDescription] = "Stores the netflix cookie \(name) in keychain to fetch ratings for this user"
-        addAttributesDict[kSecAttrAccount] = name
-        addAttributesDict[kSecValueData] = UTF8data as AnyObject?
+        let addAttributesDict: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrModificationDate: Date(),
+            kSecAttrDescription: "Stores the netflix cookie \(name) in keychain to fetch ratings for this user",
+            kSecAttrAccount: name as CFString,
+            kSecValueData: UTF8data,
+            kSecReturnData: kCFBooleanFalse
+        ]
         
         //Save the item
         let status = SecItemAdd(addAttributesDict as CFDictionary, nil)
