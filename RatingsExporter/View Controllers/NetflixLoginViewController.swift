@@ -11,9 +11,17 @@ import WebKit
 
 class NetflixLoginViewController: UIViewController {
     
-    struct Settings {
-        static let netflixLoginURL = "https://www.netflix.com/login"
-        static let netflixSuccessRedirectURL = "https://www.netflix.com/browse"
+
+    struct NetflixSettings {
+        struct NetflixCookie {
+            static let netflixID = "NetflixId"
+            static let netflixSecureID = "SecureNetflixId"
+        }
+            
+        struct NetflixURLs {
+            static let netflixLoginURL = "https://www.netflix.com/login"
+            static let netflixSuccessRedirectURL = "https://www.netflix.com/browse"
+        }
     }
     
     @IBOutlet weak var loginWebView: WKWebView!
@@ -27,7 +35,7 @@ class NetflixLoginViewController: UIViewController {
         
         //Load the Netflix login page
         loginWebView.navigationDelegate = self
-        let netflixLoginURL = URL(string: Settings.netflixLoginURL)!
+        let netflixLoginURL = URL(string: NetflixSettings.NetflixURLs.netflixLoginURL)!
         let myRequest = URLRequest(url: netflixLoginURL)
         loginWebView.load(myRequest)
         
@@ -47,8 +55,12 @@ extension NetflixLoginViewController: WKNavigationDelegate {
         //If the user launches the app and already has a valid session, the navigation type will be other (-1)
         if navigationAction.navigationType == .formSubmitted || navigationAction.navigationType == .other {
             //If there's a valid session, the url will ask for https://www.netflix.com/browse.
-            if let destinationURL = navigationAction.request.url, destinationURL.absoluteString.elementsEqual(Settings.netflixSuccessRedirectURL), !shouldLoadNetflixBrowse {
+            if let destinationURL = navigationAction.request.url,
+                    destinationURL.absoluteString.elementsEqual(NetflixSettings.NetflixURLs.netflixSuccessRedirectURL),
+                    !shouldLoadNetflixBrowse {
+                
                 print("Harvest them cookies!")
+                extractCookies(from: WKWebsiteDataStore.default())
                 decisionHandler(.cancel)
                 
                 //Adding a debugging alert popup
@@ -59,7 +71,7 @@ extension NetflixLoginViewController: WKNavigationDelegate {
                 }
                 let browseAction = UIAlertAction(title: "Allow Browse", style: .default) { (_) in
                     self.shouldLoadNetflixBrowse = true
-                    webView.load(URLRequest(url: URL(string: Settings.netflixSuccessRedirectURL)!))
+                    webView.load(URLRequest(url: URL(string: NetflixSettings.NetflixURLs.netflixSuccessRedirectURL)!))
                 }
                 loggedInAlert.addAction(okAction)
                 loggedInAlert.addAction(browseAction)
@@ -74,5 +86,45 @@ extension NetflixLoginViewController: WKNavigationDelegate {
         //print("Action: \(navigationAction.navigationType.rawValue) for url: \(String(describing: navigationAction.request.url?.absoluteString))")
         
         decisionHandler(.allow)
+    }
+}
+
+
+//MARK: - Cookie Extraction code
+extension NetflixLoginViewController {
+    //This function is only available in iOS 11 and up
+    func extractCookies(from datastore: WKWebsiteDataStore) {
+        let cookieStore = datastore.httpCookieStore
+        
+        var netflixID: String = ""
+        var netflixSecureID: String = ""
+        
+        cookieStore.getAllCookies { (cookieArray) in
+            
+            let neededCookies = cookieArray.filter({ (cookie) -> Bool in
+                //We are only looking for two cookies
+                if cookie.name.elementsEqual(NetflixSettings.NetflixCookie.netflixID) ||
+                    cookie.name.elementsEqual(NetflixSettings.NetflixCookie.netflixSecureID) {
+                    return true
+                } else {
+                    return false
+                }
+            })
+            
+            if neededCookies.count != 2 {
+                //TODO: Handle this error condition
+                print("We only need 2 cookies and we found: \(neededCookies.count)")
+            } else {
+                for item in neededCookies {
+                    if item.name.elementsEqual(NetflixSettings.NetflixCookie.netflixID) {
+                        netflixID = item.value
+                    } else if item.name.elementsEqual(NetflixSettings.NetflixCookie.netflixSecureID) {
+                        netflixSecureID = item.value
+                    }
+                }
+            }
+            
+            print("Found cookies \n NetflixID: \(netflixID)\n Netflix Secure ID: \(netflixSecureID)")
+        }
     }
 }
