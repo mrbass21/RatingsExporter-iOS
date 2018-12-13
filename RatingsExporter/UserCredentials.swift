@@ -39,11 +39,11 @@ struct UserCredentials {
             
             return keychainQuery
         }
-        static var addDictionary: CFDictionary {
-            let keychainAttributes: CFDictionary = [
+        static var addDictionary: [CFString: Any] {
+            let keychainAttributes: [CFString: Any] = [
                 kSecClass:kSecAttrGeneric,
-                kSecAttrModificationDate: Date() as CFDate
-                ] as CFDictionary
+                kSecAttrModificationDate: Date()
+                ]
             
             return keychainAttributes
         }
@@ -56,7 +56,11 @@ struct UserCredentials {
         }
         
         set {
-            storeCookie(name: Keychain.KeychainIDs.netflixID, value: newValue)
+            if newValue == nil {
+                deleteCookie(name: Keychain.KeychainIDs.netflixID)
+            } else {
+                storeCookie(name: Keychain.KeychainIDs.netflixID, value: newValue!)
+            }
         }
     }
     
@@ -66,19 +70,32 @@ struct UserCredentials {
         }
         
         set {
-            storeCookie(name: Keychain.KeychainIDs.netflixSecretID, value: newValue)
+            if newValue == nil {
+                deleteCookie(name: Keychain.KeychainIDs.netflixSecretID)
+            } else {
+                storeCookie(name: Keychain.KeychainIDs.netflixSecretID, value: newValue!)
+            }
         }
     }
     
     //MARK: - Private Methods
-    private func storeCookie(name: String, value: String?) {
+    private func storeCookie(name: String, value: String) {
         
         //Figure out if we need to create or update the keychain item.
         do {
              let _ = try getCookieKeychainItem(name: name)
             //It didn't throw here, so that means that we already have a keychain value for this. Update it.
+            updateCookieKeychainItem(name: name, value: value)
+            
         } catch Keychain.KeychainError.notFound {
             //Create the keychain item
+            do {
+                try createCookieKeychainItem(name: name, value: value)
+            } catch Keychain.KeychainError.unexpectedError(let status) {
+                print("Unexpected error from keychain get inside storeCookie! Keychain OSStaus error: \(status)")
+            } catch {
+                print("Keychain error creating \(name)")
+            }
         } catch Keychain.KeychainError.unexpectedError(status: let status)
         {
             //Trying to get the keychain item failed horribly.
@@ -88,7 +105,7 @@ struct UserCredentials {
             print("Keychain error retrieving \(name)")
         }
         
-        let keychainDescription = "Stores the netflix cookie \(name) in keychain to fetch ratings for this user"
+        
         
     }
     
@@ -105,12 +122,43 @@ struct UserCredentials {
         }
     }
     
-    private func createCookieKeychainItem(name: String, value: String?) {
-    
+    private func deleteCookie(name: String) {
+        deleteCookieKeychainItem(name: name)
     }
     
-    private func updateCookieKeychainItem(name: String, value: String?) {
+    private func createCookieKeychainItem(name: String, value: String) throws {
         
+        //Convert the value to UTF-8 data
+        let UTF8data = value.data(using: String.Encoding.utf8)!
+        
+        //Get a dictionary with the default values
+        var addAttributesDict = Keychain.addDictionary
+        addAttributesDict[kSecAttrDescription] = "Stores the netflix cookie \(name) in keychain to fetch ratings for this user"
+        addAttributesDict[kSecAttrAccount] = name
+        addAttributesDict[kSecValueData] = UTF8data as AnyObject
+        
+        //Save the item
+        let status = SecItemAdd(addAttributesDict as CFDictionary, nil)
+        
+        guard status == noErr else {
+            throw Keychain.KeychainError.unexpectedError(status: status)
+        }
+    }
+    
+    private func updateCookieKeychainItem(name: String, value: String) throws {
+        //Convert String to UTF8 data
+        let UTF8Data = value.data(using: String.Encoding.utf8)!
+        
+        var updateQueryDict = Keychain.queryDictionary
+        updateQueryDict[kSecAttrAccount] = name as CFString
+        
+        let updateItemsDict = [kSecValueData: UTF8Data]
+        
+        let status = SecItemUpdate(updateQueryDict as CFDictionary, updateItemsDict as CFDictionary)
+        
+        guard status == noErr else {
+            throw Keychain.KeychainError.unexpectedError(status: status)
+        }
     }
     
     private func getCookieKeychainItem(name: String) throws -> String {
@@ -144,7 +192,14 @@ struct UserCredentials {
         return returnCookieString
     }
     
-    private func deleteCookieKeychainItem() {
+    private func deleteCookieKeychainItem(name: String) throws {
+        var queryDict = Keychain.queryDictionary
+        queryDict[kSecAttrAccount] = name as CFString
+
+        let status = SecItemDelete(queryDict as CFDictionary)
         
+        guard status == noErr else {
+            throw Keychain.KeychainError.unexpectedError(status: status)
+        }
     }
 }
