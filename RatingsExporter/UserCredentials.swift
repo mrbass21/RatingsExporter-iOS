@@ -84,8 +84,9 @@ struct UserCredentials {
         //Figure out if we need to create or update the keychain item.
         do {
              let _ = try getCookieKeychainItem(name: name)
+            
             //It didn't throw here, so that means that we already have a keychain value for this. Update it.
-            updateCookieKeychainItem(name: name, value: value)
+            try updateCookieKeychainItem(name: name, value: value)
             
         } catch Keychain.KeychainError.notFound {
             //Create the keychain item
@@ -104,9 +105,6 @@ struct UserCredentials {
             //Other failures...
             print("Keychain error retrieving \(name)")
         }
-        
-        
-        
     }
     
     private func getCookie(name: String) -> String? {
@@ -123,7 +121,13 @@ struct UserCredentials {
     }
     
     private func deleteCookie(name: String) {
-        deleteCookieKeychainItem(name: name)
+        do {
+            try deleteCookieKeychainItem(name: name)
+        } catch Keychain.KeychainError.unexpectedError(let status) {
+            print("Unexpected OSStatus error: \(status) deleting keychain item: \(name)")
+        } catch {
+            print("This will never execute!")
+        }
     }
     
     private func createCookieKeychainItem(name: String, value: String) throws {
