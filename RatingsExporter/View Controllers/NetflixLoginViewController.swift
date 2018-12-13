@@ -125,6 +125,18 @@ extension NetflixLoginViewController {
             }
             
             print("Found cookies \n NetflixID: \(netflixID)\n Netflix Secure ID: \(netflixSecureID)")
+            var user = UserCredentials()
+            
+            //Troubleshoot the keychain code
+            var currentStoredNetflixID = user.netflixID
+            print("\(String(describing: currentStoredNetflixID))")
+            user.netflixID = netflixID
+           
+            
+            
+            
+            //user.netflixSecureID = netflixSecureID
+            
         }
     }
 }

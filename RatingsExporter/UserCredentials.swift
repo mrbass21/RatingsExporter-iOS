@@ -31,17 +31,18 @@ struct UserCredentials {
             static let netflixSecretID = "NetflixSecretID"
         }
         
-        static var queryDictionary: [CFString: CFString] {
-            let keychainQuery = [
+        static var queryDictionary: [CFString: Any] {
+            let keychainQuery: [CFString: Any] = [
                 kSecClass: kSecClassGenericPassword,
                 kSecMatchLimit: kSecMatchLimitOne,
+                kSecReturnData: kCFBooleanTrue
                 ]
             
             return keychainQuery
         }
         static var addDictionary: [CFString: Any] {
             let keychainAttributes: [CFString: Any] = [
-                kSecClass:kSecAttrGeneric,
+                kSecClass: kSecClassGenericPassword,
                 kSecAttrModificationDate: Date()
                 ]
             
@@ -93,14 +94,14 @@ struct UserCredentials {
             do {
                 try createCookieKeychainItem(name: name, value: value)
             } catch Keychain.KeychainError.unexpectedError(let status) {
-                print("Unexpected error from keychain get inside storeCookie! Keychain OSStaus error: \(status)")
+                print("Unexpected error from keychain get inside storeCookie! Keychain OSStaus error: \(String(describing: SecCopyErrorMessageString(status, nil)))")
             } catch {
                 print("Keychain error creating \(name)")
             }
         } catch Keychain.KeychainError.unexpectedError(status: let status)
         {
             //Trying to get the keychain item failed horribly.
-            print("Unexpected error from keychain get inside storeCookie! Keychain OSStaus error: \(status)")
+            print("Unexpected error from keychain get inside storeCookie! Keychain OSStaus error: \(String(describing: SecCopyErrorMessageString(status, nil)))")
         } catch {
             //Other failures...
             print("Keychain error retrieving \(name)")
@@ -133,13 +134,13 @@ struct UserCredentials {
     private func createCookieKeychainItem(name: String, value: String) throws {
         
         //Convert the value to UTF-8 data
-        let UTF8data = value.data(using: String.Encoding.utf8)!
+        let UTF8data = value.data(using: String.Encoding.utf8)
         
         //Get a dictionary with the default values
         var addAttributesDict = Keychain.addDictionary
         addAttributesDict[kSecAttrDescription] = "Stores the netflix cookie \(name) in keychain to fetch ratings for this user"
         addAttributesDict[kSecAttrAccount] = name
-        addAttributesDict[kSecValueData] = UTF8data as AnyObject
+        addAttributesDict[kSecValueData] = UTF8data as AnyObject?
         
         //Save the item
         let status = SecItemAdd(addAttributesDict as CFDictionary, nil)
@@ -186,13 +187,12 @@ struct UserCredentials {
             throw Keychain.KeychainError.unexpectedError(status: status)
         }
         
-        //Do a bunch of binding to check everything goes okay
-        guard let returnCookie = returnQueryCookie as? [CFString: AnyObject],
-                let returnCookieValue = returnCookie[kSecValueData] as? Data,
-                let returnCookieString = String(bytes: returnCookieValue, encoding: String.Encoding.utf8) else {
+        //Transform the data back into a String
+        guard let returnCookieData = returnQueryCookie as? Data,
+            let returnCookieString = String(bytes: returnCookieData, encoding: String.Encoding.utf8) else {
             throw Keychain.KeychainError.badData
         }
-        
+
         return returnCookieString
     }
     
