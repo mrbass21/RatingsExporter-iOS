@@ -61,6 +61,14 @@ struct UserCredentials {
         }
     }
     
+    public var hasCredentials: Bool {
+        guard self.getCookie(name: Keychain.KeychainIDs.netflixID) != nil &&
+            self.getCookie(name: Keychain.KeychainIDs.netflixSecretID) != nil else {
+                return false
+        }
+        return true
+    }
+    
     //MARK: - Private Methods
     private func storeCookie(name: String, value: String) {
         

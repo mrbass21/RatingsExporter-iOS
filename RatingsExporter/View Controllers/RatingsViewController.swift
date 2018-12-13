@@ -12,7 +12,8 @@ class RatingsViewController: UITableViewController {
     
     //Debugging variable to keep an infinate loop of "logging in" view segues
     //TODO: Remove debugging instance variable
-    var showOnce = false
+    
+    private var user = UserCredentials()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,8 +25,7 @@ class RatingsViewController: UITableViewController {
         
         //For now we force load the NetflixLoginViewController to test logging in/grabbing the cookies.
         //TODO: Don't force the segue unless it's for a legitimate need to log in.
-        if !showOnce {
-            showOnce.toggle()
+        if !user.hasCredentials {
             performSegue(withIdentifier: "NetflixLoginSegue", sender: nil)
         }
     
