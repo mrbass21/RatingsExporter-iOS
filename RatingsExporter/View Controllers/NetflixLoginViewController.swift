@@ -129,8 +129,7 @@ extension NetflixLoginViewController {
             
             //Troubleshoot the keychain code
             var currentStoredNetflixID = user.netflixID
-            print("\(String(describing: currentStoredNetflixID))")
-            user.netflixID = netflixID
+            user.netflixID = nil
            
             
             

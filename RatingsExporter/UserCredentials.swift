@@ -31,15 +31,6 @@ struct UserCredentials {
             static let netflixSecretID = "NetflixSecretID"
         }
         
-        static var queryDictionary: [CFString: Any] {
-            let keychainQuery: [CFString: Any] = [
-                kSecClass: kSecClassGenericPassword,
-                kSecMatchLimit: kSecMatchLimitOne,
-                kSecReturnData: kCFBooleanTrue
-                ]
-            
-            return keychainQuery
-        }
         static var addDictionary: [CFString: Any] {
             let keychainAttributes: [CFString: Any] = [
                 kSecClass: kSecClassGenericPassword,
@@ -84,7 +75,7 @@ struct UserCredentials {
         
         //Figure out if we need to create or update the keychain item.
         do {
-             let _ = try getCookieKeychainItem(name: name)
+             let _ = try getCookieKeychainItem(name: name, shouldReturnItem: false)
             
             //It didn't throw here, so that means that we already have a keychain value for this. Update it.
             try updateCookieKeychainItem(name: name, value: value)
@@ -154,27 +145,42 @@ struct UserCredentials {
         //Convert String to UTF8 data
         let UTF8Data = value.data(using: String.Encoding.utf8)!
         
-        var updateQueryDict = Keychain.queryDictionary
-        updateQueryDict[kSecAttrAccount] = name as CFString
+        //Build the search query
+        let updateQueryDict: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrAccount: name as CFString,
+        ]
         
-        let updateItemsDict = [kSecValueData: UTF8Data]
+        //Create a list of changed attributes
+        let updateItemsDict: [CFString: Any] = [
+            kSecValueData: UTF8Data,
+            kSecAttrModificationDate: Date()
+            ]
         
+        //Update the keychain item
         let status = SecItemUpdate(updateQueryDict as CFDictionary, updateItemsDict as CFDictionary)
         
+        //Check for errors
         guard status == noErr else {
             throw Keychain.KeychainError.unexpectedError(status: status)
         }
     }
     
-    private func getCookieKeychainItem(name: String) throws -> String {
+    private func getCookieKeychainItem(name: String, shouldReturnItem: Bool = true) throws -> String? {
         //Build the query
-        var keychainQuery = Keychain.queryDictionary
-        keychainQuery[kSecAttrAccount] = name as CFString
+        let returnItem = shouldReturnItem ? kCFBooleanTrue : kCFBooleanFalse
+        
+        let keychainGetQuery: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrAccount: name as CFString,
+            kSecReturnData: returnItem!,
+            kSecMatchLimit: kSecMatchLimitOne
+        ]
         
         //Query and set the object from keychain
         var returnQueryCookie: AnyObject?
         let status = withUnsafeMutablePointer(to: &returnQueryCookie) {
-            SecItemCopyMatching(keychainQuery as CFDictionary, UnsafeMutablePointer($0))
+            SecItemCopyMatching(keychainGetQuery as CFDictionary, UnsafeMutablePointer($0))
         }
         
         //If the cookie isn't found, throw an error
@@ -187,21 +193,31 @@ struct UserCredentials {
             throw Keychain.KeychainError.unexpectedError(status: status)
         }
         
-        //Transform the data back into a String
-        guard let returnCookieData = returnQueryCookie as? Data,
-            let returnCookieString = String(bytes: returnCookieData, encoding: String.Encoding.utf8) else {
-            throw Keychain.KeychainError.badData
+        if shouldReturnItem {
+            //The user asked us to return the data
+            
+            //Transform the data back into a String
+            guard let returnCookieData = returnQueryCookie as? Data,
+                let returnCookieString = String(bytes: returnCookieData, encoding: String.Encoding.utf8) else {
+                throw Keychain.KeychainError.badData
+            }
+            return returnCookieString
+        } else {
+            return nil
         }
-
-        return returnCookieString
     }
     
     private func deleteCookieKeychainItem(name: String) throws {
-        var queryDict = Keychain.queryDictionary
-        queryDict[kSecAttrAccount] = name as CFString
+        //Create a query for the entry
+        let queryDict: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrAccount: name as CFString
+        ]
 
+        //Delete the item
         let status = SecItemDelete(queryDict as CFDictionary)
         
+        //Check for errors
         guard status == noErr else {
             throw Keychain.KeychainError.unexpectedError(status: status)
         }
