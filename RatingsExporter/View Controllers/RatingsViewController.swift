@@ -9,12 +9,7 @@
 import UIKit
 
 class RatingsViewController: UITableViewController {
-    
-    //Debugging variable to keep an infinate loop of "logging in" view segues
-    //TODO: Remove debugging instance variable
-    
-    private var user = UserCredentials()
-
+ 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -25,7 +20,7 @@ class RatingsViewController: UITableViewController {
         
         //For now we force load the NetflixLoginViewController to test logging in/grabbing the cookies.
         //TODO: Don't force the segue unless it's for a legitimate need to log in.
-        if !user.hasCredentials {
+        if !UserCredentials.hasCredentials {
             performSegue(withIdentifier: "NetflixLoginSegue", sender: nil)
         }
     

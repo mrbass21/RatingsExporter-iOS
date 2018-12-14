@@ -124,11 +124,8 @@ extension NetflixLoginViewController {
                 }
             }
             
-            //Save the user credentials
-            var user = UserCredentials()
-            
-            user.netflixID = netflixID
-            user.netflixSecureID = netflixSecureID
+            UserCredentials.netflixID = netflixID
+            UserCredentials.netflixSecureID = netflixSecureID
         }
     }
 }

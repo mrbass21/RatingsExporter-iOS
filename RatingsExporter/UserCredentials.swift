@@ -33,7 +33,7 @@ struct UserCredentials {
     }
     
     //MARK: - External Access
-    public var netflixID: String? {
+    public static var netflixID: String? {
         get {
             return getCookie(name: Keychain.KeychainIDs.netflixID)
         }
@@ -47,7 +47,7 @@ struct UserCredentials {
         }
     }
     
-    public var netflixSecureID: String? {
+    public static var netflixSecureID: String? {
         get {
             return getCookie(name: Keychain.KeychainIDs.netflixSecretID)
         }
@@ -61,7 +61,7 @@ struct UserCredentials {
         }
     }
     
-    public var hasCredentials: Bool {
+    public static var hasCredentials: Bool {
         guard self.getCookie(name: Keychain.KeychainIDs.netflixID) != nil &&
             self.getCookie(name: Keychain.KeychainIDs.netflixSecretID) != nil else {
                 return false
@@ -70,7 +70,7 @@ struct UserCredentials {
     }
     
     //MARK: - Private Methods
-    private func storeCookie(name: String, value: String) {
+    private static func storeCookie(name: String, value: String) {
         
         //Figure out if we need to create or update the keychain item.
         do {
@@ -98,7 +98,7 @@ struct UserCredentials {
         }
     }
     
-    private func getCookie(name: String) -> String? {
+    private static func getCookie(name: String) -> String? {
         //Use Keychain to get the cookie value
         do {
             return try getCookieKeychainItem(name: name)
@@ -111,7 +111,7 @@ struct UserCredentials {
         }
     }
     
-    private func deleteCookie(name: String) {
+    private static func deleteCookie(name: String) {
         do {
             try deleteCookieKeychainItem(name: name)
         } catch Keychain.KeychainError.unexpectedError(let status) {
@@ -121,7 +121,7 @@ struct UserCredentials {
         }
     }
     
-    private func createCookieKeychainItem(name: String, value: String) throws {
+    private static func createCookieKeychainItem(name: String, value: String) throws {
         
         //Convert the value to UTF-8 data
         guard let UTF8data = value.data(using: String.Encoding.utf8) else {
@@ -146,7 +146,7 @@ struct UserCredentials {
         }
     }
     
-    private func updateCookieKeychainItem(name: String, value: String) throws {
+    private static func updateCookieKeychainItem(name: String, value: String) throws {
         //Convert String to UTF8 data
         let UTF8Data = value.data(using: String.Encoding.utf8)!
         
@@ -171,7 +171,7 @@ struct UserCredentials {
         }
     }
     
-    private func getCookieKeychainItem(name: String, shouldReturnItem: Bool = true) throws -> String? {
+    private static func getCookieKeychainItem(name: String, shouldReturnItem: Bool = true) throws -> String? {
         //Build the query
         let returnItem = shouldReturnItem ? kCFBooleanTrue : kCFBooleanFalse
         
@@ -212,7 +212,7 @@ struct UserCredentials {
         }
     }
     
-    private func deleteCookieKeychainItem(name: String) throws {
+    private static func deleteCookieKeychainItem(name: String) throws {
         //Create a query for the entry
         let queryDict: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
