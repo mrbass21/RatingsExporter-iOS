@@ -9,6 +9,15 @@
 import UIKit
 
 class RatingsViewController: UITableViewController {
+    
+    struct Identifiers {
+        struct Segue {
+            static let NetflixLoginSegue = "NetflixLoginSegue"
+        }
+        struct Cell {
+            static let NetflixRatingsCell = "NetflixRatingsCell"
+        }
+    }
  
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,9 +30,8 @@ class RatingsViewController: UITableViewController {
         //For now we force load the NetflixLoginViewController to test logging in/grabbing the cookies.
         //TODO: Don't force the segue unless it's for a legitimate need to log in.
         if !UserCredentials.hasCredentials {
-            performSegue(withIdentifier: "NetflixLoginSegue", sender: nil)
+            performSegue(withIdentifier: Identifiers.Segue.NetflixLoginSegue, sender: nil)
         }
-    
     }
     
     //MARK: - Table View Data Source Delegate
@@ -33,7 +41,7 @@ class RatingsViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //This is just to test that the global tint color was applied to the control
-        return tableView.dequeueReusableCell(withIdentifier: "NetflixRatingsCell", for: indexPath)
+        return tableView.dequeueReusableCell(withIdentifier: Identifiers.Cell.NetflixRatingsCell, for: indexPath)
     }
 }
 

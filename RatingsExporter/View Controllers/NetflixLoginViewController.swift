@@ -11,7 +11,6 @@ import WebKit
 
 class NetflixLoginViewController: UIViewController {
     
-
     struct NetflixSettings {
         struct NetflixCookie {
             static let netflixID = "NetflixId"
