@@ -23,6 +23,12 @@ class NetflixLoginViewController: UIViewController {
         }
     }
     
+    struct Identifiers {
+        struct Storyboard {
+            static let NetflixLoginController = "NetflixLoginViewController"
+        }
+    }
+    
     @IBOutlet weak var loginWebView: WKWebView!
     
     //Debugging variables
@@ -58,23 +64,22 @@ extension NetflixLoginViewController: WKNavigationDelegate {
                     destinationURL.absoluteString.elementsEqual(NetflixSettings.NetflixURLs.netflixSuccessRedirectURL),
                     !shouldLoadNetflixBrowse {
                 
-                print("Harvest them cookies!")
-                extractCookies(from: WKWebsiteDataStore.default())
+                extractCookies(from: WKWebsiteDataStore.default().httpCookieStore)
                 decisionHandler(.cancel)
                 
-                //Adding a debugging alert popup
-                //TODO: Remove this debugging alert
-                let loggedInAlert = UIAlertController(title: "Logged In", message: "User is logged in", preferredStyle: .alert)
-                let okAction = UIAlertAction(title: "Ok", style: .default) { action in
-                    self.dismiss(animated: true, completion: nil)
-                }
-                let browseAction = UIAlertAction(title: "Allow Browse", style: .default) { (_) in
-                    self.shouldLoadNetflixBrowse = true
-                    webView.load(URLRequest(url: URL(string: NetflixSettings.NetflixURLs.netflixSuccessRedirectURL)!))
-                }
-                loggedInAlert.addAction(okAction)
-                loggedInAlert.addAction(browseAction)
-                present(loggedInAlert, animated: true, completion: nil)
+//                //Adding a debugging alert popup
+//                //TODO: Remove this debugging alert
+//                let loggedInAlert = UIAlertController(title: "Logged In", message: "User is logged in", preferredStyle: .alert)
+//                let okAction = UIAlertAction(title: "Ok", style: .default) { action in
+//                    self.dismiss(animated: true, completion: nil)
+//                }
+//                let browseAction = UIAlertAction(title: "Allow Browse", style: .default) { (_) in
+//                    self.shouldLoadNetflixBrowse = true
+//                    webView.load(URLRequest(url: URL(string: NetflixSettings.NetflixURLs.netflixSuccessRedirectURL)!))
+//                }
+//                loggedInAlert.addAction(okAction)
+//                loggedInAlert.addAction(browseAction)
+//                present(loggedInAlert, animated: true, completion: nil)
                 
                 //End debugging alert popup
                 
@@ -92,9 +97,7 @@ extension NetflixLoginViewController: WKNavigationDelegate {
 //MARK: - Cookie Extraction code
 extension NetflixLoginViewController {
     //This function is only available in iOS 11 and up
-    func extractCookies(from datastore: WKWebsiteDataStore) {
-        let cookieStore = datastore.httpCookieStore
-        
+    func extractCookies(from cookieStore: WKHTTPCookieStore) {
         var netflixID: String = ""
         var netflixSecureID: String = ""
         
