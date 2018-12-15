@@ -11,6 +11,7 @@ import WebKit
 
 class NetflixLoginViewController: UIViewController {
     
+    //MARK: - Convenience Structs
     struct NetflixSettings {
         struct NetflixCookie {
             static let netflixID = "NetflixId"
@@ -29,12 +30,10 @@ class NetflixLoginViewController: UIViewController {
         }
     }
     
+    //MARK: - Outlets
     @IBOutlet weak var loginWebView: WKWebView!
-    
-    //Debugging variables
-    //TODO: Remove this debugging variable
-    private var shouldLoadNetflixBrowse = false   //Let the browse page be loaded in the webkit so you can debug by logging out.
 
+    //MARK: - Overridden functions
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -51,6 +50,7 @@ class NetflixLoginViewController: UIViewController {
     }
 }
 
+//MARK: - WKNavigationDelegate
 extension NetflixLoginViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
        
@@ -59,36 +59,28 @@ extension NetflixLoginViewController: WKNavigationDelegate {
         //If the user logs in from a form, the navigation type will be formSubmitted (1).
         //If the user launches the app and already has a valid session, the navigation type will be other (-1)
         if navigationAction.navigationType == .formSubmitted || navigationAction.navigationType == .other {
+            
             //If there's a valid session, the url will ask for https://www.netflix.com/browse.
             if let destinationURL = navigationAction.request.url,
-                    destinationURL.absoluteString.elementsEqual(NetflixSettings.NetflixURLs.netflixSuccessRedirectURL),
-                    !shouldLoadNetflixBrowse {
+                    destinationURL.absoluteString.elementsEqual(NetflixSettings.NetflixURLs.netflixSuccessRedirectURL) {
                 
-                extractCookies(from: WKWebsiteDataStore.default().httpCookieStore)
+                //Cancel the navigation
                 decisionHandler(.cancel)
-                
-//                //Adding a debugging alert popup
-//                //TODO: Remove this debugging alert
-//                let loggedInAlert = UIAlertController(title: "Logged In", message: "User is logged in", preferredStyle: .alert)
-//                let okAction = UIAlertAction(title: "Ok", style: .default) { action in
-//                    self.dismiss(animated: true, completion: nil)
-//                }
-//                let browseAction = UIAlertAction(title: "Allow Browse", style: .default) { (_) in
-//                    self.shouldLoadNetflixBrowse = true
-//                    webView.load(URLRequest(url: URL(string: NetflixSettings.NetflixURLs.netflixSuccessRedirectURL)!))
-//                }
-//                loggedInAlert.addAction(okAction)
-//                loggedInAlert.addAction(browseAction)
-//                present(loggedInAlert, animated: true, completion: nil)
-                
-                //End debugging alert popup
+            
+                //Extract out the cookie values we need
+                do {
+                    let cookies = try extractCookies(from: WKWebsiteDataStore.default().httpCookieStore)
+                    try setUserCredentials(fromCookies: cookies)
+                } catch
+                {
+                    print("Failed to get user credentials with error: \(error)")
+                }
                 
                 return
             }
         }
         
-        //print("Action: \(navigationAction.navigationType.rawValue) for url: \(String(describing: navigationAction.request.url?.absoluteString))")
-        
+        //The WebKit requested navigation to a page other than /browse. Allow it for now.
         decisionHandler(.allow)
     }
 }
@@ -96,13 +88,11 @@ extension NetflixLoginViewController: WKNavigationDelegate {
 
 //MARK: - Cookie Extraction code
 extension NetflixLoginViewController {
-    //This function is only available in iOS 11 and up
-    func extractCookies(from cookieStore: WKHTTPCookieStore) {
-        var netflixID: String = ""
-        var netflixSecureID: String = ""
-        
+    @available(iOS 11.0, *)
+    private func extractCookies(from cookieStore: WKHTTPCookieStore) throws -> [String: String] {
+        var returnCookies: [String: String]? = nil
         cookieStore.getAllCookies { (cookieArray) in
-            
+ 
             let neededCookies = cookieArray.filter({ (cookie) -> Bool in
                 //We are only looking for two cookies
                 if cookie.name.elementsEqual(NetflixSettings.NetflixCookie.netflixID) ||
@@ -114,20 +104,34 @@ extension NetflixLoginViewController {
             })
             
             if neededCookies.count != 2 {
-                //TODO: Handle this error condition
                 print("We only need 2 cookies and we found: \(neededCookies.count)")
+                
             } else {
+                returnCookies = [String: String]()
                 for item in neededCookies {
                     if item.name.elementsEqual(NetflixSettings.NetflixCookie.netflixID) {
-                        netflixID = item.value
+                        returnCookies![NetflixSettings.NetflixCookie.netflixID] = item.value
                     } else if item.name.elementsEqual(NetflixSettings.NetflixCookie.netflixSecureID) {
-                        netflixSecureID = item.value
+                        returnCookies![NetflixSettings.NetflixCookie.netflixSecureID] = item.value
                     }
                 }
             }
-            
+        }
+        
+        if let returnCookies = returnCookies {
+            return returnCookies
+        } else {
+            throw UserCredentials.UserCredentialError.MissingCredentials
+        }
+    }
+    
+    private func setUserCredentials(fromCookies: [String: String]) throws {
+        if let netflixID = fromCookies[NetflixSettings.NetflixCookie.netflixID],
+            let netflixSecureID = fromCookies[NetflixSettings.NetflixCookie.netflixSecureID] {
             UserCredentials.netflixID = netflixID
             UserCredentials.netflixSecureID = netflixSecureID
+        } else {
+            throw UserCredentials.UserCredentialError.MissingCredentials
         }
     }
 }

@@ -19,6 +19,11 @@ import Security
 
 struct UserCredentials {
     
+    enum UserCredentialError: Error {
+        case InvalidCredentials
+        case MissingCredentials
+    }
+    
     private struct Keychain {
         enum KeychainError: Error {
             case notFound
@@ -121,6 +126,7 @@ struct UserCredentials {
         }
     }
     
+    //MARK: - Keychain Direct Access Methods
     private static func createCookieKeychainItem(name: String, value: String) throws {
         
         //Convert the value to UTF-8 data
