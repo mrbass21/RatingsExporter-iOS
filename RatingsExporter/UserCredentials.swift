@@ -8,6 +8,7 @@
 
 import Foundation
 import Security
+import WebKit
 
 // The original goal of this struct is to privide a single place to get the credentials as easily as possible
 // from the callers perspctive. However, currently this design does not allow this struct to throw on error with
@@ -24,54 +25,65 @@ struct UserCredentials {
         case MissingCredentials
     }
     
+    enum UserCredentialKeys: String {
+        case kUserCredentialNetflixID = "NetflixID"
+        case kUserCredentialNetflixSecureID = "NetflixSecureID"
+    }
+    
     private struct Keychain {
         enum KeychainError: Error {
             case notFound
             case badData
             case unexpectedError(status: OSStatus)
         }
-        
-         struct KeychainIDs {
-            static let netflixID = "NetflixID"
-            static let netflixSecretID = "NetflixSecretID"
-        }
     }
     
     //MARK: - External Access
     public static var netflixID: String? {
         get {
-            return getCookie(name: Keychain.KeychainIDs.netflixID)
+            return getCookie(name: UserCredentialKeys.kUserCredentialNetflixID.rawValue)
         }
         
         set {
             if newValue == nil {
-                deleteCookie(name: Keychain.KeychainIDs.netflixID)
+                deleteCookie(name: UserCredentialKeys.kUserCredentialNetflixID.rawValue)
             } else {
-                storeCookie(name: Keychain.KeychainIDs.netflixID, value: newValue!)
+                storeCookie(name: UserCredentialKeys.kUserCredentialNetflixID.rawValue, value: newValue!)
             }
         }
     }
     
     public static var netflixSecureID: String? {
         get {
-            return getCookie(name: Keychain.KeychainIDs.netflixSecretID)
+            return getCookie(name: UserCredentialKeys.kUserCredentialNetflixSecureID.rawValue)
         }
         
         set {
             if newValue == nil {
-                deleteCookie(name: Keychain.KeychainIDs.netflixSecretID)
+                deleteCookie(name: UserCredentialKeys.kUserCredentialNetflixSecureID.rawValue)
             } else {
-                storeCookie(name: Keychain.KeychainIDs.netflixSecretID, value: newValue!)
+                storeCookie(name: UserCredentialKeys.kUserCredentialNetflixSecureID.rawValue, value: newValue!)
             }
         }
     }
     
     public static var hasCredentials: Bool {
-        guard self.getCookie(name: Keychain.KeychainIDs.netflixID) != nil &&
-            self.getCookie(name: Keychain.KeychainIDs.netflixSecretID) != nil else {
+        guard self.getCookie(name: UserCredentialKeys.kUserCredentialNetflixID.rawValue) != nil &&
+            self.getCookie(name: UserCredentialKeys.kUserCredentialNetflixSecureID.rawValue) != nil else {
                 return false
         }
         return true
+    }
+    
+    public static func setCredentials(fromCookies: [UserCredentialKeys: String]) throws {
+        
+        if fromCookies.count < 2 {
+            throw UserCredentialError.MissingCredentials
+        }
+        
+        for (key, value) in fromCookies {
+            storeCookie(name: key.rawValue, value: value)
+        }
     }
     
     //MARK: - Private Methods

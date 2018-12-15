@@ -70,7 +70,7 @@ extension NetflixLoginViewController: WKNavigationDelegate {
                 //Extract out the cookie values we need
                 do {
                     let cookies = try extractCookies(from: WKWebsiteDataStore.default().httpCookieStore)
-                    try setUserCredentials(fromCookies: cookies)
+                    try UserCredentials.setCredentials(fromCookies: cookies)
                 } catch
                 {
                     print("Failed to get user credentials with error: \(error)")
@@ -89,8 +89,8 @@ extension NetflixLoginViewController: WKNavigationDelegate {
 //MARK: - Cookie Extraction code
 extension NetflixLoginViewController {
     @available(iOS 11.0, *)
-    private func extractCookies(from cookieStore: WKHTTPCookieStore) throws -> [String: String] {
-        var returnCookies: [String: String]? = nil
+    private func extractCookies(from cookieStore: WKHTTPCookieStore) throws -> [UserCredentials.UserCredentialKeys: String] {
+        var returnCookies: [UserCredentials.UserCredentialKeys: String]? = nil
         cookieStore.getAllCookies { (cookieArray) in
  
             let neededCookies = cookieArray.filter({ (cookie) -> Bool in
@@ -107,12 +107,12 @@ extension NetflixLoginViewController {
                 print("We only need 2 cookies and we found: \(neededCookies.count)")
                 
             } else {
-                returnCookies = [String: String]()
+                returnCookies = [UserCredentials.UserCredentialKeys: String]()
                 for item in neededCookies {
                     if item.name.elementsEqual(NetflixSettings.NetflixCookie.netflixID) {
-                        returnCookies![NetflixSettings.NetflixCookie.netflixID] = item.value
+                        returnCookies![UserCredentials.UserCredentialKeys.kUserCredentialNetflixID] = item.value
                     } else if item.name.elementsEqual(NetflixSettings.NetflixCookie.netflixSecureID) {
-                        returnCookies![NetflixSettings.NetflixCookie.netflixSecureID] = item.value
+                        returnCookies![UserCredentials.UserCredentialKeys.kUserCredentialNetflixSecureID] = item.value
                     }
                 }
             }
@@ -120,16 +120,6 @@ extension NetflixLoginViewController {
         
         if let returnCookies = returnCookies {
             return returnCookies
-        } else {
-            throw UserCredentials.UserCredentialError.MissingCredentials
-        }
-    }
-    
-    private func setUserCredentials(fromCookies: [String: String]) throws {
-        if let netflixID = fromCookies[NetflixSettings.NetflixCookie.netflixID],
-            let netflixSecureID = fromCookies[NetflixSettings.NetflixCookie.netflixSecureID] {
-            UserCredentials.netflixID = netflixID
-            UserCredentials.netflixSecureID = netflixSecureID
         } else {
             throw UserCredentials.UserCredentialError.MissingCredentials
         }
