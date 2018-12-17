@@ -87,7 +87,26 @@ extension NetflixCredential: UserCredentialStorageProtocol {
     }
     
     func getCredentialStorageAttributes(for identifier: String) -> [CredentialItemStorageAttribteKeys : String] {
-        <#code#>
+        var itemAttributes = [CredentialItemStorageAttribteKeys: String]()
+        
+        switch identifier {
+        case RequiredIDs.Credential.netflixID.rawValue:
+            itemAttributes[.Name] = identifier
+            if let netflixID = netflixID {
+                itemAttributes[.Value] = netflixID
+            }
+            itemAttributes[.ValueType] = "Cookie"
+        case RequiredIDs.Credential.secureNetflixID.rawValue:
+            itemAttributes[.Name] = identifier
+            if let secureNetflixID = secureNetflixID {
+                itemAttributes[.Value] = secureNetflixID
+            }
+            itemAttributes[.ValueType] = "Cookie"
+        default:
+            print("NetflixCredential: Unknown Credential Attribute Identifier")
+        }
+        
+        
     }
     
     func restoreFromStorageItemAttributes(attributes: [[CredentialItemStorageAttribteKeys : String]]) {
