@@ -30,29 +30,7 @@ class NetflixCredential: NetflixCredentialProtocol {
     public var netflixID: String?
     public var secureNetflixID: String?
     
-//    var credentialAttributes: [[CredentialAttribtesKeys : Any]]? {
-//        get {
-//            var credentialAttributes = [[CredentialAttribtesKeys: Any]]()
-//        
-//            //Add the neflix id
-//            let netflixIDCredential: [CredentialAttribtesKeys: Any] = [
-//                .CredentialName: RequiredIDs.Credential.netflixID,
-//                .CredentialValue: netflixID,
-//                .CredentialValueType: "Cookie"
-//                ]
-//            credentialAttributes.append(netflixIDCredential)
-//        
-//            let secureNetflixCredential: [CredentialAttribtesKeys: Any] = [
-//                .CredentialName: RequiredIDs.Credential.secureNetflixID,
-//                .CredentialValue: secureNetflixID,
-//                .CredentialValueType: "Cookie"
-//                ]
-//            credentialAttributes.append(secureNetflixCredential)
-//        
-//            return credentialAttributes
-//        }
-//    }
-    
+    //MARK: - Init functions
     @available (iOS 2.0, *)
     init?(from cookies: [HTTPCookie]) {
         if !parseCredentialFromCooke(cookies) {
@@ -60,9 +38,14 @@ class NetflixCredential: NetflixCredentialProtocol {
         }
     }
     
-    init(netflixID: String, secureNetflixID: String) {
+    init(netflixID: String?, secureNetflixID: String?) {
         self.netflixID = netflixID
         self.secureNetflixID = secureNetflixID
+    }
+    
+    init() {
+        self.netflixID = nil
+        self.secureNetflixID = nil
     }
     
     
@@ -91,72 +74,6 @@ class NetflixCredential: NetflixCredentialProtocol {
         
         return true
     }
-    
-//    //UserCredentialProtocol functions
-//    func getCredentialForStorage() throws -> UserCredentialProtocol {
-//        
-//    }
-    
-    func setCrecentialFromStorage(_ storageItems: UserCredentialProtocol) throws {
-        
-    }
-    
-    
-    
-    
-
-    
-//
-//    private static func storeCookie(name: String, value: String) {
-    
-//        //Figure out if we need to create or update the keychain item.
-//        do {
-//            let _ = try getCookieKeychainItem(name: name, shouldReturnItem: false)
-//
-//            //It didn't throw here, so that means that we already have a keychain value for this. Update it.
-//            try updateCookieKeychainItem(name: name, value: value)
-//
-//        } catch Keychain.KeychainError.notFound {
-//            //Create the keychain item
-//            do {
-//                try createCookieKeychainItem(name: name, value: value)
-//            } catch Keychain.KeychainError.unexpectedError(let status) {
-//                print("Unexpected error from keychain get inside storeCookie! Keychain OSStaus error: \(String(describing: SecCopyErrorMessageString(status, nil)))")
-//            } catch {
-//                print("Keychain error creating \(name)")
-//            }
-//        } catch Keychain.KeychainError.unexpectedError(status: let status)
-//        {
-//            //Trying to get the keychain item failed horribly.
-//            print("Unexpected error from keychain get inside storeCookie! Keychain OSStaus error: \(String(describing: SecCopyErrorMessageString(status, nil)))")
-//        } catch {
-//            //Other failures...
-//            print("Keychain error retrieving \(name)")
-//        }
-//    }
-//
-//    private static func getCookie(name: String) -> String? {
-//        //Use Keychain to get the cookie value
-//        do {
-//            return try getCookieKeychainItem(name: name)
-//        } catch Keychain.KeychainError.unexpectedError(let status){
-//            print("Unexpected keychain error: \(String(describing: SecCopyErrorMessageString(status, nil)))")
-//            return nil
-//        } catch {
-//            print("\(name) not found in keychain")
-//            return nil
-//        }
-//    }
-//
-//    private static func deleteCookie(name: String) {
-//        do {
-//            try deleteCookieKeychainItem(name: name)
-//        } catch Keychain.KeychainError.unexpectedError(let status) {
-//            print("Unexpected OSStatus error: \(status) deleting keychain item: \(name)")
-//        } catch {
-//            print("This will never execute!")
-//        }
-//    }
 }
 
 extension NetflixCredential: UserCredentialStorageProtocol {
