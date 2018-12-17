@@ -10,39 +10,13 @@ import Foundation
 import Security
 
 //MARK: - User CredentialStorageKeys
-public struct CredentialItemStorageAttribteKeys: RawRepresentable, Hashable, Equatable {
-    public private (set) var rawValue: String
-    
-    public init(_ rawValue: String) {
-        self.rawValue = rawValue
-    }
-    
-    public init (rawValue: String) {
-        self.rawValue = rawValue
-    }
-    
-    public var hashValue: Int {
-        return self.rawValue.hashValue
-    }
-    
-    public static func ==(_ lhs: CredentialItemStorageAttribteKeys, _ rhs: CredentialItemStorageAttribteKeys) -> Bool {
-        return lhs.rawValue == rhs.rawValue
-    }
+enum CredentialItemStorageAttribteKeys : String {
+    case Name = "Name"
+    case Value = "Value"
+    case ValueType = "ValueType"
+    case Description = "Description"
 }
 
-extension CredentialItemStorageAttribteKeys {
-    //Key for the credential name
-    public static let Name = CredentialItemStorageAttribteKeys(rawValue: "Name")
-    
-    //Key for the credential value
-    public static let Value = CredentialItemStorageAttribteKeys(rawValue: "Value")
-    
-    //Key for the credential value type
-    public static let ValueType = CredentialItemStorageAttribteKeys(rawValue: "ValueType")
-    
-    //The description of the item to be stored
-    public static let Description = CredentialItemStorageAttribteKeys(rawValue: "Description")
-}
 
 //In this class there are some possibly confusing terminoligy to refer to parts of the credential.
 //
