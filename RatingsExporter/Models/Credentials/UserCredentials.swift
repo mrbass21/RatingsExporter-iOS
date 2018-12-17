@@ -65,69 +65,12 @@ struct UserCredentials {
 
 //
 //    private static func updateCookieKeychainItem(name: String, value: String) throws {
-//        //Convert String to UTF8 data
-//        let UTF8Data = value.data(using: String.Encoding.utf8)!
-//
-//        //Build the search query
-//        let updateQueryDict: [CFString: Any] = [
-//            kSecClass: kSecClassGenericPassword,
-//            kSecAttrAccount: name as CFString,
-//        ]
-//
-//        //Create a list of changed attributes
-//        let updateItemsDict: [CFString: Any] = [
-//            kSecValueData: UTF8Data,
-//            kSecAttrModificationDate: Date()
-//            ]
-//
-//        //Update the keychain item
-//        let status = SecItemUpdate(updateQueryDict as CFDictionary, updateItemsDict as CFDictionary)
-//
-//        //Check for errors
-//        guard status == noErr else {
-//            throw Keychain.KeychainError.unexpectedError(status: status)
-//        }
+//        
 //    }
 //
 //    private static func getCookieKeychainItem(name: String, shouldReturnItem: Bool = true) throws -> String? {
 //        //Build the query
-//        let returnItem = shouldReturnItem ? kCFBooleanTrue : kCFBooleanFalse
-//
-//        let keychainGetQuery: [CFString: Any] = [
-//            kSecClass: kSecClassGenericPassword,
-//            kSecAttrAccount: name as CFString,
-//            kSecReturnData: returnItem!,
-//            kSecMatchLimit: kSecMatchLimitOne
-//        ]
-//
-//        //Query and set the object from keychain
-//        var returnQueryCookie: AnyObject?
-//        let status = withUnsafeMutablePointer(to: &returnQueryCookie) {
-//            SecItemCopyMatching(keychainGetQuery as CFDictionary, UnsafeMutablePointer($0))
-//        }
-//
-//        //If the cookie isn't found, throw an error
-//        guard status != errSecItemNotFound else {
-//            throw Keychain.KeychainError.notFound
-//        }
-//
-//        //If there's any error other than the one above, panic!
-//        guard status == noErr else {
-//            throw Keychain.KeychainError.unexpectedError(status: status)
-//        }
-//
-//        if shouldReturnItem {
-//            //The user asked us to return the data
-//
-//            //Transform the data back into a String
-//            guard let returnCookieData = returnQueryCookie as? Data,
-//                let returnCookieString = String(bytes: returnCookieData, encoding: String.Encoding.utf8) else {
-//                throw Keychain.KeychainError.badData
-//            }
-//            return returnCookieString
-//        } else {
-//            return nil
-//        }
+
 //    }
 //
 //    private static func deleteCookieKeychainItem(name: String) throws {
