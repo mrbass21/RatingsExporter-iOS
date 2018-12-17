@@ -82,7 +82,7 @@ class UserCredentialStore {
     }
     
     //MARK: - Public Interface
-    public static func restoreCredential(for credential: UserCredentialStorageProtocol) throws {
+    public static func restoreCredential(for credential: UserCredentialStorageProtocol) throws -> UserCredentialStorageProtocol {
         let credentialItems = credential.getListOfCredentialItemsByName()
         
         var returnCredentialItems = [[CredentialItemStorageAttribteKeys: String]]()
@@ -96,6 +96,8 @@ class UserCredentialStore {
         }
         
         credential.restoreFromStorageItemAttributes(attributes: returnCredentialItems)
+        
+        return credential
     }
     
     public static func storeCredential(_ credential: UserCredentialStorageProtocol) throws {
