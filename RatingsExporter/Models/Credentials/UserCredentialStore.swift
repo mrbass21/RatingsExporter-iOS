@@ -66,7 +66,7 @@ protocol UserCredentialStorageProtocol {
     func getCredentialStorageAttributes(for identifier: String) -> [CredentialItemStorageAttribteKeys: String]
     
     //Initialize a new credential item from Storage Attributes
-    func restoreFromStorageItemAttributes( attributes: [[CredentialItemStorageAttribteKeys: String]]) -> UserCredentialStorageProtocol?
+    func restoreFromStorageItemAttributes( attributes: [[CredentialItemStorageAttribteKeys: String]])
 }
 
 
@@ -82,18 +82,20 @@ class UserCredentialStore {
     }
     
     //MARK: - Public Interface
-    public static func restoreCredential(for credential: UserCredentialStorageProtocol) throws -> [[CredentialItemStorageAttribteKeys: String]] {
+    public static func restoreCredential(for credential: UserCredentialStorageProtocol) throws {
         let credentialItems = credential.getListOfCredentialItemsByName()
         
-        var returnCredentials = [[CredentialItemStorageAttribteKeys: String]]()
+        var returnCredentialItems = [[CredentialItemStorageAttribteKeys: String]]()
         for item in credentialItems {
             //We need the credenial attribute list for searching... and also because I may one day support more types
             // (probably not)
             var credentialItemAttributes = credential.getCredentialStorageAttributes(for: item)
             
             try retrieveCredentialItem(withAttributes: &credentialItemAttributes)
-            returnCredentials.append(credentialItemAttributes)
+            returnCredentialItems.append(credentialItemAttributes)
         }
+        
+        credential.restoreFromStorageItemAttributes(attributes: returnCredentialItems)
     }
     
     public static func storeCredential(_ credential: UserCredentialStorageProtocol) throws {
