@@ -78,14 +78,19 @@ class NetflixCredential: NetflixCredentialProtocol {
 
 extension NetflixCredential: UserCredentialStorageProtocol {
     func getListOfCredentialItemsByName() -> Set<String> {
-        <#code#>
+        let credentialItems: Set<String> = [
+            RequiredIDs.Credential.netflixID.rawValue,
+            RequiredIDs.Credential.secureNetflixID.rawValue
+        ]
+        
+        return credentialItems
     }
     
     func getCredentialStorageAttributes(for identifier: String) -> [CredentialItemStorageAttribteKeys : String] {
         <#code#>
     }
     
-    func restoreFromStorageItemAttributes(attributes: [[CredentialItemStorageAttribteKeys : String]]) -> UserCredentialStorageProtocol? {
+    func restoreFromStorageItemAttributes(attributes: [[CredentialItemStorageAttribteKeys : String]]) {
         <#code#>
     }
 }
