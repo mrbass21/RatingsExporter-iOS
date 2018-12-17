@@ -106,10 +106,16 @@ extension NetflixCredential: UserCredentialStorageProtocol {
             print("NetflixCredential: Unknown Credential Attribute Identifier")
         }
         
-        
+        return itemAttributes
     }
     
     func restoreFromStorageItemAttributes(attributes: [[CredentialItemStorageAttribteKeys : String]]) {
-        <#code#>
+        for attributeDict in attributes {
+            if attributeDict[.Name]!.elementsEqual(RequiredIDs.Credential.netflixID.rawValue) {
+                self.netflixID = attributeDict[.Value]!
+            } else if attributeDict[.Name]!.elementsEqual(RequiredIDs.Credential.secureNetflixID.rawValue) {
+                self.secureNetflixID = attributeDict[.Value]!
+            }
+        }
     }
 }
