@@ -18,45 +18,11 @@ import WebKit
 // A possible redesign of this is to make the computed properties functions that can throw to report keychain errors
 // up one more layer to the consumer and let them handle the errors.
 
-//MARK: - User CredentialKeys
-public struct CredentialAttribtesKeys: RawRepresentable, Hashable, Equatable {
-    public private (set) var rawValue: String
-    
-    public init(_ rawValue: String) {
-        self.rawValue = rawValue
-    }
-    
-    public init (rawValue: String) {
-        self.rawValue = rawValue
-    }
-    
-    public var hashValue: Int {
-        return self.rawValue.hashValue
-    }
-    
-    public static func ==(_ lhs: CredentialAttribtesKeys, _ rhs: CredentialAttribtesKeys) -> Bool {
-        return lhs.rawValue == rhs.rawValue
-    }
-}
-
-extension CredentialAttribtesKeys {
-    //Key for the credential name
-    public static let CredentialName = CredentialAttribtesKeys(rawValue: "Name")
-    
-    //Key for the credential value
-    public static let CredentialValue = CredentialAttribtesKeys(rawValue: "Value")
-    
-    //Key for the credential value type
-    public static let CredentialValueType = CredentialAttribtesKeys(rawValue: "ValueType")
-}
 
 
 //MARK: - UserCredentialsProtocol
 protocol UserCredentialProtocol {
-    var credentialAttributes: [[CredentialAttribtesKeys: Any]] { get set }
-    
-    //func getCredentialForStorage() throws -> UserCredentialProtocol
-    //func setCrecentialFromStorage(_ storageItems: UserCredentialProtocol) throws
+ 
 }
 
 struct UserCredentials {

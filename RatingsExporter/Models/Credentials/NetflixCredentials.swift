@@ -10,7 +10,7 @@ import Foundation
 
 protocol NetflixCredentialProtocol: UserCredentialProtocol {
     var netflixID: String? { get set }
-    var netflixSecureID: String? { get set }
+    var secureNetflixID: String? { get set }
 }
 
 class NetflixCredential: NetflixCredentialProtocol {
@@ -20,12 +20,38 @@ class NetflixCredential: NetflixCredentialProtocol {
             case netflixID = "NetflixId"
             case secureNetflixID = "SecureNetflixId"
         }
+        
+        enum Credential: String {
+            case netflixID = "NetflixId"
+            case secureNetflixID = "SecretNetflixID"
+        }
     }
     
     public var netflixID: String?
-    public var netflixSecureID: String?
+    public var secureNetflixID: String?
     
-    var credentialAttributes: [[CredentialAttribtesKeys : Any]] = [[CredentialAttribtesKeys:Any]]()
+//    var credentialAttributes: [[CredentialAttribtesKeys : Any]]? {
+//        get {
+//            var credentialAttributes = [[CredentialAttribtesKeys: Any]]()
+//        
+//            //Add the neflix id
+//            let netflixIDCredential: [CredentialAttribtesKeys: Any] = [
+//                .CredentialName: RequiredIDs.Credential.netflixID,
+//                .CredentialValue: netflixID,
+//                .CredentialValueType: "Cookie"
+//                ]
+//            credentialAttributes.append(netflixIDCredential)
+//        
+//            let secureNetflixCredential: [CredentialAttribtesKeys: Any] = [
+//                .CredentialName: RequiredIDs.Credential.secureNetflixID,
+//                .CredentialValue: secureNetflixID,
+//                .CredentialValueType: "Cookie"
+//                ]
+//            credentialAttributes.append(secureNetflixCredential)
+//        
+//            return credentialAttributes
+//        }
+//    }
     
     @available (iOS 2.0, *)
     init?(from cookies: [HTTPCookie]) {
@@ -34,9 +60,9 @@ class NetflixCredential: NetflixCredentialProtocol {
         }
     }
     
-    init(netflixID: String, netflixSecureID: String) {
+    init(netflixID: String, secureNetflixID: String) {
         self.netflixID = netflixID
-        self.netflixSecureID = netflixSecureID
+        self.secureNetflixID = secureNetflixID
     }
     
     
@@ -58,7 +84,7 @@ class NetflixCredential: NetflixCredentialProtocol {
                 if item.name.elementsEqual(RequiredIDs.Cookie.netflixID.rawValue) {
                     self.netflixID = item.value
                 } else if item.name.elementsEqual(RequiredIDs.Cookie.secureNetflixID.rawValue) {
-                    self.netflixSecureID = item.value
+                    self.secureNetflixID = item.value
                 }
             }
         }
@@ -131,4 +157,18 @@ class NetflixCredential: NetflixCredentialProtocol {
 //            print("This will never execute!")
 //        }
 //    }
+}
+
+extension NetflixCredential: UserCredentialStorageProtocol {
+    func getListOfCredentialItemsByName() -> Set<String> {
+        <#code#>
+    }
+    
+    func getCredentialStorageAttributes(for identifier: String) -> [CredentialItemStorageAttribteKeys : String] {
+        <#code#>
+    }
+    
+    func restoreFromStorageItemAttributes(attributes: [[CredentialItemStorageAttribteKeys : String]]) -> UserCredentialStorageProtocol? {
+        <#code#>
+    }
 }
