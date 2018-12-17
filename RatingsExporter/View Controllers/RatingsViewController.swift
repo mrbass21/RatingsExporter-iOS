@@ -29,9 +29,9 @@ class RatingsViewController: UITableViewController {
         
         //For now we force load the NetflixLoginViewController to test logging in/grabbing the cookies.
         //TODO: Don't force the segue unless it's for a legitimate need to log in.
-        if !UserCredentials.hasCredentials {
+        //if !UserCredentials.hasCredentials {
             performSegue(withIdentifier: Identifiers.Segue.NetflixLoginSegue, sender: nil)
-        }
+        //}
     }
     
     //MARK: - Table View Data Source Delegate
