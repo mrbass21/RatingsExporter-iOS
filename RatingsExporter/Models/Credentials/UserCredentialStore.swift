@@ -9,15 +9,23 @@
 import Foundation
 import Security
 
-//MARK: - User CredentialStorageKeys
-enum CredentialItemStorageAttribteKeys : String {
-    case Name
-    case Value
-    case ValueType
-    case Description
+public struct CredentialStorageItem {
+    let name: String
+    var value: String?
+    var valueType: ValueType
+    var description: String?
+    
+    enum ValueType {
+        case Cookie
+    }
+    
+    init(name: String, value: String? = nil, valueType: ValueType = .Cookie, description: String? = nil) {
+        self.name = name
+        self.value = value
+        self.valueType = valueType
+        self.description = description
+    }
 }
-
-
 //In this class there are some possibly confusing terminoligy to refer to parts of the credential.
 //
 //
@@ -31,16 +39,11 @@ enum CredentialItemStorageAttribteKeys : String {
 
 
 protocol UserCredentialStorageProtocol {
-    //This is the list of items that UserCredentialStore will retrieve from keychain by the identifier,
-    //however the credential item defines it.
-    //It will follow a call to get the storage attributes for each specific item by identifier
-    func getListOfCredentialItemsByName() -> Set<String>
-    
-    //This gets the attributes used to find or store the item in storage
-    func getCredentialStorageAttributes(for identifier: String) -> [CredentialItemStorageAttribteKeys: String]
+    //Gets a list of credential items to store
+    func getListOfCredentialItemsToStore() -> [CredentialStorageItem]
     
     //Initialize a new credential item from Storage Attributes
-    func restoreFromStorageItemAttributes( attributes: [[CredentialItemStorageAttribteKeys: String]])
+    func restoreFromStorageItems(_ storageItems: [CredentialStorageItem])
 }
 
 
@@ -49,7 +52,6 @@ class UserCredentialStore {
     //Enum of possible errors that can be thrown
     enum UserCredentialStoreError: Error {
         case invalidItemAttributes
-        case valueTypeNotSupported
         case invalidData
         case itemNotFound
         case unexpectedStorageError(status: OSStatus)
@@ -57,19 +59,16 @@ class UserCredentialStore {
     
     //MARK: - Public Interface
     public static func restoreCredential(for credential: UserCredentialStorageProtocol) throws -> UserCredentialStorageProtocol {
-        let credentialItems = credential.getListOfCredentialItemsByName()
+        let credentialItems = credential.getListOfCredentialItemsToStore()
         
-        var returnCredentialItems = [[CredentialItemStorageAttribteKeys: String]]()
+        var returnCredentialItems = [CredentialStorageItem]()
         for item in credentialItems {
-            //We need the credenial attribute list for searching... and also because I may one day support more types
-            // (probably not)
-            var credentialItemAttributes = credential.getCredentialStorageAttributes(for: item)
-            
-            try retrieveCredentialItem(withAttributes: &credentialItemAttributes)
-            returnCredentialItems.append(credentialItemAttributes)
+            var mutItem = item
+            try retrieveCredentialStorageItem(&mutItem)
+            returnCredentialItems.append(item)
         }
         
-        credential.restoreFromStorageItemAttributes(attributes: returnCredentialItems)
+        credential.restoreFromStorageItems(returnCredentialItems)
         
         return credential
     }
@@ -77,40 +76,30 @@ class UserCredentialStore {
     public static func storeCredential(_ credential: UserCredentialStorageProtocol) throws {
         
         //Get the credential items
-        let credentialItems = credential.getListOfCredentialItemsByName()
+        let credentialItems = credential.getListOfCredentialItemsToStore()
         
         for item in credentialItems {
-            //Get the attributes for that item
-            let itemStorageAttributes = credential.getCredentialStorageAttributes(for: item)
-            
             //Create the item or update it
-            if try doesCredentialItemAlreadyExist(withAttributes: itemStorageAttributes) {
-                try updateCredentialItem(withAttributes: itemStorageAttributes)
+            if try doesCredentialItemAlreadyExist(item) {
+                try updateCredentialItem(item)
             } else {
-                try createCredentialItem(withAttributes: itemStorageAttributes)
+                try createCredentialItem(item)
             }
         }
     }
     
     //MARK: - Keychain functions
-    private static func doesCredentialItemAlreadyExist(withAttributes attribute: [CredentialItemStorageAttribteKeys: String]) throws -> Bool {
-        
-        //Check that the attributes are valid
-        try areAttributesValid(attribute)
-        
+    private static func doesCredentialItemAlreadyExist(_ storageItem: CredentialStorageItem) throws -> Bool {
         //Build the search query
         let keychainGetQuery: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
-            kSecAttrAccount: attribute[.Name]! as CFString,
+            kSecAttrAccount: storageItem.name as CFString,
             kSecReturnData: kCFBooleanFalse,
             kSecMatchLimit: kSecMatchLimitOne
         ]
         
         //Query and set the object from keychain
-        var returnQueryCookie: AnyObject?
-        let status = withUnsafeMutablePointer(to: &returnQueryCookie) {
-            SecItemCopyMatching(keychainGetQuery as CFDictionary, UnsafeMutablePointer($0))
-        }
+        let status = SecItemCopyMatching(keychainGetQuery as CFDictionary, nil)
         
         //If the cookie isn't found, throw an error
         guard status != errSecItemNotFound else {
@@ -126,15 +115,12 @@ class UserCredentialStore {
         return true
     }
     
-    private static func retrieveCredentialItem(withAttributes attributes: inout [CredentialItemStorageAttribteKeys: String])
+    private static func retrieveCredentialStorageItem(_ storageItem: inout CredentialStorageItem)
         throws {
-            //Check if the attributes are valid
-            try areAttributesValid(attributes)
-            
             //Build the search query
             let keychainGetQuery: [CFString: Any] = [
                 kSecClass: kSecClassGenericPassword,
-                kSecAttrAccount: attributes[.Name]! as CFString,
+                kSecAttrAccount: storageItem.name as CFString,
                 kSecReturnData: kCFBooleanTrue,
                 kSecMatchLimit: kSecMatchLimitOne
             ]
@@ -162,21 +148,22 @@ class UserCredentialStore {
                     throw UserCredentialStoreError.invalidData
             }
             
-            attributes[.Value] = returnCookieString
-            attributes[.ValueType] = "Cookie" //TODO: This should be dynamic if I accept multiple types ever
+            storageItem.value = returnCookieString
+            storageItem.valueType = .Cookie
     }
     
-    private static func updateCredentialItem(withAttributes attributes: [CredentialItemStorageAttribteKeys: String]) throws {
-        //Check that the attributes are valid
-        try areAttributesValid(attributes)
+    private static func updateCredentialItem(_ storageItem: CredentialStorageItem) throws {
+        guard storageItem.value != nil else {
+            throw UserCredentialStoreError.invalidItemAttributes
+        }
         
         //Convert String to UTF8 data
-        let UTF8Data = attributes[.Value]!.data(using: String.Encoding.utf8)!
+        let UTF8Data = storageItem.value!.data(using: String.Encoding.utf8)!
         
         //Build the search query
         let updateQueryDict: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
-            kSecAttrAccount: attributes[.Name]! as CFString,
+            kSecAttrAccount: storageItem.name as CFString,
         ]
         
         //Create a list of changed attributes
@@ -194,13 +181,13 @@ class UserCredentialStore {
         }
     }
     
-    private static func createCredentialItem(withAttributes attributes: [CredentialItemStorageAttribteKeys: String]) throws {
-        
-        //Check the attributes are valid
-        try areAttributesValid(attributes)
+    private static func createCredentialItem(_ storageItem: CredentialStorageItem) throws {
+        guard storageItem.value != nil else {
+            throw UserCredentialStoreError.invalidItemAttributes
+        }
         
         //Convert the value to UTF-8 data
-        guard let UTF8data = attributes[.Value]!.data(using: String.Encoding.utf8) else {
+        guard let UTF8data = storageItem.value!.data(using: String.Encoding.utf8) else {
             throw UserCredentialStoreError.invalidData
         }
     
@@ -208,8 +195,8 @@ class UserCredentialStore {
         let addAttributesDict: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrCreationDate: Date(),
-            kSecAttrDescription: attributes[.Description] ?? "No Description",
-            kSecAttrAccount: attributes[.Name]! as CFString,
+            kSecAttrDescription: storageItem.description ?? "No Description",
+            kSecAttrAccount: storageItem.name as CFString,
             kSecValueData: UTF8data,
             kSecReturnData: kCFBooleanFalse
         ]
@@ -219,35 +206,6 @@ class UserCredentialStore {
     
         guard status == noErr else {
             throw UserCredentialStoreError.unexpectedStorageError(status: status)
-        }
-    }
-    
-    //MARK: - Helper Methods
-    private static func areAttributesValid(_ attributes: [CredentialItemStorageAttribteKeys: String]) throws {
-        
-        //Attributes can't be empty
-        guard attributes.isEmpty || attributes.count < 3 else {
-            print("UserCredentialStore_areAttributesValid: attributes are empty or less than three.")
-            throw UserCredentialStoreError.invalidItemAttributes
-        }
-        
-        //We require at least three attributes to be present.
-        //Name, value, and value type
-        let requiredItems = attributes.filter { (key,_) -> Bool in
-            if key == .Name || key == .Value || key == .ValueType
-            {
-                return true
-            }
-            return false
-        }
-        guard requiredItems.count >= 3 else {
-            print("UserCredentialStore_areAttributesValid: Required attribute missing.")
-            throw UserCredentialStoreError.invalidItemAttributes
-        }
-        
-        //We only support one type currently
-        if attributes[.ValueType] != "Cookie" { //TODO: Probably should be an enum or class type
-            throw UserCredentialStoreError.valueTypeNotSupported
         }
     }
 }

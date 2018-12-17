@@ -77,44 +77,25 @@ class NetflixCredential: NetflixCredentialProtocol {
 }
 
 extension NetflixCredential: UserCredentialStorageProtocol {
-    func getListOfCredentialItemsByName() -> Set<String> {
-        let credentialItems: Set<String> = [
-            RequiredIDs.Credential.netflixID.rawValue,
-            RequiredIDs.Credential.secureNetflixID.rawValue
+    func getListOfCredentialItemsToStore() -> [CredentialStorageItem] {
+        let credentialItems = [
+            CredentialStorageItem(name: RequiredIDs.Credential.netflixID.rawValue, value: self.netflixID, description: "The Netflix cookie used in requests"),
+            CredentialStorageItem(name: RequiredIDs.Credential.secureNetflixID.rawValue, value: self.secureNetflixID, description: "The Secure Netflix cookie used in requests")
         ]
         
         return credentialItems
     }
     
-    func getCredentialStorageAttributes(for identifier: String) -> [CredentialItemStorageAttribteKeys : String] {
-        var itemAttributes = [CredentialItemStorageAttribteKeys: String]()
-        
-        switch identifier {
-        case RequiredIDs.Credential.netflixID.rawValue:
-            itemAttributes[.Name] = identifier
-            if let netflixID = netflixID {
-                itemAttributes[.Value] = netflixID
-            }
-            itemAttributes[.ValueType] = "Cookie"
-        case RequiredIDs.Credential.secureNetflixID.rawValue:
-            itemAttributes[.Name] = identifier
-            if let secureNetflixID = secureNetflixID {
-                itemAttributes[.Value] = secureNetflixID
-            }
-            itemAttributes[.ValueType] = "Cookie"
-        default:
-            print("NetflixCredential: Unknown Credential Attribute Identifier")
-        }
-        
-        return itemAttributes
-    }
-    
-    func restoreFromStorageItemAttributes(attributes: [[CredentialItemStorageAttribteKeys : String]]) {
-        for attributeDict in attributes {
-            if attributeDict[.Name]!.elementsEqual(RequiredIDs.Credential.netflixID.rawValue) {
-                self.netflixID = attributeDict[.Value]!
-            } else if attributeDict[.Name]!.elementsEqual(RequiredIDs.Credential.secureNetflixID.rawValue) {
-                self.secureNetflixID = attributeDict[.Value]!
+    func restoreFromStorageItems(_ storageItems: [CredentialStorageItem]) {
+        for item in storageItems {
+            switch item.name {
+            case RequiredIDs.Credential.netflixID.rawValue:
+                self.netflixID = item.value
+            case RequiredIDs.Credential.secureNetflixID.rawValue:
+                self.secureNetflixID = item.value
+            default:
+                print("NetflixCredential: Unknown credential item")
+                continue
             }
         }
     }
