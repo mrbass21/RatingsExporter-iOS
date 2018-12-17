@@ -13,9 +13,11 @@
 		8F03A58B21BF803800F466A5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8F03A58A21BF803800F466A5 /* Assets.xcassets */; };
 		8F03A59721C03AF500F466A5 /* NetflixLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F03A59621C03AF500F466A5 /* NetflixLoginViewController.swift */; };
 		8F5A58A221C1D9700058B77A /* UserCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F5A58A121C1D9700058B77A /* UserCredentials.swift */; };
-		8FA78DEA21C4E5B000814E05 /* UserCredentialsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FA78DE921C4E5B000814E05 /* UserCredentialsTest.swift */; };
 		8FA78DEC21C6FB7F00814E05 /* NetflixCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FA78DEB21C6FB7F00814E05 /* NetflixCredentials.swift */; };
 		8FA78DF121C7104E00814E05 /* UserCredentialStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FA78DF021C7104E00814E05 /* UserCredentialStore.swift */; };
+		8FA78DF321C8542F00814E05 /* NetflixCredentialTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FA78DF221C8542F00814E05 /* NetflixCredentialTest.swift */; };
+		8FA78DF521C8545300814E05 /* UserCredentialStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FA78DF421C8545300814E05 /* UserCredentialStorageTests.swift */; };
+		8FA78DF721C8550100814E05 /* UserCredentialStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FA78DF621C8550100814E05 /* UserCredentialStorageTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,9 +41,11 @@
 		8F5A58A121C1D9700058B77A /* UserCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCredentials.swift; sourceTree = "<group>"; };
 		8FA78DDF21C4E57D00814E05 /* RatingsExporterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RatingsExporterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FA78DE321C4E57D00814E05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8FA78DE921C4E5B000814E05 /* UserCredentialsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCredentialsTest.swift; sourceTree = "<group>"; };
 		8FA78DEB21C6FB7F00814E05 /* NetflixCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixCredentials.swift; sourceTree = "<group>"; };
 		8FA78DF021C7104E00814E05 /* UserCredentialStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCredentialStore.swift; sourceTree = "<group>"; };
+		8FA78DF221C8542F00814E05 /* NetflixCredentialTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixCredentialTest.swift; sourceTree = "<group>"; };
+		8FA78DF421C8545300814E05 /* UserCredentialStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCredentialStorageTests.swift; sourceTree = "<group>"; };
+		8FA78DF621C8550100814E05 /* UserCredentialStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCredentialStorageTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,7 +109,9 @@
 		8FA78DE021C4E57D00814E05 /* RatingsExporterTests */ = {
 			isa = PBXGroup;
 			children = (
-				8FA78DE921C4E5B000814E05 /* UserCredentialsTest.swift */,
+				8FA78DF621C8550100814E05 /* UserCredentialStorageTests.swift */,
+				8FA78DF421C8545300814E05 /* UserCredentialStorageTests.swift */,
+				8FA78DF221C8542F00814E05 /* NetflixCredentialTest.swift */,
 				8FA78DE321C4E57D00814E05 /* Info.plist */,
 			);
 			path = RatingsExporterTests;
@@ -242,7 +248,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8FA78DEA21C4E5B000814E05 /* UserCredentialsTest.swift in Sources */,
+				8FA78DF521C8545300814E05 /* UserCredentialStorageTests.swift in Sources */,
+				8FA78DF721C8550100814E05 /* UserCredentialStorageTests.swift in Sources */,
+				8FA78DF321C8542F00814E05 /* NetflixCredentialTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

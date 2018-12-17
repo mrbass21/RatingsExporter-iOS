@@ -11,10 +11,10 @@ import Security
 
 //MARK: - User CredentialStorageKeys
 enum CredentialItemStorageAttribteKeys : String {
-    case Name = "Name"
-    case Value = "Value"
-    case ValueType = "ValueType"
-    case Description = "Description"
+    case Name
+    case Value
+    case ValueType
+    case Description
 }
 
 
