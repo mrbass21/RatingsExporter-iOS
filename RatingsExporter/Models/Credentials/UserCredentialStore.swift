@@ -9,13 +9,17 @@
 import Foundation
 import Security
 
+///A struct used to represent the storage attributes that can be applied to a storage item.
 public struct CredentialStorageItem {
     let name: String
     var value: String?
     var valueType: ValueType
     var description: String?
     
+
+    ///Describes what kind of data this should be stored as.
     enum ValueType {
+        ///A cookie value that is expressed internally as a String
         case Cookie
     }
     
@@ -26,6 +30,7 @@ public struct CredentialStorageItem {
         self.description = description
     }
 }
+
 //In this class there are some possibly confusing terminoligy to refer to parts of the credential.
 //
 //
@@ -34,12 +39,9 @@ public struct CredentialStorageItem {
 //
 //A Credential Item is defined as any part that makes up a whole credential. A username is a
 //Credential Item. A password is a Credential Item. These two Credential Items make up a Credential.
-//
-//Credential Item Attributes are a list of attributes that describe how the Credential Item should be stored.
-
 
 protocol UserCredentialStorageProtocol {
-    //Gets a list of credential items to store
+    ///Gets a list of credential items to store
     func getListOfCredentialItemsToStore() -> [CredentialStorageItem]
     
     //Initialize a new credential item from Storage Attributes
@@ -49,15 +51,31 @@ protocol UserCredentialStorageProtocol {
 
 class UserCredentialStore {
     
-    //Enum of possible errors that can be thrown
+    ///Errors that can be encountered while working with UserCredentialStore
     enum UserCredentialStoreError: Error {
+        ///The attributes in the CredentialStorageItem were either invalid or unexpectedly nil
         case invalidItemAttributes
+        ///When restoring tha data from storage, en error occured and invalid data was retrieved
         case invalidData
+        ///Was unable to find an item expected to exist
         case itemNotFound
+        ///Some other storage error occured
         case unexpectedStorageError(status: OSStatus)
     }
     
     //MARK: - Public Interface
+    /**
+        Restores the credential to it's stored value.
+     
+     - Parameter credential: An allocated, but uninitialized object conforming to the `UserCredentialStorageProtocol` to
+                            populate with stored values
+     - Throws:
+            - `UserCredentialStoreError.itemNotFound` if the item is not stored.
+            - `UserCredentialStoreError.invalidData` if the data was corrupt on retrieval.
+            - `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
+     
+     - Returns: A restored item that conforms to the `UserCredentialStorageProtocol`.
+     */
     public static func restoreCredential(for credential: UserCredentialStorageProtocol) throws -> UserCredentialStorageProtocol {
         let credentialItems = credential.getListOfCredentialItemsToStore()
         
@@ -73,6 +91,15 @@ class UserCredentialStore {
         return credential
     }
     
+    /**
+     Restores the credential to it's stored value.
+     
+     - Parameter credential: A populated credential that conforms to `UserCredentialStorageProtocol` to be stored.
+     - Throws:
+        - `UserCredentialStoreError.itemNotFound` if the item is not stored.
+        - `UserCredentialStoreError.invalidData` if the data was corrupt on retrieval.
+        - `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
+     */
     public static func storeCredential(_ credential: UserCredentialStorageProtocol) throws {
         
         //Get the credential items
