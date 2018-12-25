@@ -2,7 +2,7 @@
 //  RatingsExporterTests.swift
 //  RatingsExporterTests
 //
-//  Created by Jason Beck on 12/15/18.
+//  Created by Jason Beck on 12/18/18.
 //  Copyright © 2018 Jason Beck. All rights reserved.
 //
 

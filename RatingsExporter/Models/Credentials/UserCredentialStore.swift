@@ -10,7 +10,7 @@ import Foundation
 import Security
 
 ///A struct used to represent the storage attributes that can be applied to a storage item.
-public struct CredentialStorageItem {
+public struct CredentialStorageItem: Equatable {
     let name: String
     var value: String?
     var valueType: ValueType
@@ -83,7 +83,7 @@ class UserCredentialStore {
         for item in credentialItems {
             var mutItem = item
             try retrieveCredentialStorageItem(&mutItem)
-            returnCredentialItems.append(item)
+            returnCredentialItems.append(mutItem)
         }
         
         credential.restoreFromStorageItems(returnCredentialItems)
@@ -112,6 +112,21 @@ class UserCredentialStore {
             } else {
                 try createCredentialItem(item)
             }
+        }
+    }
+    
+    /**
+     Clears the credentials for the `UserCredentialStorageProtocol`
+     
+     - Parameter credential: A populated credential that conforms to `UserCredentialStorageProtocol` to be stored.
+     - Throws:
+        - `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
+     */
+    public static func clearCredential(_ credential: UserCredentialStorageProtocol) throws {
+        let credentialItems = credential.getListOfCredentialItemsToStore()
+        
+        for item in credentialItems {
+            try deleteCredentialItem(item)
         }
     }
     
@@ -231,6 +246,19 @@ class UserCredentialStore {
         //Save the item
         let status = SecItemAdd(addAttributesDict as CFDictionary, nil)
     
+        guard status == noErr else {
+            throw UserCredentialStoreError.unexpectedStorageError(status: status)
+        }
+    }
+    
+    private static func deleteCredentialItem(_ storageItem: CredentialStorageItem) throws {
+        let queryDict: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrAccount: storageItem.name
+        ]
+        
+        let status = SecItemDelete(queryDict as CFDictionary)
+        
         guard status == noErr else {
             throw UserCredentialStoreError.unexpectedStorageError(status: status)
         }

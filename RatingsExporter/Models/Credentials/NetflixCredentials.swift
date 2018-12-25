@@ -100,3 +100,8 @@ extension NetflixCredential: UserCredentialStorageProtocol {
         }
     }
 }
+extension NetflixCredential: Equatable {
+    static func == (lhs: NetflixCredential, rhs: NetflixCredential) -> Bool {
+        return ((lhs.netflixID == rhs.netflixID) && (lhs.secureNetflixID == lhs.secureNetflixID))
+    }
+}

@@ -14,6 +14,6 @@ import WebKit
 //of a base credential.
 
 //MARK: - UserCredentialsProtocol
-protocol UserCredentialProtocol {
+protocol UserCredentialProtocol: Equatable {
  
 }
