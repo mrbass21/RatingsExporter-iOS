@@ -83,7 +83,7 @@ class UserCredentialStoreTests: XCTestCase {
         }
     }
 
-    func testStoreAllNilThrows() {
+    func testStoreAllNilThrowsInvalidAttribute() {
         //given
         let testNilCredential = TestCredental(credential1: nil, credential2: nil)
         
@@ -93,11 +93,13 @@ class UserCredentialStoreTests: XCTestCase {
         }
     }
     
-    func testStoreOneNilThrows() {
+    func testStoreOneNilThrowsInvalidAttribute() {
         let testOneNilCredential = TestCredental(credential1: "testCredential", credential2: nil)
         
         XCTAssertThrowsError(try UserCredentialStore.storeCredential(testOneNilCredential)) { (Error) in
             XCTAssertEqual(Error as! UserCredentialStore.UserCredentialStoreError, UserCredentialStore.UserCredentialStoreError.invalidItemAttributes)
         }
-    }
+    }
+    
+    
 }

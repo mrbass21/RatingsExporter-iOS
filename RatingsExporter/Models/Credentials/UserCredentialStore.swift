@@ -92,12 +92,12 @@ class UserCredentialStore {
     }
     
     /**
-     Restores the credential to it's stored value.
+     Stores the credential. Nil attributes are not allowed.
      
      - Parameter credential: A populated credential that conforms to `UserCredentialStorageProtocol` to be stored.
      - Throws:
         - `UserCredentialStoreError.itemNotFound` if the item is not stored.
-        - `UserCredentialStoreError.invalidData` if the data was corrupt on retrieval.
+        - `UserCredentialStoreError.invalidItemAttribute' if an attribute is nil
         - `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
      */
     public static func storeCredential(_ credential: UserCredentialStorageProtocol) throws {
