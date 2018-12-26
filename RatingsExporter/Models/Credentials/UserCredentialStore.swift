@@ -10,7 +10,7 @@ import Foundation
 import Security
 
 ///A struct used to represent the storage attributes that can be applied to a storage item.
-public struct CredentialStorageItem: Equatable {
+public struct CredentialStorageItem {
     let name: String
     var value: String?
     var valueType: ValueType
@@ -52,7 +52,7 @@ protocol UserCredentialStorageProtocol {
 class UserCredentialStore {
     
     ///Errors that can be encountered while working with UserCredentialStore
-    enum UserCredentialStoreError: Error {
+    enum UserCredentialStoreError: Error, Equatable {
         ///The attributes in the CredentialStorageItem were either invalid or unexpectedly nil
         case invalidItemAttributes
         ///When restoring tha data from storage, en error occured and invalid data was retrieved
