@@ -128,19 +128,25 @@ extension NetflixLoginViewController {
         //
         //We need to check both.
         
-        //TODO: Don't crash with bad data. Return false
-        
         //Load the certificates
-        let knownNetflixCertPath = Bundle.main.path(forResource: "netflix", ofType: "cer")!
-        let knownNetflixCertData = try! Data(contentsOf: URL(fileURLWithPath: knownNetflixCertPath))
-        
-        let knownNetflixAssetCertPath = Bundle.main.path(forResource: "netflix-assets", ofType: "cer")!
-        let knownNetflixAssetCertData = try! Data(contentsOf: URL(fileURLWithPath: knownNetflixAssetCertPath))
-        
-        if remoteServerCertData.elementsEqual(knownNetflixCertData) || remoteServerCertData.elementsEqual(knownNetflixAssetCertData) {
-            return true
+        guard let knownNetflixCertPath = Bundle.main.path(forResource: "netflix", ofType: "cer"),
+            let knownNetflixAssetCertPath = Bundle.main.path(forResource: "netflix-assets", ofType: "cer") else {
+                //We couldn't get the path to the resources. Return failure case.
+                //TODO: Throw here instead?
+                return false
         }
         
+        do {
+            let knownNetflixCertData = try Data(contentsOf: URL(fileURLWithPath: knownNetflixCertPath))
+            let knownNetflixAssetCertData = try Data(contentsOf: URL(fileURLWithPath: knownNetflixAssetCertPath))
+            if remoteServerCertData.elementsEqual(knownNetflixCertData) || remoteServerCertData.elementsEqual(knownNetflixAssetCertData) {
+                return true
+            }
+        } catch {
+            print("Error encountered producing data from bundled certs: \(error.localizedDescription)")
+            return false
+        }
+
         return false
     }
 }
