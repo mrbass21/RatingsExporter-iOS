@@ -13,11 +13,15 @@
 		8F03A58B21BF803800F466A5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8F03A58A21BF803800F466A5 /* Assets.xcassets */; };
 		8F03A59721C03AF500F466A5 /* NetflixLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F03A59621C03AF500F466A5 /* NetflixLoginViewController.swift */; };
 		8F5A58A221C1D9700058B77A /* UserCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F5A58A121C1D9700058B77A /* UserCredentials.swift */; };
-		8FA78DEA21C4E5B000814E05 /* UserCredentialsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FA78DE921C4E5B000814E05 /* UserCredentialsTest.swift */; };
+		8FA78DEC21C6FB7F00814E05 /* NetflixCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FA78DEB21C6FB7F00814E05 /* NetflixCredentials.swift */; };
+		8FA78DF121C7104E00814E05 /* UserCredentialStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FA78DF021C7104E00814E05 /* UserCredentialStore.swift */; };
+		8FAF780021C982360066F51A /* RatingsExporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FAF77FF21C982360066F51A /* RatingsExporterTests.swift */; };
+		8FAF780821C9829E0066F51A /* UserCredentialStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FAF780721C9829E0066F51A /* UserCredentialStoreTests.swift */; };
+		8FFF272E21D454CE006E45FC /* NetflixCredentialTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FFF272D21D454CE006E45FC /* NetflixCredentialTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		8FA78DE421C4E57D00814E05 /* PBXContainerItemProxy */ = {
+		8FAF780221C982360066F51A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8F03A57821BF802700F466A5 /* Project object */;
 			proxyType = 1;
@@ -35,9 +39,13 @@
 		8F03A58F21BF803800F466A5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8F03A59621C03AF500F466A5 /* NetflixLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixLoginViewController.swift; sourceTree = "<group>"; };
 		8F5A58A121C1D9700058B77A /* UserCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCredentials.swift; sourceTree = "<group>"; };
-		8FA78DDF21C4E57D00814E05 /* RatingsExporterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RatingsExporterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		8FA78DE321C4E57D00814E05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8FA78DE921C4E5B000814E05 /* UserCredentialsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCredentialsTest.swift; sourceTree = "<group>"; };
+		8FA78DEB21C6FB7F00814E05 /* NetflixCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixCredentials.swift; sourceTree = "<group>"; };
+		8FA78DF021C7104E00814E05 /* UserCredentialStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCredentialStore.swift; sourceTree = "<group>"; };
+		8FAF77FD21C982360066F51A /* RatingsExporterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RatingsExporterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8FAF77FF21C982360066F51A /* RatingsExporterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingsExporterTests.swift; sourceTree = "<group>"; };
+		8FAF780121C982360066F51A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8FAF780721C9829E0066F51A /* UserCredentialStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCredentialStoreTests.swift; sourceTree = "<group>"; };
+		8FFF272D21D454CE006E45FC /* NetflixCredentialTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixCredentialTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,7 +56,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8FA78DDC21C4E57D00814E05 /* Frameworks */ = {
+		8FAF77FA21C982360066F51A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -62,7 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				8F03A58221BF802700F466A5 /* RatingsExporter */,
-				8FA78DE021C4E57D00814E05 /* RatingsExporterTests */,
+				8FAF77FE21C982360066F51A /* RatingsExporterTests */,
 				8F03A58121BF802700F466A5 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -71,7 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				8F03A58021BF802700F466A5 /* RatingsExporter.app */,
-				8FA78DDF21C4E57D00814E05 /* RatingsExporterTests.xctest */,
+				8FAF77FD21C982360066F51A /* RatingsExporterTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -79,9 +87,9 @@
 		8F03A58221BF802700F466A5 /* RatingsExporter */ = {
 			isa = PBXGroup;
 			children = (
+				8FA78DEE21C6FBA100814E05 /* Models */,
 				8F03A59521C039D900F466A5 /* View Controllers */,
 				8F03A58321BF802700F466A5 /* AppDelegate.swift */,
-				8F5A58A121C1D9700058B77A /* UserCredentials.swift */,
 				8F03A58721BF802700F466A5 /* Main.storyboard */,
 				8F03A58A21BF803800F466A5 /* Assets.xcassets */,
 				8F03A58F21BF803800F466A5 /* Info.plist */,
@@ -98,11 +106,31 @@
 			path = "View Controllers";
 			sourceTree = "<group>";
 		};
-		8FA78DE021C4E57D00814E05 /* RatingsExporterTests */ = {
+		8FA78DEE21C6FBA100814E05 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				8FA78DE921C4E5B000814E05 /* UserCredentialsTest.swift */,
-				8FA78DE321C4E57D00814E05 /* Info.plist */,
+				8FA78DEF21C6FBAB00814E05 /* Credentials */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		8FA78DEF21C6FBAB00814E05 /* Credentials */ = {
+			isa = PBXGroup;
+			children = (
+				8F5A58A121C1D9700058B77A /* UserCredentials.swift */,
+				8FA78DEB21C6FB7F00814E05 /* NetflixCredentials.swift */,
+				8FA78DF021C7104E00814E05 /* UserCredentialStore.swift */,
+			);
+			path = Credentials;
+			sourceTree = "<group>";
+		};
+		8FAF77FE21C982360066F51A /* RatingsExporterTests */ = {
+			isa = PBXGroup;
+			children = (
+				8FFF272D21D454CE006E45FC /* NetflixCredentialTest.swift */,
+				8FAF780721C9829E0066F51A /* UserCredentialStoreTests.swift */,
+				8FAF77FF21C982360066F51A /* RatingsExporterTests.swift */,
+				8FAF780121C982360066F51A /* Info.plist */,
 			);
 			path = RatingsExporterTests;
 			sourceTree = "<group>";
@@ -127,22 +155,22 @@
 			productReference = 8F03A58021BF802700F466A5 /* RatingsExporter.app */;
 			productType = "com.apple.product-type.application";
 		};
-		8FA78DDE21C4E57D00814E05 /* RatingsExporterTests */ = {
+		8FAF77FC21C982360066F51A /* RatingsExporterTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8FA78DE621C4E57D00814E05 /* Build configuration list for PBXNativeTarget "RatingsExporterTests" */;
+			buildConfigurationList = 8FAF780421C982360066F51A /* Build configuration list for PBXNativeTarget "RatingsExporterTests" */;
 			buildPhases = (
-				8FA78DDB21C4E57D00814E05 /* Sources */,
-				8FA78DDC21C4E57D00814E05 /* Frameworks */,
-				8FA78DDD21C4E57D00814E05 /* Resources */,
+				8FAF77F921C982360066F51A /* Sources */,
+				8FAF77FA21C982360066F51A /* Frameworks */,
+				8FAF77FB21C982360066F51A /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				8FA78DE521C4E57D00814E05 /* PBXTargetDependency */,
+				8FAF780321C982360066F51A /* PBXTargetDependency */,
 			);
 			name = RatingsExporterTests;
 			productName = RatingsExporterTests;
-			productReference = 8FA78DDF21C4E57D00814E05 /* RatingsExporterTests.xctest */;
+			productReference = 8FAF77FD21C982360066F51A /* RatingsExporterTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -158,7 +186,7 @@
 					8F03A57F21BF802700F466A5 = {
 						CreatedOnToolsVersion = 10.1;
 					};
-					8FA78DDE21C4E57D00814E05 = {
+					8FAF77FC21C982360066F51A = {
 						CreatedOnToolsVersion = 10.1;
 						TestTargetID = 8F03A57F21BF802700F466A5;
 					};
@@ -178,7 +206,7 @@
 			projectRoot = "";
 			targets = (
 				8F03A57F21BF802700F466A5 /* RatingsExporter */,
-				8FA78DDE21C4E57D00814E05 /* RatingsExporterTests */,
+				8FAF77FC21C982360066F51A /* RatingsExporterTests */,
 			);
 		};
 /* End PBXProject section */
@@ -193,7 +221,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8FA78DDD21C4E57D00814E05 /* Resources */ = {
+		8FAF77FB21C982360066F51A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -208,27 +236,31 @@
 			buildActionMask = 2147483647;
 			files = (
 				8F03A59721C03AF500F466A5 /* NetflixLoginViewController.swift in Sources */,
+				8FA78DF121C7104E00814E05 /* UserCredentialStore.swift in Sources */,
+				8FA78DEC21C6FB7F00814E05 /* NetflixCredentials.swift in Sources */,
 				8F5A58A221C1D9700058B77A /* UserCredentials.swift in Sources */,
 				8F03A58621BF802700F466A5 /* RatingsViewController.swift in Sources */,
 				8F03A58421BF802700F466A5 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8FA78DDB21C4E57D00814E05 /* Sources */ = {
+		8FAF77F921C982360066F51A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8FA78DEA21C4E5B000814E05 /* UserCredentialsTest.swift in Sources */,
+				8FFF272E21D454CE006E45FC /* NetflixCredentialTest.swift in Sources */,
+				8FAF780021C982360066F51A /* RatingsExporterTests.swift in Sources */,
+				8FAF780821C9829E0066F51A /* UserCredentialStoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		8FA78DE521C4E57D00814E05 /* PBXTargetDependency */ = {
+		8FAF780321C982360066F51A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8F03A57F21BF802700F466A5 /* RatingsExporter */;
-			targetProxy = 8FA78DE421C4E57D00814E05 /* PBXContainerItemProxy */;
+			targetProxy = 8FAF780221C982360066F51A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -398,7 +430,7 @@
 			};
 			name = Release;
 		};
-		8FA78DE721C4E57D00814E05 /* Debug */ = {
+		8FAF780521C982360066F51A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -418,7 +450,7 @@
 			};
 			name = Debug;
 		};
-		8FA78DE821C4E57D00814E05 /* Release */ = {
+		8FAF780621C982360066F51A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -459,11 +491,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8FA78DE621C4E57D00814E05 /* Build configuration list for PBXNativeTarget "RatingsExporterTests" */ = {
+		8FAF780421C982360066F51A /* Build configuration list for PBXNativeTarget "RatingsExporterTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				8FA78DE721C4E57D00814E05 /* Debug */,
-				8FA78DE821C4E57D00814E05 /* Release */,
+				8FAF780521C982360066F51A /* Debug */,
+				8FAF780621C982360066F51A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

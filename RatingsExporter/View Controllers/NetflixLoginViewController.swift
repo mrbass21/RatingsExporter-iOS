@@ -68,60 +68,17 @@ extension NetflixLoginViewController: WKNavigationDelegate {
                 decisionHandler(.cancel)
             
                 //Extract out the cookie values we need
-                do {
-                    let cookies = try extractCookies(from: WKWebsiteDataStore.default().httpCookieStore)
-                    try UserCredentials.setCredentials(fromCookies: cookies)
-                } catch
-                {
-                    print("Failed to get user credentials with error: \(error)")
+                WKWebsiteDataStore.default().httpCookieStore.getAllCookies { (cookies) in
+                    let credential = NetflixCredential(from: cookies)
+                    
                 }
                 
+                //We did what we needed to do. Return from the function so we don't double call the decision handler
                 return
             }
         }
         
         //The WebKit requested navigation to a page other than /browse. Allow it for now.
         decisionHandler(.allow)
-    }
-}
-
-
-//MARK: - Cookie Extraction code
-extension NetflixLoginViewController {
-    @available(iOS 11.0, *)
-    private func extractCookies(from cookieStore: WKHTTPCookieStore) throws -> [UserCredentials.UserCredentialKeys: String] {
-        var returnCookies: [UserCredentials.UserCredentialKeys: String]? = nil
-        cookieStore.getAllCookies { (cookieArray) in
- 
-            let neededCookies = cookieArray.filter({ (cookie) -> Bool in
-                //We are only looking for two cookies
-                if cookie.name.elementsEqual(NetflixSettings.NetflixCookie.netflixID) ||
-                    cookie.name.elementsEqual(NetflixSettings.NetflixCookie.netflixSecureID) {
-                    return true
-                } else {
-                    return false
-                }
-            })
-            
-            if neededCookies.count != 2 {
-                print("We only need 2 cookies and we found: \(neededCookies.count)")
-                
-            } else {
-                returnCookies = [UserCredentials.UserCredentialKeys: String]()
-                for item in neededCookies {
-                    if item.name.elementsEqual(NetflixSettings.NetflixCookie.netflixID) {
-                        returnCookies![UserCredentials.UserCredentialKeys.kUserCredentialNetflixID] = item.value
-                    } else if item.name.elementsEqual(NetflixSettings.NetflixCookie.netflixSecureID) {
-                        returnCookies![UserCredentials.UserCredentialKeys.kUserCredentialNetflixSecureID] = item.value
-                    }
-                }
-            }
-        }
-        
-        if let returnCookies = returnCookies {
-            return returnCookies
-        } else {
-            throw UserCredentials.UserCredentialError.MissingCredentials
-        }
     }
 }
