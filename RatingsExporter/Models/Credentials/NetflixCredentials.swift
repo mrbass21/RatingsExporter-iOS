@@ -87,6 +87,11 @@ extension NetflixCredential: UserCredentialStorageProtocol {
     }
     
     func restoreFromStorageItems(_ storageItems: [CredentialStorageItem]) {
+        
+        if storageItems.count < 2 {
+            print("Warning: Minimum number of storage items not supplied")
+        }
+        
         for item in storageItems {
             switch item.name {
             case RequiredIDs.Credential.netflixID.rawValue:
