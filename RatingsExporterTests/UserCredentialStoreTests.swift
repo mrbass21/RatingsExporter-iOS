@@ -144,4 +144,19 @@ class UserCredentialStoreTests: XCTestCase {
         XCTAssertNoThrow(restoredUpdatedCredential = try UserCredentialStore.restoreCredential(for: restoredUpdatedCredential) as! TestCredental)
         XCTAssertEqual(testUpdateCredential, restoredUpdatedCredential)
     }
+    
+    func testClearCredential() {
+        //given
+        let testClearCredential = TestCredental(credential1: "testC1", credential2: "testC2")
+        var testRestoreClearedCredential = TestCredental(credential1: "testC1", credential2: "testC2")
+        
+        //when
+        XCTAssertNoThrow(try UserCredentialStore.storeCredential(testClearCredential))
+        XCTAssertNoThrow(try UserCredentialStore.clearCredential(testClearCredential))
+        
+        //then
+        XCTAssertThrowsError(testRestoreClearedCredential = try UserCredentialStore.restoreCredential(for: testRestoreClearedCredential) as! TestCredental) { (Error) in
+            XCTAssertEqual(Error as! UserCredentialStore.UserCredentialStoreError, UserCredentialStore.UserCredentialStoreError.itemNotFound)
+        }
+    }
 }
