@@ -27,7 +27,7 @@ class TestCredental: UserCredentialStorageProtocol, Equatable {
     }
     
     static func == (lhs: TestCredental, rhs: TestCredental) -> Bool {
-        return (lhs.credential1 == rhs.credential2) && (lhs.credential2 == rhs.credential2)
+        return (lhs.credential1 == rhs.credential1) && (lhs.credential2 == rhs.credential2)
     }
     
     func getListOfCredentialItemsToStore() -> [CredentialStorageItem] {
@@ -64,6 +64,7 @@ class UserCredentialStoreTests: XCTestCase {
     }
     
     func clearKeychain() {
+
         //Clear out keychain
         var queryDict: [CFString: CFString] = [
             kSecClass: kSecClassGenericPassword,
@@ -107,5 +108,24 @@ class UserCredentialStoreTests: XCTestCase {
         XCTAssertThrowsError(try UserCredentialStore.restoreCredential(for: testItemNotFound)) { (Error) in
             XCTAssertEqual(Error as! UserCredentialStore.UserCredentialStoreError, UserCredentialStore.UserCredentialStoreError.itemNotFound)
         }
+    }
+    
+    func testStoreCredential() {
+        let testStoreCredential = TestCredental(credential1: "textC1", credential2: "testC2")
+        
+        XCTAssertNoThrow(try UserCredentialStore.storeCredential(testStoreCredential))
+    }
+
+    func testRestoreCredential() {
+        //given
+        var testRestoreCredential = TestCredental()
+        let expectedCredential = TestCredental(credential1: "testC1", credential2: "testC2")
+        XCTAssertNoThrow(try UserCredentialStore.storeCredential(expectedCredential))
+        
+        //when
+        XCTAssertNoThrow(testRestoreCredential = try UserCredentialStore.restoreCredential(for: testRestoreCredential) as! TestCredental)
+        
+        //then
+        XCTAssertEqual(testRestoreCredential, expectedCredential)
     }
 }
