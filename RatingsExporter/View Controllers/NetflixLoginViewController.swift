@@ -81,4 +81,40 @@ extension NetflixLoginViewController: WKNavigationDelegate {
         //The WebKit requested navigation to a page other than /browse. Allow it for now.
         decisionHandler(.allow)
     }
+    
+    func webView(_ webView: WKWebView, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+        //We should only ever be dealing with Netflix here. Drop any connection that isn't to Netflix
+        
+        //Code for this was found at: https://infinum.co/the-capsized-eight/how-to-make-your-ios-apps-more-secure-with-ssl-pinning
+        //
+        //Thanks for the clear tutorial on cert pinning!
+        
+        //All of this is 'Unsafe' for now. I'd rather crash at the moment on a bad ur untrustable cert.
+        //TODO: Be nice and display errors about lack of trust instead of crash.
+        
+        let serverTrust = challenge.protectionSpace.serverTrust
+        let certificate = SecTrustGetCertificateAtIndex(serverTrust!, 0)
+        
+        //Set policies for domain name check
+        let policies = NSMutableArray()
+        policies.add(SecPolicyCreateSSL(true, (challenge.protectionSpace.host as CFString)))
+        SecTrustSetPolicies(serverTrust!, policies)
+        
+        //Evaluate Trust
+        var result: SecTrustResultType = .invalid
+        SecTrustEvaluate(serverTrust!, &result)
+        let isServerTrusted: Bool = (result == .proceed || result == .unspecified)
+        
+        //Actualy do the pinning junk here
+        let remoteNetflixCertProvided: NSData = SecCertificateCopyData(certificate!)
+        let knownNetflixCertPath = Bundle.main.path(forResource: "netflix", ofType: "cer")!
+        let knownNetflixCert: Data = try! Data(contentsOf: URL(fileURLWithPath: knownNetflixCertPath))
+        
+        if(isServerTrusted && remoteNetflixCertProvided.isEqual(to: knownNetflixCert)) {
+            let credential = URLCredential(trust: serverTrust!)
+            completionHandler(.useCredential, credential)
+        } else {
+            completionHandler(.cancelAuthenticationChallenge, nil)
+        }
+    }
 }
