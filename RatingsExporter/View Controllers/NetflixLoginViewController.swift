@@ -62,8 +62,7 @@ extension NetflixLoginViewController: WKNavigationDelegate {
             
             //If there's a valid session, the url will ask for https://www.netflix.com/browse.
             if let destinationURL = navigationAction.request.url,
-                    destinationURL.absoluteString.elementsEqual(NetflixSettings.NetflixURLs.netflixSuccessRedirectURL),
-                    false {
+                    destinationURL.absoluteString.elementsEqual(NetflixSettings.NetflixURLs.netflixSuccessRedirectURL){
                 
                 //Cancel the navigation
                 decisionHandler(.cancel)
