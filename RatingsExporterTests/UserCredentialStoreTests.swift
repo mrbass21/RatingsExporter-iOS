@@ -132,13 +132,16 @@ class UserCredentialStoreTests: XCTestCase {
     func testUpdateCredential() {
         //given
         let testUpdateCredential = TestCredental(credential1: "testC", credential2: "testC")
+        var restoredUpdatedCredential = TestCredental()
         XCTAssertNoThrow(try UserCredentialStore.storeCredential(testUpdateCredential))
         
         //when
         testUpdateCredential.credential1 = "testC1"
         testUpdateCredential.credential2 = "testC2"
+        XCTAssertNoThrow(try UserCredentialStore.storeCredential(testUpdateCredential))
         
         //then
-        XCTAssertNoThrow(try UserCredentialStore.storeCredential(testUpdateCredential))
+        XCTAssertNoThrow(restoredUpdatedCredential = try UserCredentialStore.restoreCredential(for: restoredUpdatedCredential) as! TestCredental)
+        XCTAssertEqual(testUpdateCredential, restoredUpdatedCredential)
     }
 }
