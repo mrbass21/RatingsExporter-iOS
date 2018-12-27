@@ -89,27 +89,27 @@ extension NetflixLoginViewController: WKNavigationDelegate {
         //
         //Thanks for the clear tutorial on cert pinning!
         
-        //All of this is 'Unsafe' for now. I'd rather crash at the moment on a bad ur untrustable cert.
-        //TODO: Be nice and display errors about lack of trust instead of crash.
-        
-        let serverTrust = challenge.protectionSpace.serverTrust
-        let certificate = SecTrustGetCertificateAtIndex(serverTrust!, 0)
+        //We need a server trust. If we don't have it, bail.
+        guard let serverTrust = challenge.protectionSpace.serverTrust else {
+            completionHandler(.cancelAuthenticationChallenge, nil)
+            return
+        }
+        let certificate = SecTrustGetCertificateAtIndex(serverTrust, 0)
         
         //Set policies for domain name check
         let policies = NSMutableArray()
         policies.add(SecPolicyCreateSSL(true, (challenge.protectionSpace.host as CFString)))
-        SecTrustSetPolicies(serverTrust!, policies)
+        SecTrustSetPolicies(serverTrust, policies)
         
         //Evaluate Trust
         var result: SecTrustResultType = .invalid
-        SecTrustEvaluate(serverTrust!, &result)
+        SecTrustEvaluate(serverTrust, &result)
         let isServerTrusted: Bool = (result == .proceed || result == .unspecified)
         
         //Actualy do the pinning junk here
         let remoteNetflixCertProvided: NSData = SecCertificateCopyData(certificate!)
-        
         if(isServerTrusted && netflixCertsMatch(remoteServerCertData: (remoteNetflixCertProvided as Data))) {
-            let credential = URLCredential(trust: serverTrust!)
+            let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
         } else {
             completionHandler(.cancelAuthenticationChallenge, nil)
