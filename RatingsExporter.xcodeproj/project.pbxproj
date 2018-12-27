@@ -19,6 +19,7 @@
 		8FAF780821C9829E0066F51A /* UserCredentialStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FAF780721C9829E0066F51A /* UserCredentialStoreTests.swift */; };
 		8FFF272E21D454CE006E45FC /* NetflixCredentialTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FFF272D21D454CE006E45FC /* NetflixCredentialTest.swift */; };
 		8FFF4BE921D550E700FEAA59 /* netflix.cer in Resources */ = {isa = PBXBuildFile; fileRef = 8FFF4BE821D550E700FEAA59 /* netflix.cer */; };
+		8FFF4BEB21D5561100FEAA59 /* netflix-assets.cer in Resources */ = {isa = PBXBuildFile; fileRef = 8FFF4BEA21D5561100FEAA59 /* netflix-assets.cer */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,7 @@
 		8FAF780721C9829E0066F51A /* UserCredentialStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCredentialStoreTests.swift; sourceTree = "<group>"; };
 		8FFF272D21D454CE006E45FC /* NetflixCredentialTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixCredentialTest.swift; sourceTree = "<group>"; };
 		8FFF4BE821D550E700FEAA59 /* netflix.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = netflix.cer; sourceTree = "<group>"; };
+		8FFF4BEA21D5561100FEAA59 /* netflix-assets.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "netflix-assets.cer"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,6 +143,7 @@
 		8FFF4BE721D550BF00FEAA59 /* Certs */ = {
 			isa = PBXGroup;
 			children = (
+				8FFF4BEA21D5561100FEAA59 /* netflix-assets.cer */,
 				8FFF4BE821D550E700FEAA59 /* netflix.cer */,
 			);
 			path = Certs;
@@ -228,6 +231,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8FFF4BE921D550E700FEAA59 /* netflix.cer in Resources */,
+				8FFF4BEB21D5561100FEAA59 /* netflix-assets.cer in Resources */,
 				8F03A58B21BF803800F466A5 /* Assets.xcassets in Resources */,
 				8F03A58921BF802700F466A5 /* Main.storyboard in Resources */,
 			);

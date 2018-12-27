@@ -62,7 +62,8 @@ extension NetflixLoginViewController: WKNavigationDelegate {
             
             //If there's a valid session, the url will ask for https://www.netflix.com/browse.
             if let destinationURL = navigationAction.request.url,
-                    destinationURL.absoluteString.elementsEqual(NetflixSettings.NetflixURLs.netflixSuccessRedirectURL) {
+                    destinationURL.absoluteString.elementsEqual(NetflixSettings.NetflixURLs.netflixSuccessRedirectURL),
+                    false {
                 
                 //Cancel the navigation
                 decisionHandler(.cancel)
@@ -107,14 +108,40 @@ extension NetflixLoginViewController: WKNavigationDelegate {
         
         //Actualy do the pinning junk here
         let remoteNetflixCertProvided: NSData = SecCertificateCopyData(certificate!)
-        let knownNetflixCertPath = Bundle.main.path(forResource: "netflix", ofType: "cer")!
-        let knownNetflixCert: Data = try! Data(contentsOf: URL(fileURLWithPath: knownNetflixCertPath))
         
-        if(isServerTrusted && remoteNetflixCertProvided.isEqual(to: knownNetflixCert)) {
+        if(isServerTrusted && netflixCertsMatch(remoteServerCertData: (remoteNetflixCertProvided as Data))) {
             let credential = URLCredential(trust: serverTrust!)
             completionHandler(.useCredential, credential)
         } else {
             completionHandler(.cancelAuthenticationChallenge, nil)
         }
+    }
+}
+
+//MARK: - Helper Methods
+extension NetflixLoginViewController {
+    //Checks that all of the certificates a valid Netflix request would make are valid.
+    private func netflixCertsMatch(remoteServerCertData: Data) -> Bool {
+        //Currently Netflix uses two separate certificates.
+        //
+        // 1. One for the main Netflix domain
+        // 2. The other for storage and distributions of all of the assets
+        //
+        //We need to check both.
+        
+        //TODO: Don't crash with bad data. Return false
+        
+        //Load the certificates
+        let knownNetflixCertPath = Bundle.main.path(forResource: "netflix", ofType: "cer")!
+        let knownNetflixCertData = try! Data(contentsOf: URL(fileURLWithPath: knownNetflixCertPath))
+        
+        let knownNetflixAssetCertPath = Bundle.main.path(forResource: "netflix-assets", ofType: "cer")!
+        let knownNetflixAssetCertData = try! Data(contentsOf: URL(fileURLWithPath: knownNetflixAssetCertPath))
+        
+        if remoteServerCertData.elementsEqual(knownNetflixCertData) || remoteServerCertData.elementsEqual(knownNetflixAssetCertData) {
+            return true
+        }
+        
+        return false
     }
 }
