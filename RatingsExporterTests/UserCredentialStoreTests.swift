@@ -101,5 +101,11 @@ class UserCredentialStoreTests: XCTestCase {
         }
     }
     
-    
+    func testRestoreItemThrowsItemNotFound() {
+        let testItemNotFound = TestCredental()
+        
+        XCTAssertThrowsError(try UserCredentialStore.restoreCredential(for: testItemNotFound)) { (Error) in
+            XCTAssertEqual(Error as! UserCredentialStore.UserCredentialStoreError, UserCredentialStore.UserCredentialStoreError.itemNotFound)
+        }
+    }
 }
