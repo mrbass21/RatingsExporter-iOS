@@ -20,6 +20,10 @@
 		8FFF272E21D454CE006E45FC /* NetflixCredentialTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FFF272D21D454CE006E45FC /* NetflixCredentialTest.swift */; };
 		8FFF4BE921D550E700FEAA59 /* netflix.cer in Resources */ = {isa = PBXBuildFile; fileRef = 8FFF4BE821D550E700FEAA59 /* netflix.cer */; };
 		8FFF4BEB21D5561100FEAA59 /* netflix-assets.cer in Resources */ = {isa = PBXBuildFile; fileRef = 8FFF4BEA21D5561100FEAA59 /* netflix-assets.cer */; };
+		8FFF4BED21D562B200FEAA59 /* NetflixLoginViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FFF4BEC21D562B200FEAA59 /* NetflixLoginViewControllerTests.swift */; };
+		8FFF4BF021D576F300FEAA59 /* netflix.cer in Resources */ = {isa = PBXBuildFile; fileRef = 8FFF4BE821D550E700FEAA59 /* netflix.cer */; };
+		8FFF4BF121D576FC00FEAA59 /* netflix-assets.cer in Resources */ = {isa = PBXBuildFile; fileRef = 8FFF4BEA21D5561100FEAA59 /* netflix-assets.cer */; };
+		8FFF4BF421D6CCD100FEAA59 /* MockURLProtectionSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FFF4BF321D6CCD100FEAA59 /* MockURLProtectionSpace.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +54,8 @@
 		8FFF272D21D454CE006E45FC /* NetflixCredentialTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixCredentialTest.swift; sourceTree = "<group>"; };
 		8FFF4BE821D550E700FEAA59 /* netflix.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = netflix.cer; sourceTree = "<group>"; };
 		8FFF4BEA21D5561100FEAA59 /* netflix-assets.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "netflix-assets.cer"; sourceTree = "<group>"; };
+		8FFF4BEC21D562B200FEAA59 /* NetflixLoginViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixLoginViewControllerTests.swift; sourceTree = "<group>"; };
+		8FFF4BF321D6CCD100FEAA59 /* MockURLProtectionSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLProtectionSpace.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +138,9 @@
 		8FAF77FE21C982360066F51A /* RatingsExporterTests */ = {
 			isa = PBXGroup;
 			children = (
+				8FFF4BF221D6CCAF00FEAA59 /* Mock Objects */,
+				8FFF4BEE21D5757300FEAA59 /* Resources */,
+				8FFF4BEC21D562B200FEAA59 /* NetflixLoginViewControllerTests.swift */,
 				8FFF272D21D454CE006E45FC /* NetflixCredentialTest.swift */,
 				8FAF780721C9829E0066F51A /* UserCredentialStoreTests.swift */,
 				8FAF77FF21C982360066F51A /* RatingsExporterTests.swift */,
@@ -147,6 +156,29 @@
 				8FFF4BE821D550E700FEAA59 /* netflix.cer */,
 			);
 			path = Certs;
+			sourceTree = "<group>";
+		};
+		8FFF4BEE21D5757300FEAA59 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8FFF4BEF21D5758000FEAA59 /* Bad Certificates */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		8FFF4BEF21D5758000FEAA59 /* Bad Certificates */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Bad Certificates";
+			sourceTree = "<group>";
+		};
+		8FFF4BF221D6CCAF00FEAA59 /* Mock Objects */ = {
+			isa = PBXGroup;
+			children = (
+				8FFF4BF321D6CCD100FEAA59 /* MockURLProtectionSpace.swift */,
+			);
+			path = "Mock Objects";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -241,6 +273,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8FFF4BF121D576FC00FEAA59 /* netflix-assets.cer in Resources */,
+				8FFF4BF021D576F300FEAA59 /* netflix.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,8 +299,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				8FFF272E21D454CE006E45FC /* NetflixCredentialTest.swift in Sources */,
+				8FFF4BED21D562B200FEAA59 /* NetflixLoginViewControllerTests.swift in Sources */,
 				8FAF780021C982360066F51A /* RatingsExporterTests.swift in Sources */,
 				8FAF780821C9829E0066F51A /* UserCredentialStoreTests.swift in Sources */,
+				8FFF4BF421D6CCD100FEAA59 /* MockURLProtectionSpace.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
