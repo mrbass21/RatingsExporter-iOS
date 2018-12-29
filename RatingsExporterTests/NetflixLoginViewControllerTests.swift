@@ -210,6 +210,21 @@ class NetflixLoginViewControllerTests: XCTestCase {
             XCTAssertEqual(disposition, URLSession.AuthChallengeDisposition.cancelAuthenticationChallenge)
         }
     }
+    
+    func testServerNil() {
+        //given
+        
+        //We can use the real one here since serverTrust is always nil on a URLProtectionSpace we
+        //initialize
+        let protectionSpace = URLProtectionSpace(host: "www.netflix.com", port: 443, protocol: "https", realm: nil, authenticationMethod: NSURLAuthenticationMethodServerTrust)
+        let authenticationChallenge = URLAuthenticationChallenge(protectionSpace: protectionSpace, proposedCredential: nil, previousFailureCount: 0, failureResponse: nil, error: nil, sender: self)
+        let webView = WKWebView(frame: CGRect.zero)
+        
+        //then
+        controllerUnderTest.webView(webView, didReceive: authenticationChallenge) { (disposition, _) in
+            XCTAssertEqual(disposition, URLSession.AuthChallengeDisposition.cancelAuthenticationChallenge)
+        }
+    }
 }
 
 //MARK: - URLAuthenticationChallengeSender
