@@ -62,7 +62,7 @@ extension NetflixLoginViewController: WKNavigationDelegate {
             
             //If there's a valid session, the url will ask for https://www.netflix.com/browse.
             if let destinationURL = navigationAction.request.url,
-                    destinationURL.absoluteString.elementsEqual(NetflixSettings.NetflixURLs.netflixSuccessRedirectURL) {
+                    destinationURL.absoluteString.elementsEqual(NetflixSettings.NetflixURLs.netflixSuccessRedirectURL){
                 
                 //Cancel the navigation
                 decisionHandler(.cancel)
@@ -80,5 +80,73 @@ extension NetflixLoginViewController: WKNavigationDelegate {
         
         //The WebKit requested navigation to a page other than /browse. Allow it for now.
         decisionHandler(.allow)
+    }
+    
+    func webView(_ webView: WKWebView, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+        //We should only ever be dealing with Netflix here. Drop any connection that isn't to Netflix
+        
+        //Code for this was found at: https://infinum.co/the-capsized-eight/how-to-make-your-ios-apps-more-secure-with-ssl-pinning
+        //
+        //Thanks for the clear tutorial on cert pinning!
+        
+        //We need a server trust. If we don't have it, bail.
+        guard let serverTrust = challenge.protectionSpace.serverTrust else {
+            completionHandler(.cancelAuthenticationChallenge, nil)
+            return
+        }
+        let certificate = SecTrustGetCertificateAtIndex(serverTrust, 0)
+        
+        //Set policies for domain name check
+        let policies = NSMutableArray()
+        policies.add(SecPolicyCreateSSL(true, (challenge.protectionSpace.host as CFString)))
+        SecTrustSetPolicies(serverTrust, policies)
+        
+        //Evaluate Trust
+        var result: SecTrustResultType = .invalid
+        SecTrustEvaluate(serverTrust, &result)
+        let isServerTrusted: Bool = (result == .proceed || result == .unspecified)
+        
+        //Actualy do the pinning junk here
+        let remoteNetflixCertProvided: NSData = SecCertificateCopyData(certificate!)
+        if(isServerTrusted && netflixCertsMatch(remoteServerCertData: (remoteNetflixCertProvided as Data))) {
+            let credential = URLCredential(trust: serverTrust)
+            completionHandler(.useCredential, credential)
+        } else {
+            completionHandler(.cancelAuthenticationChallenge, nil)
+        }
+    }
+}
+
+//MARK: - Helper Methods
+extension NetflixLoginViewController {
+    //Checks that all of the certificates a valid Netflix request would make are valid.
+    private func netflixCertsMatch(remoteServerCertData: Data) -> Bool {
+        //Currently Netflix uses two separate certificates.
+        //
+        // 1. One for the main Netflix domain
+        // 2. The other for storage and distributions of all of the assets
+        //
+        //We need to check both.
+        
+        //Load the certificates
+        guard let knownNetflixCertPath = Bundle.main.path(forResource: "netflix", ofType: "cer"),
+            let knownNetflixAssetCertPath = Bundle.main.path(forResource: "netflix-assets", ofType: "cer") else {
+                //We couldn't get the path to the resources. Return failure case.
+                //TODO: Throw here instead?
+                return false
+        }
+        
+        do {
+            let knownNetflixCertData = try Data(contentsOf: URL(fileURLWithPath: knownNetflixCertPath))
+            let knownNetflixAssetCertData = try Data(contentsOf: URL(fileURLWithPath: knownNetflixAssetCertPath))
+            if remoteServerCertData.elementsEqual(knownNetflixCertData) || remoteServerCertData.elementsEqual(knownNetflixAssetCertData) {
+                return true
+            }
+        } catch {
+            print("Error encountered producing data from bundled certs: \(error.localizedDescription)")
+            return false
+        }
+
+        return false
     }
 }
