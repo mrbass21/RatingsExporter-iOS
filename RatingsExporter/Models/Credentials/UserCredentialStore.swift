@@ -48,7 +48,7 @@ protocol UserCredentialStorageProtocol {
     ///Gets a list of credential items to store
     func getListOfCredentialItemsToStore() -> [CredentialStorageItem]
     
-    //Initialize a new credential item from Storage Attributes
+    ///Initialize a new credential item from Storage Attributes
     func restoreFromStorageItems(_ storageItems: [CredentialStorageItem])
 }
 
