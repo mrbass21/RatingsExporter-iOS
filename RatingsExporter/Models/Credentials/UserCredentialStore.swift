@@ -11,9 +11,13 @@ import Security
 
 ///A struct used to represent the storage attributes that can be applied to a storage item.
 public struct CredentialStorageItem {
+    ///The name of the item to be used as the lookup key in Keychain.
     let name: String
+    ///The value relating to the Name parameter
     var value: String?
+    ///The type of data. This determines how the data is stored in Keychain. Only Cookie supported at this time.
     var valueType: ValueType
+    ///An optional description to be stored as the description for this item in Keychain.
     var description: String?
     
 
