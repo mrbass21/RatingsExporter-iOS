@@ -225,6 +225,30 @@ class NetflixLoginViewControllerTests: XCTestCase {
             XCTAssertEqual(disposition, URLSession.AuthChallengeDisposition.cancelAuthenticationChallenge)
         }
     }
+    
+    func testShouldNotNavigateOnFormSubmittedAndRedirectURL() {
+        //given
+        let request = URLRequest(url: URL(string: NetflixLoginViewController.NetflixSettings.NetflixURLs.netflixSuccessRedirectURL)!)
+        let navigationAction = MockWKNavigationAction(navigationType: .formSubmitted, with: request)
+        
+        //then
+        let webView = WKWebView(frame: CGRect.zero)
+        controllerUnderTest.webView(webView, decidePolicyFor: navigationAction) { (policy) in
+            XCTAssertEqual(policy, WKNavigationActionPolicy.cancel)
+        }
+    }
+    
+    func testShouldNotNavigateOnOtherAndRedirectURL() {
+        //given
+        let request = URLRequest(url: URL(string: NetflixLoginViewController.NetflixSettings.NetflixURLs.netflixSuccessRedirectURL)!)
+        let navigationAction = MockWKNavigationAction(navigationType: .other, with: request)
+        let webView = WKWebView(frame: CGRect.zero)
+        
+        //then
+        controllerUnderTest.webView(webView, decidePolicyFor: navigationAction) { (policy: WKNavigationActionPolicy) in
+            XCTAssertEqual(policy, .cancel)
+        }
+    }
 }
 
 //MARK: - URLAuthenticationChallengeSender
