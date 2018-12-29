@@ -25,7 +25,6 @@
 		8FFF4BF121D576FC00FEAA59 /* netflix-assets.cer in Resources */ = {isa = PBXBuildFile; fileRef = 8FFF4BEA21D5561100FEAA59 /* netflix-assets.cer */; };
 		8FFF4BF421D6CCD100FEAA59 /* MockURLProtectionSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FFF4BF321D6CCD100FEAA59 /* MockURLProtectionSpace.swift */; };
 		8FFF4BF721D6EF5700FEAA59 /* bad-Netflix-self-signed.cer in Resources */ = {isa = PBXBuildFile; fileRef = 8FFF4BF521D6ECB400FEAA59 /* bad-Netflix-self-signed.cer */; };
-		8FFF4BF821D6EF6500FEAA59 /* bad-Netflix-self-signed.cer in Resources */ = {isa = PBXBuildFile; fileRef = 8FFF4BF521D6ECB400FEAA59 /* bad-Netflix-self-signed.cer */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -269,7 +268,6 @@
 				8FFF4BE921D550E700FEAA59 /* netflix.cer in Resources */,
 				8FFF4BEB21D5561100FEAA59 /* netflix-assets.cer in Resources */,
 				8F03A58B21BF803800F466A5 /* Assets.xcassets in Resources */,
-				8FFF4BF821D6EF6500FEAA59 /* bad-Netflix-self-signed.cer in Resources */,
 				8F03A58921BF802700F466A5 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

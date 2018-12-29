@@ -14,7 +14,7 @@ import WebKit
 class NetflixLoginViewControllerTests: XCTestCase {
     
      var controllerUnderTest: NetflixLoginViewController = (UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: NetflixLoginViewController.Identifiers.Storyboard.NetflixLoginController) as! NetflixLoginViewController)
-    var bundle: Bundle = Bundle.init(for: NetflixLoginViewController.classForCoder())
+    var bundle: Bundle = Bundle.init(for: NetflixLoginViewControllerTests.classForCoder())
     
     enum TestCertType: String {
         case goodNetflixCert = "netflix"
