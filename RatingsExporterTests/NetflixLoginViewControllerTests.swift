@@ -20,6 +20,7 @@ class NetflixLoginViewControllerTests: XCTestCase {
         case goodNetflixCert = "netflix"
         case goodNetflixAssetCert = "netflix-assets"
         case badNetflixSelfSignedCert = "bad-Netflix-self-signed"
+        case badNetflixAssetSelfSignedCert = "bad-Netflix-Assets-self-signed"
     }
 
     override func setUp() {
@@ -171,6 +172,36 @@ class NetflixLoginViewControllerTests: XCTestCase {
         
         //Create the mock authentication challenge
         let mockURLProtection = MockURLProtectionSpace(host: "www.netflix.com", port: 443, protocol: "https", realm: nil, authenticationMethod: NSURLAuthenticationMethodServerTrust, serverTrust: serverTrust!)
+        let authenticationChallenge = URLAuthenticationChallenge(protectionSpace: mockURLProtection, proposedCredential: nil, previousFailureCount: 0, failureResponse: nil, error: nil, sender: self)
+        
+        //then
+        let webView = WKWebView(frame: CGRect.zero)
+        controllerUnderTest.webView(webView, didReceive: authenticationChallenge) { (disposition, credential) in
+            XCTAssertEqual(disposition, URLSession.AuthChallengeDisposition.cancelAuthenticationChallenge)
+        }
+    }
+    
+    func testBadNetflixAssetsSelfSignedCert() {
+        //given
+        
+        //Create items to make the SecTrust
+        let badCertificate = getCertificateForTest(type: .badNetflixAssetSelfSignedCert)!
+        let policy = SecPolicyCreateSSL(true, "assets.nflaxext.com" as CFString)
+        
+        //Create the SecTrust
+        var serverTrust: SecTrust?
+        let status = withUnsafeMutablePointer(to: &serverTrust) { (serverTrust) -> OSStatus in
+            return SecTrustCreateWithCertificates(badCertificate, policy, serverTrust)
+        }
+        
+        //Fail if error was encountered
+        guard status == noErr else {
+            XCTFail("Failed to create ServerTrust object")
+            return
+        }
+        
+        //Create the mock authentication challenge
+        let mockURLProtection = MockURLProtectionSpace(host: "assets.nflaxext.com", port: 443, protocol: "https", realm: nil, authenticationMethod: NSURLAuthenticationMethodServerTrust, serverTrust: serverTrust!)
         let authenticationChallenge = URLAuthenticationChallenge(protectionSpace: mockURLProtection, proposedCredential: nil, previousFailureCount: 0, failureResponse: nil, error: nil, sender: self)
         
         //then
