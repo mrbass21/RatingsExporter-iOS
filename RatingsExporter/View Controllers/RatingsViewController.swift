@@ -10,10 +10,13 @@ import UIKit
 
 class RatingsViewController: UITableViewController {
     
+    ///Identifiers for this view controller in Storyboard
     struct Identifiers {
+        ///Identifiers used for segues
         struct Segue {
             static let NetflixLoginSegue = "NetflixLoginSegue"
         }
+        ///Identifiers used for cell
         struct Cell {
             static let NetflixRatingsCell = "NetflixRatingsCell"
         }
