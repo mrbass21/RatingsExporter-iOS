@@ -12,20 +12,30 @@ import WebKit
 class NetflixLoginViewController: UIViewController {
     
     //MARK: - Convenience Structs
+    ///Stores the settings Netflix uses.
     struct NetflixSettings {
+        ///IDs that Netflix uses in its cookies
         struct NetflixCookie {
+            ///The Netflix ID Key in the cookie.
             static let netflixID = "NetflixId"
+            ///The Secure NetflixID in the cookie.
             static let netflixSecureID = "SecureNetflixId"
         }
-            
+        
+        ///URL endpoints Netflix uses
         struct NetflixURLs {
+            ///The login URL. This is where users are directed to login.
             static let netflixLoginURL = "https://www.netflix.com/login"
+            ///The redirect URL users are sent to if they have a valid login.
             static let netflixSuccessRedirectURL = "https://www.netflix.com/browse"
         }
     }
     
+    ///Identifiers for this view controller in Storyboard
     struct Identifiers {
+        ///Identifiers for this view controller in Storyboard
         struct Storyboard {
+            ///The ID that refers to this login view controller
             static let NetflixLoginController = "NetflixLoginViewController"
         }
     }
@@ -119,7 +129,12 @@ extension NetflixLoginViewController: WKNavigationDelegate {
 
 //MARK: - Helper Methods
 extension NetflixLoginViewController {
-    //Checks that all of the certificates a valid Netflix request would make are valid.
+    /**
+     Checks that all of the certificates a valid Netflix request would make are, indeed, valid.
+     
+     - Parameter remoteServerCertData: The certificate the remote server provided as Data.
+     - Returns: `true` if the cretificate maches known, good certificates. `false` otherwise.
+     */
     private func netflixCertsMatch(remoteServerCertData: Data) -> Bool {
         //Currently Netflix uses two separate certificates.
         //
