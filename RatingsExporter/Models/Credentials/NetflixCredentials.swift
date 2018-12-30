@@ -56,7 +56,7 @@ class NetflixCredential: NetflixCredentialProtocol {
         self.secureNetflixID = secureNetflixID
     }
     
-    init() {
+    required init() {
         self.netflixID = nil
         self.secureNetflixID = nil
     }

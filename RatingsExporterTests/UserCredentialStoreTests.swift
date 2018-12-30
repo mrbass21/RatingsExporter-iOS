@@ -26,6 +26,11 @@ class TestCredental: UserCredentialStorageProtocol, Equatable {
         self.credential2 = credential2
     }
     
+    required init() {
+        credential1 = nil
+        credential2 = nil
+    }
+    
     static func == (lhs: TestCredental, rhs: TestCredental) -> Bool {
         return (lhs.credential1 == rhs.credential1) && (lhs.credential2 == rhs.credential2)
     }
@@ -103,9 +108,7 @@ class UserCredentialStoreTests: XCTestCase {
     }
     
     func testRestoreItemThrowsItemNotFound() {
-        let testItemNotFound = TestCredental()
-        
-        XCTAssertThrowsError(try UserCredentialStore.restoreCredential(for: testItemNotFound)) { (Error) in
+        XCTAssertThrowsError(try UserCredentialStore.restoreCredential(forType: TestCredental.self)) { (Error) in
             XCTAssertEqual(Error as! UserCredentialStore.UserCredentialStoreError, UserCredentialStore.UserCredentialStoreError.itemNotFound)
         }
     }
@@ -118,12 +121,12 @@ class UserCredentialStoreTests: XCTestCase {
 
     func testRestoreCredential() {
         //given
-        var testRestoreCredential = TestCredental()
+        var testRestoreCredential: TestCredental!
         let expectedCredential = TestCredental(credential1: "testC1", credential2: "testC2")
         XCTAssertNoThrow(try UserCredentialStore.storeCredential(expectedCredential))
         
         //when
-        XCTAssertNoThrow(testRestoreCredential = try UserCredentialStore.restoreCredential(for: testRestoreCredential) as! TestCredental)
+        XCTAssertNoThrow(testRestoreCredential = try UserCredentialStore.restoreCredential(forType: TestCredental.self))
         
         //then
         XCTAssertEqual(testRestoreCredential, expectedCredential)
@@ -132,7 +135,7 @@ class UserCredentialStoreTests: XCTestCase {
     func testUpdateCredential() {
         //given
         let testUpdateCredential = TestCredental(credential1: "testC", credential2: "testC")
-        var restoredUpdatedCredential = TestCredental()
+        var restoredUpdatedCredential: TestCredental!
         XCTAssertNoThrow(try UserCredentialStore.storeCredential(testUpdateCredential))
         
         //when
@@ -141,22 +144,43 @@ class UserCredentialStoreTests: XCTestCase {
         XCTAssertNoThrow(try UserCredentialStore.storeCredential(testUpdateCredential))
         
         //then
-        XCTAssertNoThrow(restoredUpdatedCredential = try UserCredentialStore.restoreCredential(for: restoredUpdatedCredential) as! TestCredental)
+        XCTAssertNoThrow(restoredUpdatedCredential = try UserCredentialStore.restoreCredential(forType: TestCredental.self))
         XCTAssertEqual(testUpdateCredential, restoredUpdatedCredential)
     }
     
     func testClearCredential() {
         //given
         let testClearCredential = TestCredental(credential1: "testC1", credential2: "testC2")
-        var testRestoreClearedCredential = TestCredental(credential1: "testC1", credential2: "testC2")
+        var testRestoreClearedCredential: TestCredental!
         
         //when
         XCTAssertNoThrow(try UserCredentialStore.storeCredential(testClearCredential))
         XCTAssertNoThrow(try UserCredentialStore.clearCredential(testClearCredential))
         
         //then
-        XCTAssertThrowsError(testRestoreClearedCredential = try UserCredentialStore.restoreCredential(for: testRestoreClearedCredential) as! TestCredental) { (Error) in
+        XCTAssertThrowsError(testRestoreClearedCredential = try UserCredentialStore.restoreCredential(forType: TestCredental.self)) { (Error) in
             XCTAssertEqual(Error as! UserCredentialStore.UserCredentialStoreError, UserCredentialStore.UserCredentialStoreError.itemNotFound)
         }
+    }
+    
+    func testClearCredentialByType() {
+        //given
+        let testClearCredential = TestCredental(credential1: "testC1", credential2: "testC2")
+        var testRestoreClearedCredential: TestCredental!
+        
+        //when
+        XCTAssertNoThrow(try UserCredentialStore.storeCredential(testClearCredential))
+        XCTAssertNoThrow(try UserCredentialStore.clearCredential(forType: TestCredental.self))
+        
+        //then
+        XCTAssertThrowsError(testRestoreClearedCredential = try UserCredentialStore.restoreCredential(forType: TestCredental.self)) { (Error) in
+            XCTAssertEqual(Error as! UserCredentialStore.UserCredentialStoreError, UserCredentialStore.UserCredentialStoreError.itemNotFound)
+        }
+    }
+    
+    func testDidClearCredential() {
+        let testCredential = TestCredental()
+        
+        testCredential.didDeleteCredentialFromStorage()
     }
 }

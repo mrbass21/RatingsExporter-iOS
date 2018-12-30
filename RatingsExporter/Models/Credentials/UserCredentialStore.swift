@@ -44,14 +44,25 @@ public struct CredentialStorageItem {
 //A Credential Item is defined as any part that makes up a whole credential. A username is a
 //Credential Item. A password is a Credential Item. These two Credential Items make up a Credential.
 
-protocol UserCredentialStorageProtocol {
+protocol UserCredentialStorageProtocol: class {
+    //We need an initializer to restore the item or delete it
+    init()
+    
     ///Gets a list of credential items to store
     func getListOfCredentialItemsToStore() -> [CredentialStorageItem]
     
     ///Initialize a new credential item from Storage Attributes
     func restoreFromStorageItems(_ storageItems: [CredentialStorageItem])
+    
+    ///The credential was deleted from storage
+    func didDeleteCredentialFromStorage()
 }
 
+extension UserCredentialStorageProtocol {
+    func didDeleteCredentialFromStorage() {
+        
+    }
+}
 
 class UserCredentialStore {
     
@@ -71,17 +82,17 @@ class UserCredentialStore {
     /**
         Restores the credential to it's stored value.
      
-     - Parameter credential: An allocated, but uninitialized object conforming to the `UserCredentialStorageProtocol` to
-                            populate with stored values
+     - Parameter forType: A type that implements `UserCredentialStorageProtocol`.
      - Throws:
             - `UserCredentialStoreError.itemNotFound` if the item is not stored.
             - `UserCredentialStoreError.invalidData` if the data was corrupt on retrieval.
             - `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
-     
-     
+     - Returns: A new instance of credentialType restored from the storage.
      */
-    public static func restoreCredential(for credential: UserCredentialStorageProtocol) throws -> UserCredentialStorageProtocol {
-        let credentialItems = credential.getListOfCredentialItemsToStore()
+    public static func restoreCredential<T: UserCredentialStorageProtocol>(forType credentialType: T.Type) throws -> T {
+        let returnCredential = credentialType.self.init()
+        
+        let credentialItems = returnCredential.getListOfCredentialItemsToStore()
         
         var returnCredentialItems = [CredentialStorageItem]()
         for item in credentialItems {
@@ -90,9 +101,9 @@ class UserCredentialStore {
             returnCredentialItems.append(mutItem)
         }
         
-        credential.restoreFromStorageItems(returnCredentialItems)
+        returnCredential.restoreFromStorageItems(returnCredentialItems)
         
-        return credential
+        return returnCredential
     }
     
     /**
@@ -122,12 +133,28 @@ class UserCredentialStore {
     /**
      Clears the credentials for the `UserCredentialStorageProtocol`
      
-     - Parameter credential: A populated credential that conforms to `UserCredentialStorageProtocol` to be stored.
+     - Parameter credential: A populated credential that conforms to `UserCredentialStorageProtocol` to be cleared from storage.
      - Throws:
         - `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
      */
     public static func clearCredential(_ credential: UserCredentialStorageProtocol) throws {
         let credentialItems = credential.getListOfCredentialItemsToStore()
+        
+        for item in credentialItems {
+            try deleteCredentialItem(item)
+        }
+    }
+    
+    /**
+     Clears the credentials for a type `UserCredentialStorageProtocol`
+     
+     - Parameter credential: A type that conforms to `UserCredentialStorageProtocol` to be cleared from storage.
+     - Throws:
+     - `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
+     */
+    public static func clearCredential<T: UserCredentialStorageProtocol>(forType credentialType: T.Type) throws {
+        let clearCredential = credentialType.self.init()
+        let credentialItems = clearCredential.getListOfCredentialItemsToStore()
         
         for item in credentialItems {
             try deleteCredentialItem(item)
