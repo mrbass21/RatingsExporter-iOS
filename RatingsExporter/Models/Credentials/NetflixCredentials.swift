@@ -8,26 +8,39 @@
 
 import Foundation
 
+///A protocol for creating a Netflix Credential
 protocol NetflixCredentialProtocol: UserCredentialProtocol {
+    ///The Netflix ID provided by a valid Netflix login.
     var netflixID: String? { get set }
+    ///The Secure Netflix ID provided by a valid Netflix login.
     var secureNetflixID: String? { get set }
 }
 
+///A class for representing Netflix Credentials
 class NetflixCredential: NetflixCredentialProtocol {
     
+    ///Definitision of the IDs used for the Storage Items. This is for quick unified identification.
     struct RequiredIDs {
+        ///The IDs expected for the Cookie.
         enum Cookie: String, CaseIterable {
+            ///The ID epected for the Cookie value of Netflix ID.
             case netflixID = "NetflixId"
+            ///The ID expected for the Cooke value of Secure Netflix ID.
             case secureNetflixID = "SecureNetflixId"
         }
         
+        ///The IDs expected to be used as the Name field in the array of `CredentialStorageItems` returned to the `UserCredentialStore`.
         enum Credential: String {
+            ///The ID for Netflix ID.
             case netflixID = "NetflixId"
+            ///The ID for the Secure Netflix ID.
             case secureNetflixID = "SecretNetflixID"
         }
     }
     
+    ///Internal storage for the Netflix ID.
     public var netflixID: String?
+    ///Internal storage for the Secure Netflix ID.
     public var secureNetflixID: String?
     
     //MARK: - Init functions
@@ -50,6 +63,12 @@ class NetflixCredential: NetflixCredentialProtocol {
     
     
     //MARK: - Private Functions
+    /**
+     Deletes an entry in keychain for the `CredentialStorageItem`.
+     
+     - Parameter cookies: An array of `HTTPCookie`s to populate the `NetflixCredential`.
+     - Returns: true if the credential was able to be populated from the provided cookies, false otherwise.
+     */
     private func parseCredentialFromCooke(_ cookies: [HTTPCookie]) -> Bool {
         let neededCookies = cookies.filter({ (cookie) -> Bool in
             if RequiredIDs.Cookie.init(rawValue: cookie.name) != nil {
