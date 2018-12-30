@@ -30,11 +30,12 @@ class RatingsViewController: UITableViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        //For now we force load the NetflixLoginViewController to test logging in/grabbing the cookies.
-        //TODO: Don't force the segue unless it's for a legitimate need to log in.
-        //if !UserCredentials.hasCredentials {
+        //Check if the user has valid credentials stored.
+        let credential = NetflixCredential()
+        if (try? UserCredentialStore.restoreCredential(for: credential)) == nil {
+            //User is not logged on.
             performSegue(withIdentifier: Identifiers.Segue.NetflixLoginSegue, sender: nil)
-        //}
+        }
     }
     
     //MARK: - Table View Data Source Delegate
@@ -47,4 +48,3 @@ class RatingsViewController: UITableViewController {
         return tableView.dequeueReusableCell(withIdentifier: Identifiers.Cell.NetflixRatingsCell, for: indexPath)
     }
 }
-

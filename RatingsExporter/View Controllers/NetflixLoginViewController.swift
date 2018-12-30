@@ -78,9 +78,17 @@ extension NetflixLoginViewController: WKNavigationDelegate {
                 decisionHandler(.cancel)
             
                 //Extract out the cookie values we need
-                WKWebsiteDataStore.default().httpCookieStore.getAllCookies { (cookies) in
-                    let credential = NetflixCredential(from: cookies)
-                    
+                WKWebsiteDataStore.default().httpCookieStore.getAllCookies { [weak self] (cookies) in
+                    if let credential = NetflixCredential(from: cookies) {
+                        do {
+                            try UserCredentialStore.storeCredential(credential)
+                        } catch {
+                            DispatchQueue.main.async {
+                                let displayMessage = NSLocalizedString("Unable to get Netflix credentials", comment: "Failed to get the data needed to verify the user.")
+                                self?.displayError(displayMessage)
+                            }
+                        }
+                    }
                 }
                 
                 //We did what we needed to do. Return from the function so we don't double call the decision handler
@@ -163,5 +171,18 @@ extension NetflixLoginViewController {
         }
 
         return false
+    }
+    
+    /**
+     Checks that all of the certificates a valid Netflix request would make are, indeed, valid.
+     
+     - Parameter remoteServerCertData: The certificate the remote server provided as Data.
+     - Returns: `true` if the certificate matches known, good certificates. `false` otherwise.
+     */
+    private func displayError(_ message: String) {
+        let error = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        let errorAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
+        error.addAction(errorAction)
+        present(error, animated: true, completion: nil)
     }
 }
