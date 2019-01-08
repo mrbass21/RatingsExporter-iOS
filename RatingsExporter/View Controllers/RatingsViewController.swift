@@ -34,13 +34,10 @@ class RatingsViewController: UITableViewController {
         super.viewDidAppear(animated)
         
         //Check if the user has valid credentials stored.
-        
-        
-        
-        //if (try? UserCredentialStore.restoreCredential(for: credential)) == nil {
+        if (try? UserCredentialStore.isCredentialStored(forType: NetflixCredential.self)) == false {
             //User is not logged on.
-            performSegue(withIdentifier: Identifiers.Segue.NetflixLoginSegue, sender: nil)
-        //}
+            showLoginView()
+        }
     }
     
     //MARK: - Table View Data Source Delegate
@@ -60,8 +57,16 @@ extension RatingsViewController {
         let credential = NetflixCredential()
         do {
             try UserCredentialStore.clearCredential(credential)
+            showLoginView()
         } catch {
             print("Error: \(error.localizedDescription)")
         }
+    }
+}
+
+//MARK: - Helper Functions
+extension RatingsViewController {
+    private func showLoginView() {
+        performSegue(withIdentifier: Identifiers.Segue.NetflixLoginSegue, sender: nil)
     }
 }
