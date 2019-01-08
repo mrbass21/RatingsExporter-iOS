@@ -25,18 +25,20 @@ class RatingsViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
-        //let fetch = RatingsFetcher()
-        //fetch.fetchRatings(page: 1)
+
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         //Check if the user has valid credentials stored.
-        if (try? UserCredentialStore.isCredentialStored(forType: NetflixCredential.self)) == false {
+        if ((try? UserCredentialStore.isCredentialStored(forType: NetflixCredential.self))) == false {
             //User is not logged on.
             showLoginView()
+        }
+        else {
+            let fetcher = RatingsFetcher(forCredential: try! UserCredentialStore.restoreCredential(forType: NetflixCredential.self), with: nil)
+            fetcher.fetchRatings(page: 1)
         }
     }
     
