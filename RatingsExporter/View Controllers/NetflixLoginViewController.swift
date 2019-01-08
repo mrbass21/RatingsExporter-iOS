@@ -33,7 +33,7 @@ class NetflixLoginViewController: UIViewController {
     
     ///Identifiers for this view controller in Storyboard
     struct Identifiers {
-        ///Identifiers for this view controller in Storyboard
+        ///Identifiers for this view controller in Storyboardç
         struct Storyboard {
             ///The ID that refers to this login view controller
             static let NetflixLoginController = "NetflixLoginViewController"
@@ -41,7 +41,8 @@ class NetflixLoginViewController: UIViewController {
     }
     
     //MARK: - Outlets
-    private var loginWebView: WKWebView!
+    private weak var loginWebView: WKWebView!
+    private weak var setupIndicatorView: UIActivityIndicatorView!
 
     //MARK: - Overridden functions
     override func loadView() {
@@ -138,6 +139,10 @@ extension NetflixLoginViewController: WKNavigationDelegate {
             completionHandler(.cancelAuthenticationChallenge, nil)
         }
     }
+    
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        hideSetupIndicator()
+    }
 }
 
 //MARK: - Helper Methods
@@ -206,13 +211,25 @@ extension NetflixLoginViewController {
         view = initialView
         
         //Create a new webview with our options
-        loginWebView = WKWebView(frame: CGRect.zero, configuration: webConfiguration)
-        loginWebView.translatesAutoresizingMaskIntoConstraints = false
-        loginWebView.navigationDelegate = self
-        loginWebView.isOpaque = false
-        loginWebView.scrollView.backgroundColor = .clear
+        let _loginWebView = WKWebView(frame: CGRect.zero, configuration: webConfiguration)
+        _loginWebView.translatesAutoresizingMaskIntoConstraints = false
+        _loginWebView.navigationDelegate = self
+        _loginWebView.isOpaque = false
+        _loginWebView.scrollView.backgroundColor = .clear
+        loginWebView = _loginWebView
         
-        view.addSubview(loginWebView)
+        //Create an activity indicator
+        let _setupIndicatorView = UIActivityIndicatorView(style: .whiteLarge)
+        _setupIndicatorView.translatesAutoresizingMaskIntoConstraints = false
+        //_setupIndicatorView.color = UIApplication.shared.delegate?.window??.tintColor
+        _setupIndicatorView.color = UIColor.red
+        _setupIndicatorView.isUserInteractionEnabled = false
+        _setupIndicatorView.hidesWhenStopped = true
+        _setupIndicatorView.startAnimating()
+        setupIndicatorView = _setupIndicatorView
+        
+        view.addSubview(_loginWebView)
+        view.addSubview(_setupIndicatorView)
     }
     
     /**
@@ -226,5 +243,17 @@ extension NetflixLoginViewController {
         loginWebView.bottomAnchor.constraint(equalTo: margins.bottomAnchor).isActive = true
         loginWebView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         loginWebView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        
+        setupIndicatorView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        setupIndicatorView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        setupIndicatorView.heightAnchor.constraint(equalToConstant: 37.0).isActive = true
+        setupIndicatorView.widthAnchor.constraint(equalToConstant: 37.0).isActive = true
+    }
+    
+    /**
+     Stops the animating of the setupIndicator, which will also hide the view
+     */
+    private func hideSetupIndicator() {
+        setupIndicatorView?.stopAnimating()
     }
 }
