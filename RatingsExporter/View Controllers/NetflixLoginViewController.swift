@@ -41,18 +41,22 @@ class NetflixLoginViewController: UIViewController {
     }
     
     //MARK: - Outlets
-    @IBOutlet weak var loginWebView: WKWebView!
+    private var loginWebView: WKWebView!
 
     //MARK: - Overridden functions
+    override func loadView() {
+        setupWebView()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        layoutViews()
+        
         //Load the Netflix login page
-        loginWebView.navigationDelegate = self
         let netflixLoginURL = URL(string: NetflixSettings.NetflixURLs.netflixLoginURL)!
         let myRequest = URLRequest(url: netflixLoginURL)
         loginWebView.load(myRequest)
-        
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -82,6 +86,7 @@ extension NetflixLoginViewController: WKNavigationDelegate {
                     if let credential = NetflixCredential(from: cookies) {
                         do {
                             try UserCredentialStore.storeCredential(credential)
+                            self?.dismiss(animated: true, completion: nil)
                         } catch {
                             DispatchQueue.main.async {
                                 let displayMessage = NSLocalizedString("Unable to get Netflix credentials", comment: "Failed to get the data needed to verify the user.")
@@ -184,5 +189,43 @@ extension NetflixLoginViewController {
         let errorAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
         error.addAction(errorAction)
         present(error, animated: true, completion: nil)
+    }
+    
+    /**
+     Sets up the properties for the webview
+     */
+    private func setupWebView() {
+        let webConfiguration = WKWebViewConfiguration()
+        
+        //We don't want to persist the cookies, so we create a temporary store
+        webConfiguration.websiteDataStore = WKWebsiteDataStore.nonPersistent()
+        
+        //Create a root outer view
+        let initialView = UIView(frame: CGRect.zero)
+        initialView.backgroundColor = .black
+        view = initialView
+        
+        //Create a new webview with our options
+        loginWebView = WKWebView(frame: CGRect.zero, configuration: webConfiguration)
+        loginWebView.translatesAutoresizingMaskIntoConstraints = false
+        loginWebView.navigationDelegate = self
+        loginWebView.isOpaque = false
+        
+        //Set the view as the main view
+        loginWebView.scrollView.backgroundColor = .clear
+        view.addSubview(loginWebView)
+    }
+    
+    /**
+    Layout the views in the controller
+    */
+    private func layoutViews() {
+        //Setup constraints
+        let margins = view.layoutMarginsGuide
+        
+        loginWebView.topAnchor.constraint(equalTo: margins.topAnchor).isActive = true
+        loginWebView.bottomAnchor.constraint(equalTo: margins.bottomAnchor).isActive = true
+        loginWebView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        loginWebView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
     }
 }

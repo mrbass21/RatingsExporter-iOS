@@ -19,7 +19,7 @@ struct NetflixRating {
     ///*The ID of the movie. Might need to use this to fetch box art some how
     var movieID: UInt
     ///The type of rating. I assume this refers to "stars" or "thumbs". Testing will be required to figure out the difference.
-    var ratingType: String // This should be an enum type
+    var ratingType: ratingType // This should be an enum type
     ///The timestamp of when the item was fetched
     var timestamp: Date
     ///The title of the item the rating is for

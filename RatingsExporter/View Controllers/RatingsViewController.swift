@@ -25,17 +25,22 @@ class RatingsViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        //let fetch = RatingsFetcher()
+        //fetch.fetchRatings(page: 1)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         //Check if the user has valid credentials stored.
-        let credential = NetflixCredential()
-        if (try? UserCredentialStore.restoreCredential(for: credential)) == nil {
+        
+        
+        
+        //if (try? UserCredentialStore.restoreCredential(for: credential)) == nil {
             //User is not logged on.
             performSegue(withIdentifier: Identifiers.Segue.NetflixLoginSegue, sender: nil)
-        }
+        //}
     }
     
     //MARK: - Table View Data Source Delegate
@@ -46,5 +51,17 @@ class RatingsViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //This is just to test that the global tint color was applied to the control
         return tableView.dequeueReusableCell(withIdentifier: Identifiers.Cell.NetflixRatingsCell, for: indexPath)
+    }
+}
+
+//MARK: - Actions
+extension RatingsViewController {
+    @IBAction func logOut() {
+        let credential = NetflixCredential()
+        do {
+            try UserCredentialStore.clearCredential(credential)
+        } catch {
+            print("Error: \(error.localizedDescription)")
+        }
     }
 }

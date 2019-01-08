@@ -1,49 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="EHm-aD-Y2M">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="nbf-IQ-fKh">
     <device id="retina4_0" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Netflix Login View Controller-->
         <scene sceneID="So7-DK-jXU">
             <objects>
-                <viewController storyboardIdentifier="NetflixLoginViewController" id="QgI-wR-o2g" customClass="NetflixLoginViewController" customModule="RatingsExporter" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="RTU-2F-PCY">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <wkWebView opaque="NO" contentMode="scaleToFill" customUserAgent="NetflixRatingsExporter" translatesAutoresizingMaskIntoConstraints="NO" id="A0U-P8-3SD">
-                                <rect key="frame" x="0.0" y="20" width="320" height="548"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <wkWebViewConfiguration key="configuration" allowsAirPlayForMediaPlayback="NO" allowsPictureInPictureMediaPlayback="NO">
-                                    <dataDetectorTypes key="dataDetectorTypes" none="YES"/>
-                                    <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
-                                    <wkPreferences key="preferences"/>
-                                </wkWebViewConfiguration>
-                            </wkWebView>
-                        </subviews>
-                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="A0U-P8-3SD" firstAttribute="top" secondItem="xgx-tE-2eo" secondAttribute="top" id="aT5-WI-MNG"/>
-                            <constraint firstItem="A0U-P8-3SD" firstAttribute="trailing" secondItem="xgx-tE-2eo" secondAttribute="trailing" id="ekr-yf-WVT"/>
-                            <constraint firstItem="A0U-P8-3SD" firstAttribute="bottom" secondItem="xgx-tE-2eo" secondAttribute="bottom" id="tD1-NG-vhc"/>
-                            <constraint firstItem="A0U-P8-3SD" firstAttribute="leading" secondItem="xgx-tE-2eo" secondAttribute="leading" id="tKN-ZO-w0F"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="xgx-tE-2eo"/>
-                    </view>
-                    <connections>
-                        <outlet property="loginWebView" destination="A0U-P8-3SD" id="NXO-dc-4bH"/>
-                    </connections>
-                </viewController>
+                <viewController storyboardIdentifier="NetflixLoginViewController" id="QgI-wR-o2g" customClass="NetflixLoginViewController" customModule="RatingsExporter" customModuleProvider="target" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MXg-hb-Yh8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="18.75" y="-512.32394366197184"/>
+            <point key="canvasLocation" x="1016.25" y="-512.32394366197184"/>
         </scene>
         <!--Ratings View Controller-->
         <scene sceneID="GOW-dE-a8o">
@@ -81,11 +53,36 @@
                             <outlet property="delegate" destination="EHm-aD-Y2M" id="DVh-3k-tXx"/>
                         </connections>
                     </tableView>
+                    <navigationItem key="navigationItem" id="olW-8d-hCS">
+                        <barButtonItem key="rightBarButtonItem" title="Logout" style="done" id="HQp-Xc-ohX">
+                            <connections>
+                                <action selector="logOut" destination="EHm-aD-Y2M" id="Oib-Ke-5QG"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <segue destination="QgI-wR-o2g" kind="presentation" identifier="NetflixLoginSegue" id="o3y-In-hMp"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9AM-pE-rYr" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1016.25" y="151.05633802816902"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="SMm-93-U1P">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="nbf-IQ-fKh" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="B2W-WF-PFB">
+                        <rect key="frame" x="0.0" y="20" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="EHm-aD-Y2M" kind="relationship" relationship="rootViewController" id="0c2-DD-Xw5"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="R7L-uE-x5n" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="18.75" y="151.05633802816902"/>
         </scene>
