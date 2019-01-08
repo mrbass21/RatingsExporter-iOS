@@ -210,9 +210,8 @@ extension NetflixLoginViewController {
         loginWebView.translatesAutoresizingMaskIntoConstraints = false
         loginWebView.navigationDelegate = self
         loginWebView.isOpaque = false
-        
-        //Set the view as the main view
         loginWebView.scrollView.backgroundColor = .clear
+        
         view.addSubview(loginWebView)
     }
     
