@@ -148,6 +148,31 @@ class UserCredentialStoreTests: XCTestCase {
         XCTAssertEqual(testUpdateCredential, restoredUpdatedCredential)
     }
     
+    func testCredentialDoesntExist() {
+        //given
+        var credentialStored = true
+        
+        //when
+        XCTAssertNoThrow( credentialStored = try UserCredentialStore.isCredentialStored(forType: TestCredental.self))
+        
+        //then
+        XCTAssert(credentialStored == false)
+    }
+    
+    func testCredentialDoesExist() {
+        //given
+        var credentialFound = false
+        let testCredential = TestCredental(credential1: "testC1", credential2: "testC2")
+        //store the credential
+        XCTAssertNoThrow(try UserCredentialStore.storeCredential(testCredential))
+        
+        //when
+        XCTAssertNoThrow(credentialFound = try UserCredentialStore.isCredentialStored(forType: TestCredental.self))
+        
+        //then
+        XCTAssert(credentialFound == true)
+    }
+    
     func testClearCredential() {
         //given
         let testClearCredential = TestCredental(credential1: "testC1", credential2: "testC2")

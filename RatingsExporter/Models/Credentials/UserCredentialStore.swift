@@ -131,6 +131,32 @@ class UserCredentialStore {
     }
     
     /**
+     Checks if the credential exists already in storage or not.
+     
+     - Parameter forType: A type that implements `UserCredentialStorageProtocol`.
+     - Throws:
+        - `UserCredentialStoreError.itemNotFound` if the item is not stored.
+        - `UserCredentialStoreError.invalidItemAttribute' if an attribute is nil
+        - `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
+     - Returns: A Bool indicating if the item is currently stored or not
+     */
+    public static func isCredentialStored<T: UserCredentialStorageProtocol>(forType credentialType: T.Type) throws -> Bool {
+        let returnCredential = credentialType.self.init()
+        
+        let credentialItems = returnCredential.getListOfCredentialItemsToStore()
+        
+        var credentialDoesNotExist: Bool = false
+        for item in credentialItems {
+            if(!(try doesCredentialItemAlreadyExist(item))) {
+                credentialDoesNotExist = true
+                break
+            }
+        }
+        
+        return !credentialDoesNotExist
+    }
+    
+    /**
      Clears the credentials for the `UserCredentialStorageProtocol`
      
      - Parameter credential: A populated credential that conforms to `UserCredentialStorageProtocol` to be cleared from storage.

@@ -15,5 +15,4 @@ import WebKit
 
 //MARK: - UserCredentialsProtocol
 protocol UserCredentialProtocol: Equatable {
- 
 }
