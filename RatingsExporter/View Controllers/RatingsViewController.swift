@@ -28,8 +28,7 @@ class RatingsViewController: UITableViewController {
  
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-
+        tableView.register(UINib(nibName: Identifiers.Cell.NetflixRatingsCell, bundle: nil), forCellReuseIdentifier: Identifiers.Cell.NetflixRatingsCell)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -60,14 +59,23 @@ class RatingsViewController: UITableViewController {
         //This is just to test that the global tint color was applied to the control
         let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.Cell.NetflixRatingsCell) as! NetflixRatingsCell
         
+        let redBackgroundView = UIView()
+        redBackgroundView.backgroundColor = UIColor(displayP3Red: 100/255, green: 20/255, blue: 0/255, alpha: 1.0)
+        cell.selectedBackgroundView = redBackgroundView
+        
+        
         if let ratingItem = ratingsList?.ratingItems[indexPath.row] {
             cell.initFromRating(ratingItem)
         } else {
-            cell.ratingTitle.text = "Loading..."
+            cell.ratingTitle.text = NSLocalizedString("Loading...", comment: "Notification that the content is loading")
             cell.ratingRating.text = ""
         }
         
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
     }
 }
 

@@ -41,8 +41,6 @@ class RatingsFetcher {
         //Set the credential
         self.credential = credential
         
-        print("Using Credential to create request: \(credential)")
-        
         //Create the configuration
         let configuration: URLSessionConfiguration!
         
@@ -61,10 +59,6 @@ class RatingsFetcher {
         
         //Finally create a session with the updated configuration
         self.session = URLSession(configuration: configuration)
-    }
-    
-    deinit {
-        print("RatingsFetcher: Deinit called!")
     }
     
     ///Fetches one page of ratings

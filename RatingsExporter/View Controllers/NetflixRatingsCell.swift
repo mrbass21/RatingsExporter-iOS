@@ -11,9 +11,9 @@ import UIKit
 class NetflixRatingsCell: UITableViewCell {
     @IBOutlet weak var ratingTitle: UILabel!
     @IBOutlet weak var ratingRating: UILabel!
-    
+
     func initFromRating(_ rating: NetflixRating) {
         self.ratingTitle.text = rating.title
-        self.ratingRating.text = "\(rating.yourRating) / 5 Stars"
+        self.ratingRating.text = "\(rating.yourRating)"
     }
 }
