@@ -38,6 +38,7 @@ class RatingsViewController: UITableViewController {
         }
         else {
             let fetcher = RatingsFetcher(forCredential: try! UserCredentialStore.restoreCredential(forType: NetflixCredential.self), with: nil)
+			fetcher.delegate = self
             fetcher.fetchRatings(page: 1)
         }
     }
@@ -71,4 +72,11 @@ extension RatingsViewController {
     private func showLoginView() {
         performSegue(withIdentifier: Identifiers.Segue.NetflixLoginSegue, sender: nil)
     }
+}
+
+//MARK: - RatingsFetcherDelegate
+extension RatingsViewController: RatingsFetcherDelegate {	
+	func didfetchRatings(ratings: [NetflixRating], forPage page: UInt) {
+		print("Fetched ratings: \(ratings) for page: \(page)")
+	}
 }

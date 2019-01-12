@@ -5,19 +5,29 @@
 //  Created by Jason Beck on 12/30/18.
 //  Copyright © 2018 Jason Beck. All rights reserved.
 //
+import Foundation.NSURLSession
 
-import Foundation
+protocol RatingsFetcherDelegate: class {
+	func didFetchRatings(ratings: [NetflixRating], forPage page: UInt)
+	func errorFetchingRatingsForPage(page: UInt)
+}
 
 ///Fetches Netflix ratings
 class RatingsFetcher {
     
     ///Errors that can be encountered while working with RatingsFetcher
-    enum RatingsFetcherError: Error, Equatable {
+    public enum RatingsFetcherError: Error, Equatable {
         case invalidCredentials
     }
-    
+	
+	//Store the delegate
+	public weak var delegate: RatingsFetcherDelegate!
+	
     ///The session to use when making a request
-    var session: URLSession!
+    public var session: URLSession!
+	
+	///The array of currently executing dataTasks
+	private var activeTasks: [URLSessionDataTask] = []
     
     ///The credentials to use for the fetch
     let credential: NetflixCredential
@@ -60,27 +70,25 @@ class RatingsFetcher {
         
         print(ratingsURL)
         
-        let dataTask = session.dataTask(with: ratingsURL, completionHandler: { (data: Data?, response: URLResponse?, error: Error?) in
+        let dataTask = session.dataTask(with: ratingsURL, completionHandler: { [weak self](data: Data?, response: URLResponse?, error: Error?) in
             if let httpResponse = (response as? HTTPURLResponse) {
                 
-                //DEBUG
-                print("RESPONSE:\n")
-                print(httpResponse.allHeaderFields)
-                //END DEBUG
-                
                 if httpResponse.statusCode != 200 {
-                    print("Unexpected return code: \(httpResponse.statusCode)")
+					//TODO: Make this a little more friendly for the consuming API
+                    self?.delegate?.errorFetchingRatingsForPage(page: page)
                 }
                 
                 if let responseData = data {
-                    print("\(String(describing: String(data: responseData, encoding: String.Encoding.utf8)) )")
+                    //Serialize the data
+					//return it to the delegate
+					DispatchQueue.main.async {
+						self?.delegate?.didFetchRatings(ratings: <#T##[NetflixRating]#>, forPage: page)
+					}
                 }
             }
         })
-        print("REQUEST:\n")
-        print("Headers: \n \((dataTask.currentRequest?.allHTTPHeaderFields)!)\n")
-        print("SendCookies:\n \(String(describing: session.configuration.httpCookieStorage?.cookies(for: (dataTask.currentRequest?.url!)!)))")
         dataTask.resume()
+		activeTasks.append(dataTask)
     }
     
     //Private interface
@@ -92,7 +100,6 @@ class RatingsFetcher {
         
         if var headers = headers {
             //Update the headers
-            //headers["User-Agent"] = "NetflixRatingsFetcher (+https://github.com/mrbass21/RatingsExporter-iOS)"
             headers["User-Agent"] = "RatingsExporter (https://github.com/mrbass21/RatingsExporter-iOS)(iPhone; CPU iPhone OS like Mac OS X) Version/0.1"
         } else {
             //There are no headers. Create a new dictionary
@@ -147,9 +154,5 @@ class RatingsFetcher {
         }
         
         cookieStore.setCookie(secureNetflixCookie)
-        
-        for cookie in cookieStore.cookies! {
-            print(cookie)
-        }
     }
 }
