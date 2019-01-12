@@ -8,7 +8,7 @@
 import Foundation.NSURLSession
 
 protocol RatingsFetcherDelegate: class {
-	func didFetchRatings(ratings: [NetflixRating], forPage page: UInt)
+	func didFetchRatings(ratings: NetflixRatingsList)
 	func errorFetchingRatingsForPage(page: UInt)
 }
 
@@ -63,27 +63,42 @@ class RatingsFetcher {
         self.session = URLSession(configuration: configuration)
     }
     
+    deinit {
+        print("RatingsFetcher: Deinit called!")
+    }
+    
     ///Fetches one page of ratings
     public func fetchRatings(page: UInt) {
         
         let ratingsURL = URL(string: "\(URLs.RatingsURL)?pg=\(page)")!
-        
-        print(ratingsURL)
         
         let dataTask = session.dataTask(with: ratingsURL, completionHandler: { [weak self](data: Data?, response: URLResponse?, error: Error?) in
             if let httpResponse = (response as? HTTPURLResponse) {
                 
                 if httpResponse.statusCode != 200 {
 					//TODO: Make this a little more friendly for the consuming API
-                    self?.delegate?.errorFetchingRatingsForPage(page: page)
+                    DispatchQueue.main.async {
+                        self?.delegate?.errorFetchingRatingsForPage(page: page)
+                    }
                 }
                 
                 if let responseData = data {
                     //Serialize the data
-					//return it to the delegate
-					DispatchQueue.main.async {
-						self?.delegate?.didFetchRatings(ratings: <#T##[NetflixRating]#>, forPage: page)
-					}
+                    let json = try? JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any]
+                    
+                    if let json = json, let finalJson = json {
+                        guard let ratings = NetflixRatingsList(json: finalJson) else {
+                            self?.delegate?.errorFetchingRatingsForPage(page: page)
+                            return
+                        }
+
+                        //return it to the delegate
+                        DispatchQueue.main.async {
+                            self?.delegate?.didFetchRatings(ratings: ratings)
+                        }
+                    }
+                    
+					
                 }
             }
         })

@@ -21,6 +21,10 @@ class RatingsViewController: UITableViewController {
             static let NetflixRatingsCell = "NetflixRatingsCell"
         }
     }
+    
+    ///The fetching object that makes the requests
+    var fetcher: RatingsFetcher!
+    var ratingsList: NetflixRatingsList?
  
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,7 +41,7 @@ class RatingsViewController: UITableViewController {
             showLoginView()
         }
         else {
-            let fetcher = RatingsFetcher(forCredential: try! UserCredentialStore.restoreCredential(forType: NetflixCredential.self), with: nil)
+            fetcher = RatingsFetcher(forCredential: try! UserCredentialStore.restoreCredential(forType: NetflixCredential.self), with: nil)
 			fetcher.delegate = self
             fetcher.fetchRatings(page: 1)
         }
@@ -45,12 +49,25 @@ class RatingsViewController: UITableViewController {
     
     //MARK: - Table View Data Source Delegate
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        if let ratingsList = ratingsList {
+            return ratingsList.ratingItems.count
+        } else {
+            return 1
+        }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //This is just to test that the global tint color was applied to the control
-        return tableView.dequeueReusableCell(withIdentifier: Identifiers.Cell.NetflixRatingsCell, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.Cell.NetflixRatingsCell) as! NetflixRatingsCell
+        
+        if let ratingItem = ratingsList?.ratingItems[indexPath.row] {
+            cell.initFromRating(ratingItem)
+        } else {
+            cell.ratingTitle.text = "Loading..."
+            cell.ratingRating.text = ""
+        }
+        
+        return cell
     }
 }
 
@@ -75,8 +92,13 @@ extension RatingsViewController {
 }
 
 //MARK: - RatingsFetcherDelegate
-extension RatingsViewController: RatingsFetcherDelegate {	
-	func didfetchRatings(ratings: [NetflixRating], forPage page: UInt) {
-		print("Fetched ratings: \(ratings) for page: \(page)")
-	}
+extension RatingsViewController: RatingsFetcherDelegate {
+    func errorFetchingRatingsForPage(page: UInt) {
+        print("Error")
+    }
+    
+    func didFetchRatings(ratings: NetflixRatingsList) {
+		ratingsList = ratings
+        tableView.reloadData()
+    }
 }

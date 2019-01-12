@@ -6,7 +6,7 @@
 //  Copyright © 2018 Jason Beck. All rights reserved.
 //
 
-import Foundation
+import Foundation.NSDate
 
 ///A struct representing the individual rating items. Items with * are assumed types and might be wrong. Praise the crash Gods.
 struct NetflixRating {
@@ -21,13 +21,24 @@ struct NetflixRating {
     ///The type of rating. I assume this refers to "stars" or "thumbs". Testing will be required to figure out the difference.
     var ratingType: ratingType // This should be an enum type
     ///The timestamp of when the item was fetched
-    var timestamp: Date
+    var timestamp: UInt
     ///The title of the item the rating is for
     var title: String
     ///The rating you gave it. As far as I can tell this is a whole number, which can also be negative... yes. I'm still irritated.
     var yourRating: Int
     
     enum ratingType: String {
-        case Star = "star"
+        case star = "star"
+    }
+    
+    init(comparableDate: Date = Date(), date: String = "1/1/1970", intRating: Int = 0, movieID: UInt = 0, ratingType: ratingType = .star, timestamp: UInt = 0, title: String = "", yourRating: Int = 0) {
+        self.comparableDate = comparableDate
+        self.date = date
+        self.intRating = intRating
+        self.movieID = movieID
+        self.ratingType = ratingType
+        self.timestamp = timestamp
+        self.title = title
+        self.yourRating = yourRating
     }
 }
