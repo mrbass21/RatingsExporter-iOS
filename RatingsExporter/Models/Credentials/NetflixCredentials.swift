@@ -129,3 +129,9 @@ extension NetflixCredential: Equatable {
         return ((lhs.netflixID == rhs.netflixID) && (lhs.secureNetflixID == lhs.secureNetflixID))
     }
 }
+
+extension NetflixCredential:  CustomStringConvertible {
+    var description: String {
+        return "NetflixID: \(self.netflixID ?? "nil")\n SecureNetflixId: \(self.secureNetflixID ?? "nil")"
+    }
+}
