@@ -14,6 +14,8 @@
 		8F03A59721C03AF500F466A5 /* NetflixLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F03A59621C03AF500F466A5 /* NetflixLoginViewController.swift */; };
 		8F28FBDB21EA98BC00FBCFB0 /* NetflixRatingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F28FBDA21EA98BC00FBCFB0 /* NetflixRatingsCell.swift */; };
 		8F28FBDD21EAA2AD00FBCFB0 /* NetflixRatingsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F28FBDC21EAA2AD00FBCFB0 /* NetflixRatingsCell.xib */; };
+		8F28FBDF21EBCCDC00FBCFB0 /* LoadingRatingScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F28FBDE21EBCCDC00FBCFB0 /* LoadingRatingScreen.xib */; };
+		8F28FBE121EBD68200FBCFB0 /* RatingsDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F28FBE021EBD68200FBCFB0 /* RatingsDetailViewController.swift */; };
 		8F5A58A221C1D9700058B77A /* UserCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F5A58A121C1D9700058B77A /* UserCredentials.swift */; };
 		8F8E85F121D80E930097602C /* bad-Netflix-Assets-self-signed.cer in Resources */ = {isa = PBXBuildFile; fileRef = 8F8E85F021D80E930097602C /* bad-Netflix-Assets-self-signed.cer */; };
 		8F8E85F321D814D60097602C /* MockWKNavigationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8E85F221D814D60097602C /* MockWKNavigationAction.swift */; };
@@ -54,6 +56,8 @@
 		8F03A59621C03AF500F466A5 /* NetflixLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixLoginViewController.swift; sourceTree = "<group>"; };
 		8F28FBDA21EA98BC00FBCFB0 /* NetflixRatingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixRatingsCell.swift; sourceTree = "<group>"; };
 		8F28FBDC21EAA2AD00FBCFB0 /* NetflixRatingsCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NetflixRatingsCell.xib; sourceTree = "<group>"; };
+		8F28FBDE21EBCCDC00FBCFB0 /* LoadingRatingScreen.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoadingRatingScreen.xib; sourceTree = "<group>"; };
+		8F28FBE021EBD68200FBCFB0 /* RatingsDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingsDetailViewController.swift; sourceTree = "<group>"; };
 		8F5A58A121C1D9700058B77A /* UserCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCredentials.swift; sourceTree = "<group>"; };
 		8F8E85F021D80E930097602C /* bad-Netflix-Assets-self-signed.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "bad-Netflix-Assets-self-signed.cer"; sourceTree = "<group>"; };
 		8F8E85F221D814D60097602C /* MockWKNavigationAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWKNavigationAction.swift; sourceTree = "<group>"; };
@@ -118,9 +122,10 @@
 				8F03A59521C039D900F466A5 /* View Controllers */,
 				8F03A58321BF802700F466A5 /* AppDelegate.swift */,
 				8F03A58721BF802700F466A5 /* Main.storyboard */,
+				8F28FBDC21EAA2AD00FBCFB0 /* NetflixRatingsCell.xib */,
+				8F28FBDE21EBCCDC00FBCFB0 /* LoadingRatingScreen.xib */,
 				8F03A58A21BF803800F466A5 /* Assets.xcassets */,
 				8F03A58F21BF803800F466A5 /* Info.plist */,
-				8F28FBDC21EAA2AD00FBCFB0 /* NetflixRatingsCell.xib */,
 			);
 			path = RatingsExporter;
 			sourceTree = "<group>";
@@ -131,6 +136,7 @@
 				8F03A58521BF802700F466A5 /* RatingsViewController.swift */,
 				8F03A59621C03AF500F466A5 /* NetflixLoginViewController.swift */,
 				8F28FBDA21EA98BC00FBCFB0 /* NetflixRatingsCell.swift */,
+				8F28FBE021EBD68200FBCFB0 /* RatingsDetailViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -291,6 +297,7 @@
 				8FFF4BEB21D5561100FEAA59 /* netflix-assets.cer in Resources */,
 				8F03A58B21BF803800F466A5 /* Assets.xcassets in Resources */,
 				8F03A58921BF802700F466A5 /* Main.storyboard in Resources */,
+				8F28FBDF21EBCCDC00FBCFB0 /* LoadingRatingScreen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,6 +328,7 @@
 				8F8E85F821D95D290097602C /* NetflixRating.swift in Sources */,
 				8F03A58621BF802700F466A5 /* RatingsViewController.swift in Sources */,
 				8F03A58421BF802700F466A5 /* AppDelegate.swift in Sources */,
+				8F28FBE121EBD68200FBCFB0 /* RatingsDetailViewController.swift in Sources */,
 				8F8E85FA21D96ABD0097602C /* RatingsFetcher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

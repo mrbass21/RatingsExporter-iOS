@@ -15,10 +15,12 @@ class RatingsViewController: UITableViewController {
         ///Identifiers used for segues
         struct Segue {
             static let NetflixLoginSegue = "NetflixLoginSegue"
+            static let MoveiDetailsSegue = "MovieDetailsSegue"
         }
         ///Identifiers used for cell
         struct Cell {
             static let NetflixRatingsCell = "NetflixRatingsCell"
+            static let LoadingRatingCell = "LoadingRatingsCell"
         }
     }
     
@@ -29,6 +31,7 @@ class RatingsViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(UINib(nibName: Identifiers.Cell.NetflixRatingsCell, bundle: nil), forCellReuseIdentifier: Identifiers.Cell.NetflixRatingsCell)
+        tableView.register(UINib(nibName: Identifiers.Cell.LoadingRatingCell, bundle: nil), forCellReuseIdentifier: Identifiers.Cell.LoadingRatingCell)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -46,12 +49,20 @@ class RatingsViewController: UITableViewController {
         }
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == Identifiers.Segue.MoveiDetailsSegue {
+            //Load the rating into the controller
+            let controller = segue.destination as! RatingsDetailViewController
+            controller.movie = sender as? NetflixRating
+        }
+    }
+    
     //MARK: - Table View Data Source Delegate
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if let ratingsList = ratingsList {
             return ratingsList.ratingItems.count
         } else {
-            return 1
+            return 0
         }
     }
     
@@ -75,7 +86,7 @@ class RatingsViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: false)
+        performSegue(withIdentifier: Identifiers.Segue.MoveiDetailsSegue, sender: ratingsList?.ratingItems[indexPath.row])
     }
 }
 
