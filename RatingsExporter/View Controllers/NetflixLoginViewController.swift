@@ -87,6 +87,7 @@ extension NetflixLoginViewController: WKNavigationDelegate {
                     if let credential = NetflixCredential(from: cookies) {
                         do {
                             try UserCredentialStore.storeCredential(credential)
+                            print("Created Credential: \(credential)")
                             self?.dismiss(animated: true, completion: nil)
                         } catch {
                             DispatchQueue.main.async {
@@ -203,6 +204,7 @@ extension NetflixLoginViewController {
         let webConfiguration = WKWebViewConfiguration()
         
         //We don't want to persist the cookies, so we create a temporary store
+        //webConfiguration.websiteDataStore = WKWebsiteDataStore.default()
         webConfiguration.websiteDataStore = WKWebsiteDataStore.nonPersistent()
         
         //Create a root outer view
@@ -221,7 +223,6 @@ extension NetflixLoginViewController {
         //Create an activity indicator
         let _setupIndicatorView = UIActivityIndicatorView(style: .whiteLarge)
         _setupIndicatorView.translatesAutoresizingMaskIntoConstraints = false
-        //_setupIndicatorView.color = UIApplication.shared.delegate?.window??.tintColor
         _setupIndicatorView.color = UIColor.red
         _setupIndicatorView.isUserInteractionEnabled = false
         _setupIndicatorView.hidesWhenStopped = true
