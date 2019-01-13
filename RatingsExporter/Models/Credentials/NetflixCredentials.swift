@@ -132,6 +132,6 @@ extension NetflixCredential: Equatable {
 
 extension NetflixCredential:  CustomStringConvertible {
     var description: String {
-        return "NetflixID: \(self.netflixID ?? "nil")\n SecureNetflixId: \(self.secureNetflixID ?? "nil")"
+        return "NetflixID: \(self.netflixID ?? "nil")\nSecureNetflixId: \(self.secureNetflixID ?? "nil")"
     }
 }

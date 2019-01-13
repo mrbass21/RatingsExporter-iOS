@@ -24,18 +24,14 @@ class RatingsViewController: UITableViewController {
         }
     }
     
-    ///The fetching object that makes the requests
-    var fetcher: RatingsFetcher!
-    var ratingsList: NetflixRatingsList?
- 
+    public var ratingsLists: NetflixRatingsLists!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //Register Nibs
         tableView.register(UINib(nibName: Identifiers.Cell.NetflixRatingsCell, bundle: nil), forCellReuseIdentifier: Identifiers.Cell.NetflixRatingsCell)
         tableView.register(UINib(nibName: Identifiers.Cell.LoadingRatingCell, bundle: nil), forCellReuseIdentifier: Identifiers.Cell.LoadingRatingCell)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
         
         //Check if the user has valid credentials stored.
         if ((try? UserCredentialStore.isCredentialStored(forType: NetflixCredential.self))) == false {
@@ -43,10 +39,13 @@ class RatingsViewController: UITableViewController {
             showLoginView()
         }
         else {
-            fetcher = RatingsFetcher(forCredential: try! UserCredentialStore.restoreCredential(forType: NetflixCredential.self), with: nil)
-			fetcher.delegate = self
-            fetcher.fetchRatings(page: 1)
+            ratingsLists = NetflixRatingsLists(fetcher: nil, withCredentials: nil)
+            ratingsLists.delegate = self
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -59,34 +58,28 @@ class RatingsViewController: UITableViewController {
     
     //MARK: - Table View Data Source Delegate
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let ratingsList = ratingsList {
-            return ratingsList.ratingItems.count
-        } else {
-            return 0
-        }
+        print("Creating \(ratingsLists.totalRatings) number of rows")
+        return ratingsLists.totalRatings
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //This is just to test that the global tint color was applied to the control
-        let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.Cell.NetflixRatingsCell) as! NetflixRatingsCell
-        
         let redBackgroundView = UIView()
         redBackgroundView.backgroundColor = UIColor(displayP3Red: 100/255, green: 20/255, blue: 0/255, alpha: 1.0)
-        cell.selectedBackgroundView = redBackgroundView
-        
-        
-        if let ratingItem = ratingsList?.ratingItems[indexPath.row] {
-            cell.initFromRating(ratingItem)
+        if let rating = ratingsLists[indexPath.row] {
+            let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.Cell.NetflixRatingsCell) as! NetflixRatingsCell
+            cell.selectedBackgroundView = redBackgroundView
+            cell.initFromRating(rating)
+            return cell
         } else {
-            cell.ratingTitle.text = NSLocalizedString("Loading...", comment: "Notification that the content is loading")
-            cell.ratingRating.text = ""
+            let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.Cell.LoadingRatingCell, for: indexPath)
+            cell.selectedBackgroundView = redBackgroundView
+            return cell
         }
-        
-        return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: Identifiers.Segue.MoveiDetailsSegue, sender: ratingsList?.ratingItems[indexPath.row])
+        //performSegue(withIdentifier: Identifiers.Segue.MoveiDetailsSegue, sender: ratingsList?.ratingItems[indexPath.row])
     }
 }
 
@@ -110,14 +103,11 @@ extension RatingsViewController {
     }
 }
 
-//MARK: - RatingsFetcherDelegate
-extension RatingsViewController: RatingsFetcherDelegate {
-    func errorFetchingRatingsForPage(page: UInt) {
-        print("Error")
-    }
-    
-    func didFetchRatings(ratings: NetflixRatingsList) {
-		ratingsList = ratings
-        tableView.reloadData()
+extension RatingsViewController: NetflixRatingsListProtocol {
+    func NetflixRatingsListsStateChanged(_ oldState: NetflixRatingsLists.RatingsListState, newState: NetflixRatingsLists.RatingsListState) {
+        if oldState == .initializing && newState == .ready {
+            //We now have data to display
+            tableView.reloadData()
+        }
     }
 }
