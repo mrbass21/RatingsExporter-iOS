@@ -7,7 +7,7 @@
 //
 
 protocol NetflixRatingsListProtocol {
-    func NetflixRatingsListsStateChanged(_ oldState: NetflixRatingsLists.RatingsListState, newState: NetflixRatingsLists.RatingsListState)
+	func NetflixRatingsLists(_ : NetflixRatingsListProtocol, stateChangedFrom oldState: NetflixRatingsLists.RatingsListState, To newState: NetflixRatingsLists.RatingsListState)
 }
 
 class NetflixRatingsLists {
@@ -15,10 +15,19 @@ class NetflixRatingsLists {
     public enum RatingsListState {
         case initializing
         case ready
-        case refreshing
     }
+	
+	public enum FetchMode {
+		///Loads ratings as they are requested (generally by the table view controller)
+		case sequencial
+		///Preloads all the ratings before alerting the delegate
+		case preloadAll
+		///Let the protocol implementer request pre-fetches
+		case directed
+	}
     
     private var ratingsLists: [NetflixRatingsList?]? = nil
+	private var fetchMode: FetchMode
     
     public var delegate: NetflixRatingsListProtocol?
     
@@ -69,12 +78,18 @@ class NetflixRatingsLists {
             //Let's math where the item is!
             let page = (index / 100)
             let pageNormalizedItemNumber = index % 100
+			
+			let returnRating = ratingsLists?[page]?.ratingItems[pageNormalizedItemNumber]
+			
+			if fetchMode == .sequencial, returnRating == nil {
+				fetcher.fetchRatings(page: UInt(page))
+			}
             
-            return ratingsLists?[page]?.ratingItems[pageNormalizedItemNumber]
+            return returnRating
         }
     }
     
-    init?(fetcher: RatingsFetcher?, withCredentials credentials: NetflixCredential?) {
+	init?(fetcher: RatingsFetcher?, withCredentials credentials: NetflixCredential?, usingFetchMode mode: FetchMode = .sequencial) {
         
         //Check if we were provided credentials. If not, try and harvest them from the internal store
         let useCredentials: NetflixCredential
