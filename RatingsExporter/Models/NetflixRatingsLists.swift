@@ -7,7 +7,7 @@
 //
 
 protocol NetflixRatingsListProtocol {
-	func NetflixRatingsLists(_ : NetflixRatingsListProtocol, stateChangedFrom oldState: NetflixRatingsLists.RatingsListState, To newState: NetflixRatingsLists.RatingsListState)
+	func NetflixRatingsListsController(_ : NetflixRatingsLists, stateChangedFrom oldState: NetflixRatingsLists.RatingsListState, To newState: NetflixRatingsLists.RatingsListState)
 }
 
 class NetflixRatingsLists {
@@ -19,7 +19,7 @@ class NetflixRatingsLists {
 	
 	public enum FetchMode {
 		///Loads ratings as they are requested (generally by the table view controller)
-		case sequencial
+		case sequential
 		///Preloads all the ratings before alerting the delegate
 		case preloadAll
 		///Let the protocol implementer request pre-fetches
@@ -37,7 +37,7 @@ class NetflixRatingsLists {
     //Creates a state for the object
     private var state: RatingsListState = .initializing {
         didSet {
-            self.delegate?.NetflixRatingsListsStateChanged(oldValue, newState: state)
+            self.delegate?.NetflixRatingsListsController(self, stateChangedFrom: oldValue, To: state)
         }
     }
     
@@ -76,12 +76,12 @@ class NetflixRatingsLists {
             }
             
             //Let's math where the item is!
-            let page = (index / 100)
+            let page = (index / 100) //Page is treated is 0 indexed on Netflixs back end!
             let pageNormalizedItemNumber = index % 100
 			
 			let returnRating = ratingsLists?[page]?.ratingItems[pageNormalizedItemNumber]
 			
-			if fetchMode == .sequencial, returnRating == nil {
+			if fetchMode == .sequential, returnRating == nil {
 				fetcher.fetchRatings(page: UInt(page))
 			}
             
@@ -89,7 +89,7 @@ class NetflixRatingsLists {
         }
     }
     
-	init?(fetcher: RatingsFetcher?, withCredentials credentials: NetflixCredential?, usingFetchMode mode: FetchMode = .sequencial) {
+	init?(fetcher: RatingsFetcher?, withCredentials credentials: NetflixCredential?, usingFetchMode mode: FetchMode = .sequential) {
         
         //Check if we were provided credentials. If not, try and harvest them from the internal store
         let useCredentials: NetflixCredential
@@ -108,23 +108,37 @@ class NetflixRatingsLists {
         if fetcher == nil {
             //It's fine to force unwrap here. We checked that credentials has a value.
             self.fetcher = RatingsFetcher(forCredential: useCredentials, with: nil)
+            guard self.fetcher != nil else {
+                return nil
+            }
         } else {
             self.fetcher = fetcher!
         }
+        
+        //Set the fetch mode
+        self.fetchMode = mode
         
         //Set ourselves as the delegate
         self.fetcher.delegate = self
         
         //Fetch the first page
-        self.fetcher.fetchRatings(page: 1)
+        self.fetcher.fetchRatings(page: 0)
     }
 }
 
 extension NetflixRatingsLists: RatingsFetcherDelegate {
     func didFetchRatings(ratings: NetflixRatingsList) {
+        
+        print("Fetched page: \(ratings.page)")
+        
         if ratingsLists == nil {
-            ratingsLists = [NetflixRatingsList?].init(repeating: nil, count: (ratings.totalRatings / ratings.numberOfItemsInList))
-            ratingsLists![ratings.page - 1] = ratings
+            //This is the first run of the object and we are preloading the first page and setting up the lists
+            ratingsLists = [NetflixRatingsList?].init(repeating: nil, count: (ratings.totalRatings / ratings.numberOfItemsInList) + 1)
+            ratingsLists![ratings.page] = ratings
+        } else {
+            //Append this list to the list... of lists... I probably should refactor for clarity
+            //TODO: Refactor so that it's not immensely confusing how this works.
+            ratingsLists![ratings.page] = ratings
         }
         
         //Set the state appropriately

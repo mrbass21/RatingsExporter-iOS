@@ -87,7 +87,6 @@ extension NetflixLoginViewController: WKNavigationDelegate {
                     if let credential = NetflixCredential(from: cookies) {
                         do {
                             try UserCredentialStore.storeCredential(credential)
-                            print("Created Credential: \(credential)")
                             self?.dismiss(animated: true, completion: nil)
                         } catch {
                             DispatchQueue.main.async {

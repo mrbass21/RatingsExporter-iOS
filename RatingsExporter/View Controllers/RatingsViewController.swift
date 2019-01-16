@@ -24,7 +24,7 @@ class RatingsViewController: UITableViewController {
         }
     }
     
-    public var ratingsLists: NetflixRatingsLists!
+    public var ratingsLists: NetflixRatingsLists?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,6 +32,10 @@ class RatingsViewController: UITableViewController {
         //Register Nibs
         tableView.register(UINib(nibName: Identifiers.Cell.NetflixRatingsCell, bundle: nil), forCellReuseIdentifier: Identifiers.Cell.NetflixRatingsCell)
         tableView.register(UINib(nibName: Identifiers.Cell.LoadingRatingCell, bundle: nil), forCellReuseIdentifier: Identifiers.Cell.LoadingRatingCell)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
         //Check if the user has valid credentials stored.
         if ((try? UserCredentialStore.isCredentialStored(forType: NetflixCredential.self))) == false {
@@ -40,12 +44,8 @@ class RatingsViewController: UITableViewController {
         }
         else {
             ratingsLists = NetflixRatingsLists(fetcher: nil, withCredentials: nil)
-            ratingsLists.delegate = self
+            ratingsLists!.delegate = self
         }
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -58,15 +58,15 @@ class RatingsViewController: UITableViewController {
     
     //MARK: - Table View Data Source Delegate
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print("Creating \(ratingsLists.totalRatings) number of rows")
-        return ratingsLists.totalRatings
+     //   print("Creating \(ratingsLists.totalRatings) number of rows")
+        return ratingsLists?.totalRatings ?? 0
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //This is just to test that the global tint color was applied to the control
         let redBackgroundView = UIView()
         redBackgroundView.backgroundColor = UIColor(displayP3Red: 100/255, green: 20/255, blue: 0/255, alpha: 1.0)
-        if let rating = ratingsLists[indexPath.row] {
+        if let rating = ratingsLists?[indexPath.row] {
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.Cell.NetflixRatingsCell) as! NetflixRatingsCell
             cell.selectedBackgroundView = redBackgroundView
             cell.initFromRating(rating)
@@ -104,7 +104,7 @@ extension RatingsViewController {
 }
 
 extension RatingsViewController: NetflixRatingsListProtocol {
-    func NetflixRatingsListsStateChanged(_ oldState: NetflixRatingsLists.RatingsListState, newState: NetflixRatingsLists.RatingsListState) {
+    func NetflixRatingsListsController(_: NetflixRatingsLists, stateChangedFrom oldState: NetflixRatingsLists.RatingsListState, To newState: NetflixRatingsLists.RatingsListState) {
         if oldState == .initializing && newState == .ready {
             //We now have data to display
             tableView.reloadData()
