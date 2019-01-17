@@ -43,8 +43,10 @@ class RatingsViewController: UITableViewController {
             showLoginView()
         }
         else {
-            ratingsLists = NetflixRatingsLists(fetcher: nil, withCredentials: nil)
-            ratingsLists!.delegate = self
+            if ratingsLists == nil {
+                ratingsLists = NetflixRatingsLists(fetcher: nil, withCredentials: nil)
+                ratingsLists!.delegate = self
+            }
         }
     }
     
@@ -79,7 +81,13 @@ class RatingsViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //performSegue(withIdentifier: Identifiers.Segue.MoveiDetailsSegue, sender: ratingsList?.ratingItems[indexPath.row])
+        if let rating = ratingsLists?[indexPath.row] {
+            performSegue(withIdentifier: Identifiers.Segue.MoveiDetailsSegue, sender: rating)
+        }
+    }
+    
+    deinit {
+        print("RatingsViewController: Deinit!")
     }
 }
 

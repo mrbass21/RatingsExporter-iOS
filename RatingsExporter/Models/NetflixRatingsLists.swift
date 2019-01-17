@@ -124,6 +124,10 @@ class NetflixRatingsLists {
         //Fetch the first page
         self.fetcher.fetchRatings(page: 0)
     }
+    
+    deinit {
+        print("NetflixRatingsLists: Deinit!")
+    }
 }
 
 extension NetflixRatingsLists: RatingsFetcherDelegate {
