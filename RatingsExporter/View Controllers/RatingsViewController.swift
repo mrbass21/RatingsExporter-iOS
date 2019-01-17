@@ -85,10 +85,6 @@ class RatingsViewController: UITableViewController {
             performSegue(withIdentifier: Identifiers.Segue.MoveiDetailsSegue, sender: rating)
         }
     }
-    
-    deinit {
-        print("RatingsViewController: Deinit!")
-    }
 }
 
 //MARK: - Actions
@@ -112,10 +108,16 @@ extension RatingsViewController {
 }
 
 extension RatingsViewController: NetflixRatingsListProtocol {
-    func NetflixRatingsListsController(_: NetflixRatingsLists, stateChangedFrom oldState: NetflixRatingsLists.RatingsListState, To newState: NetflixRatingsLists.RatingsListState) {
-        if oldState == .initializing && newState == .ready {
-            //We now have data to display
+    func NetflixRatingsListsController(_: NetflixRatingsLists, didLoadRatingIndexes indexes: ClosedRange<Int>) {
+        
+        if tableView.numberOfRows(inSection: 0) == 0 {
             tableView.reloadData()
         }
+
+        let indexPaths = indexes.map { (index) -> IndexPath in
+            IndexPath(row: index, section: 0)
+        }
+
+        tableView.reloadRows(at: indexPaths, with: .automatic)
     }
 }

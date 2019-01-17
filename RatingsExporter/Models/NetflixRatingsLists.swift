@@ -7,7 +7,7 @@
 //
 
 protocol NetflixRatingsListProtocol {
-	func NetflixRatingsListsController(_ : NetflixRatingsLists, stateChangedFrom oldState: NetflixRatingsLists.RatingsListState, To newState: NetflixRatingsLists.RatingsListState)
+    func NetflixRatingsListsController(_ : NetflixRatingsLists, didLoadRatingIndexes indexes: ClosedRange<Int>)
 }
 
 class NetflixRatingsLists {
@@ -33,13 +33,6 @@ class NetflixRatingsLists {
     
     ///Public for dependency injection!
     public var fetcher: RatingsFetcher!
-    
-    //Creates a state for the object
-    private var state: RatingsListState = .initializing {
-        didSet {
-            self.delegate?.NetflixRatingsListsController(self, stateChangedFrom: oldValue, To: state)
-        }
-    }
     
     ///Returns the number of pages in the lists
     public var totalPages: Int {
@@ -70,11 +63,6 @@ class NetflixRatingsLists {
     ///Get's the specifed rating
     subscript(index: Int) -> NetflixRating? {
         get {
-            //Check for initalization. Can't return ratings till the first page is fetched.
-            if state == .initializing {
-                return nil
-            }
-            
             //Let's math where the item is!
             let page = (index / 100) //Page is treated is 0 indexed on Netflixs back end!
             let pageNormalizedItemNumber = index % 100
@@ -131,10 +119,11 @@ class NetflixRatingsLists {
 }
 
 extension NetflixRatingsLists: RatingsFetcherDelegate {
+    func errorFetchingRatingsForPage(page: UInt) {
+        print("Error on page \(page)")
+    }
+    
     func didFetchRatings(ratings: NetflixRatingsList) {
-        
-        print("Fetched page: \(ratings.page)")
-        
         if ratingsLists == nil {
             //This is the first run of the object and we are preloading the first page and setting up the lists
             ratingsLists = [NetflixRatingsList?].init(repeating: nil, count: (ratings.totalRatings / ratings.numberOfItemsInList) + 1)
@@ -145,13 +134,8 @@ extension NetflixRatingsLists: RatingsFetcherDelegate {
             ratingsLists![ratings.page] = ratings
         }
         
-        //Set the state appropriately
-        //TODO: Fetching multiple pages at the same time might not work. Address this later
-        state = .ready
-    }
-    
-    func errorFetchingRatingsForPage(page: UInt) {
-        print("NetflixRatingsLists: An error occured fetching page: \(page)")
-        state = .ready
+        let indexRange = (ratings.page * 100)...(((ratings.page + 1) * 100) - 1)
+        
+        delegate?.NetflixRatingsListsController(self, didLoadRatingIndexes: indexRange)
     }
 }
