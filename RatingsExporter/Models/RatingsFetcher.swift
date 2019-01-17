@@ -27,7 +27,7 @@ class RatingsFetcher {
     public var session: URLSession!
 	
 	///The array of currently executing dataTasks
-	private var activeTasks: [URLSessionDataTask] = []
+    private var activeTasks: [UInt : URLSessionDataTask] = [:]
     
     ///The credentials to use for the fetch
     let credential: NetflixCredential
@@ -64,6 +64,14 @@ class RatingsFetcher {
     ///Fetches one page of ratings
     public func fetchRatings(page: UInt) {
         
+        if activeTasks[page] != nil {
+            //We are already downloading this item
+            debugPrint("\(#file): Decided not to reload page \(page) because the page is already downloading.")
+            return
+        }
+        
+        debugPrint("\(#file): Starting download task for page \(page)")
+        
         let ratingsURL = URL(string: "\(URLs.RatingsURL)?pg=\(page)")!
         
         let dataTask = session.dataTask(with: ratingsURL, completionHandler: { [weak self](data: Data?, response: URLResponse?, error: Error?) in
@@ -86,18 +94,13 @@ class RatingsFetcher {
                             return
                         }
 
-                        //return it to the delegate
-                        DispatchQueue.main.async {
-                            self?.delegate?.didFetchRatings(ratings: ratings)
-                        }
+                        self?.didRetrieveList(list: ratings)
                     }
-                    
-					
                 }
             }
         })
         dataTask.resume()
-		activeTasks.append(dataTask)
+		activeTasks[page] = dataTask
     }
     
     //Private interface
@@ -163,5 +166,15 @@ class RatingsFetcher {
         }
         
         cookieStore.setCookie(secureNetflixCookie)
+    }
+    
+    func didRetrieveList(list: NetflixRatingsList) {
+        //Release the task. We're done.
+        self.activeTasks[UInt(list.page)] = nil
+        
+        //return it to the delegate
+        DispatchQueue.main.async {
+            self.delegate?.didFetchRatings(ratings: list)
+        }
     }
 }

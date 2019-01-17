@@ -15,9 +15,9 @@ struct NetflixRatingsList {
     ///The array of NetflixRating items
     var ratingItems: [NetflixRating]
     ///The number of NetflixRating items
-    var totalRatings: UInt
+    var totalRatings: Int
     ///The page number of results
-    var page: UInt
+    var page: Int
     ///The number of items per page.
     var numberOfItemsInList: Int
     ///I'm not sure what track id refers to
@@ -33,8 +33,8 @@ extension NetflixRatingsList {
         //Pull out the code name
         guard let codeName = json["codeName"] as? String,
         let ratingItems = json["ratingItems"] as? [[String: Any]],
-        let totalRatings = json["totalRatings"] as? UInt,
-        let page = json["page"] as? UInt,
+        let totalRatings = json["totalRatings"] as? Int,
+        let page = json["page"] as? Int,
         let size = json["size"] as? Int,
         let trackId = json["trkid"] as? UInt,
         let timeZone = json["tz"] as? String
