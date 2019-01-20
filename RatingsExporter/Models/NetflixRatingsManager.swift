@@ -6,30 +6,40 @@
 //  Copyright © 2019 Jason Beck. All rights reserved.
 //
 
-protocol NetflixRatingsListProtocol {
-    func NetflixRatingsListsController(_ : NetflixRatingsLists, didLoadRatingIndexes indexes: ClosedRange<Int>)
+///Notifications that NetflixRatingsManger will send to notify the delegate of status.
+public protocol NetflixRatingsManagerDelegate {
+    /**
+     Notification that the manager loaded a new range of titles.
+     
+     - Parameter manager : A reference to the manager that fetched the ratings.
+     - Parameter indexes: A range of movie indexes that were retrieved or updated.
+     */
+    func NetflixRatingsManager(_ manager: NetflixRatingsManager, didLoadRatingIndexes indexes: ClosedRange<Int>)
 }
 
-class NetflixRatingsLists {
-    
-    public enum RatingsListState {
-        case initializing
-        case ready
-    }
+//TODO: Persist ratings on device.
+///A class used to manage the ratings NetflixFetcher retuns, and deals with device persistance.
+public class NetflixRatingsManager {
 	
+    ///Describes the fetching behavior desired.
 	public enum FetchMode {
-		///Loads ratings as they are requested (generally by the table view controller)
+		///Loads ratings as they are requested form the subscript.
 		case sequential
-		///Preloads all the ratings before alerting the delegate
+		///Pre-loads all the ratings before alerting the delegate.
 		case preloadAll
-		///Let the protocol implementer request pre-fetches
+		///Let the protocol implementer request pre-fetches.
 		case directed
 	}
     
+    //TODO: Maybe change to CoreData interface?
+    ///The private persistance (in memory) of the list of items.
     private var ratingsLists: [NetflixRatingsList?]? = nil
-	private var fetchMode: FetchMode
     
-    public var delegate: NetflixRatingsListProtocol?
+    ///The selected fetch mode
+	public var fetchMode: FetchMode
+    
+    ///A delegate to inform of updates
+    public var delegate: NetflixRatingsManagerDelegate?
     
     ///Public for dependency injection!
     public var fetcher: RatingsFetcher!
@@ -37,22 +47,25 @@ class NetflixRatingsLists {
     ///Returns the number of pages in the lists
     public var totalPages: Int {
         if let list = ratingsLists?.first, let firstList = list {
-            return (firstList.totalRatings / firstList.numberOfItemsInList)
+            return (firstList.totalRatings / firstList.numberOfRequestedItems)
         } else {
             return 0
         }
     }
     
-    //WHAT IF WE DIVIDE BY ZERO!!!!
+    ///Returns the number of items in a page.
     public var itemsPerPage: Int {
+        //If the list is initialized, return the count. Otherwise, return 0.
         if let list = ratingsLists?.first, let firstList = list {
-            return firstList.numberOfItemsInList
+            return firstList.ratingItems.count
         } else {
             return 0
         }
     }
     
+    ///The total number of ratings for the user.
     public var totalRatings: Int {
+        //Every list contains the total ratings, so just grab the first one (Which is immediately fetched).
         if let list = ratingsLists?.first, let firstList = list {
             return firstList.totalRatings as Int
         } else {
@@ -60,7 +73,7 @@ class NetflixRatingsLists {
         }
     }
     
-    ///Get's the specifed rating
+    ///Get's the rating for the item at the index.
     subscript(index: Int) -> NetflixRating? {
         get {
             //Let's math where the item is!
@@ -77,6 +90,13 @@ class NetflixRatingsLists {
         }
     }
     
+    /**
+     Creates a RatingsManager that will manage the fetched ratings.
+     
+     - Parameter fetcher: A Netflix Fetcher to retrieve credentials.
+     - Parameter withCredentials: An NetflixCredential to use for the fetcher.
+     - Parameter usingFetchmode: The FetchMode to use when managing the ratings. If `nil` is specified, the value is `sequential`.
+     */
 	init?(fetcher: RatingsFetcher?, withCredentials credentials: NetflixCredential?, usingFetchMode mode: FetchMode = .sequential) {
         
         //Check if we were provided credentials. If not, try and harvest them from the internal store
@@ -112,21 +132,18 @@ class NetflixRatingsLists {
         //Fetch the first page
         self.fetcher.fetchRatings(page: 0)
     }
-    
-    deinit {
-        print("NetflixRatingsLists: Deinit!")
-    }
 }
 
-extension NetflixRatingsLists: RatingsFetcherDelegate {
-    func errorFetchingRatingsForPage(page: UInt) {
+
+extension NetflixRatingsManager: RatingsFetcherDelegate {
+    public func errorFetchingRatingsForPage(page: UInt) {
         print("Error on page \(page)")
     }
     
-    func didFetchRatings(ratings: NetflixRatingsList) {
+    public func didFetchRatings(ratings: NetflixRatingsList) {
         if ratingsLists == nil {
             //This is the first run of the object and we are preloading the first page and setting up the lists
-            ratingsLists = [NetflixRatingsList?].init(repeating: nil, count: (ratings.totalRatings / ratings.numberOfItemsInList) + 1)
+            ratingsLists = [NetflixRatingsList?].init(repeating: nil, count: (ratings.totalRatings / ratings.numberOfRequestedItems) + 1)
             ratingsLists![ratings.page] = ratings
         } else {
             //Append this list to the list... of lists... I probably should refactor for clarity
@@ -136,6 +153,6 @@ extension NetflixRatingsLists: RatingsFetcherDelegate {
         
         let indexRange = (ratings.page * 100)...(((ratings.page + 1) * 100) - 1)
         
-        delegate?.NetflixRatingsListsController(self, didLoadRatingIndexes: indexRange)
+        delegate?.NetflixRatingsManager(self, didLoadRatingIndexes: indexRange)
     }
 }

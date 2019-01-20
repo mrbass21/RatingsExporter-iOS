@@ -7,13 +7,13 @@
 //
 import Foundation.NSURLSession
 
-protocol RatingsFetcherDelegate: class {
+public protocol RatingsFetcherDelegate: class {
 	func didFetchRatings(ratings: NetflixRatingsList)
 	func errorFetchingRatingsForPage(page: UInt)
 }
 
 ///Fetches Netflix ratings
-class RatingsFetcher {
+public class RatingsFetcher {
     
     ///Errors that can be encountered while working with RatingsFetcher
     public enum RatingsFetcherError: Error, Equatable {

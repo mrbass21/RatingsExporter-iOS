@@ -9,21 +9,21 @@
 import Foundation.NSDate
 
 ///A Struct that represnts the outter wrapper of the returned JSON from Netflix
-struct NetflixRatingsList {
+public struct NetflixRatingsList {
     ///I have no idea wht this variable is meant to represent.
-    var codeName: String
-    ///The array of NetflixRating items
-    var ratingItems: [NetflixRating]
-    ///The number of NetflixRating items
-    var totalRatings: Int
+    public var codeName: String
+    ///The array of NetflixRating items.
+    public var ratingItems: [NetflixRating]
+    ///The number of NetflixRating items.
+    public var totalRatings: Int
     ///The page number of results
-    var page: Int
-    ///The number of items per page.
-    var numberOfItemsInList: Int
+    public var page: Int
+    ///The number of items requested in the page request.
+    public var numberOfRequestedItems: Int
     ///I'm not sure what track id refers to
-    var trackId: UInt
+    public var trackId: UInt
     ///The timezone of the request? Maybe the `NetflixRating.comparableDate` is relative to the fetched time zone?
-    var timeZoneAbbrev: String
+    public var timeZoneAbbrev: String
 }
 
 
@@ -46,7 +46,7 @@ extension NetflixRatingsList {
         self.codeName = codeName
         self.totalRatings = totalRatings
         self.page = page
-        self.numberOfItemsInList = size
+        self.numberOfRequestedItems = size
         self.trackId = trackId
         self.timeZoneAbbrev = timeZone
         self.ratingItems = Array()

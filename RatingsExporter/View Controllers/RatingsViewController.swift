@@ -24,7 +24,7 @@ class RatingsViewController: UITableViewController {
         }
     }
     
-    public var ratingsLists: NetflixRatingsLists?
+    public var ratingsLists: NetflixRatingsManager?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,7 +44,7 @@ class RatingsViewController: UITableViewController {
         }
         else {
             if ratingsLists == nil {
-                ratingsLists = NetflixRatingsLists(fetcher: nil, withCredentials: nil)
+                ratingsLists = NetflixRatingsManager(fetcher: nil, withCredentials: nil)
                 ratingsLists!.delegate = self
             }
         }
@@ -107,8 +107,8 @@ extension RatingsViewController {
     }
 }
 
-extension RatingsViewController: NetflixRatingsListProtocol {
-    func NetflixRatingsListsController(_: NetflixRatingsLists, didLoadRatingIndexes indexes: ClosedRange<Int>) {
+extension RatingsViewController: NetflixRatingsManagerDelegate {
+    func NetflixRatingsManager(_: NetflixRatingsManager, didLoadRatingIndexes indexes: ClosedRange<Int>) {
         
         if tableView.numberOfRows(inSection: 0) == 0 {
             tableView.reloadData()
