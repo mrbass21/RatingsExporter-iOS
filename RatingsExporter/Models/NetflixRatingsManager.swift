@@ -97,7 +97,7 @@ public class NetflixRatingsManager {
      - Parameter withCredentials: An NetflixCredential to use for the fetcher.
      - Parameter usingFetchmode: The FetchMode to use when managing the ratings. If `nil` is specified, the value is `sequential`.
      */
-	init?(fetcher: RatingsFetcher?, withCredentials credentials: NetflixCredential?, usingFetchMode mode: FetchMode = .sequential) {
+	public init?(fetcher: RatingsFetcher?, withCredentials credentials: NetflixCredential?, usingFetchMode mode: FetchMode = .sequential) {
         
         //Check if we were provided credentials. If not, try and harvest them from the internal store
         let useCredentials: NetflixCredential
