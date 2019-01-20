@@ -7,8 +7,11 @@
 //
 import Foundation.NSURLSession
 
+///Notifies the delegate of calls in the RatingsFetcher lifecycle.
 public protocol RatingsFetcherDelegate: class {
+    ///A successful return for a page of ratings was completed.
 	func didFetchRatings(ratings: NetflixRatingsList)
+    ///An error was encounteres fetching the `page`.
 	func errorFetchingRatingsForPage(page: UInt)
 }
 
@@ -17,26 +20,24 @@ public class RatingsFetcher {
     
     ///Errors that can be encountered while working with RatingsFetcher
     public enum RatingsFetcherError: Error, Equatable {
+        ///The credentials provided were invalid.
         case invalidCredentials
     }
 	
-	//Store the delegate
-	public weak var delegate: RatingsFetcherDelegate!
+	///The delegate to inform of updates.
+	public weak var delegate: RatingsFetcherDelegate?
 	
-    ///The session to use when making a request
+    //NOTE: The session cannot be a let verb, because we need to inject cookies into it.
+    ///The session to use when making a request.
     public var session: URLSession!
 	
-	///The array of currently executing dataTasks
+	///The array of currently executing dataTasks.
     private var activeTasks: [UInt : URLSessionDataTask] = [:]
     
     ///The credentials to use for the fetch
-    let credential: NetflixCredential
+    private let credential: NetflixCredential
     
-    struct URLs {
-        static var RatingsURL = "https://www.netflix.com/api/shakti/va5e8014f/ratinghistory"
-    }
-    
-    init(forCredential credential: NetflixCredential, with session: URLSession?) {
+    public init(forCredential credential: NetflixCredential, with session: URLSession?) {
         
         //Set the credential
         self.credential = credential
@@ -70,9 +71,9 @@ public class RatingsFetcher {
             return
         }
         
-        debugPrint("\(#file): Starting download task for page \(page)")
+        debugLog("Downloading page \(page)")
         
-        let ratingsURL = URL(string: "\(URLs.RatingsURL)?pg=\(page)")!
+        let ratingsURL = URL(string: "\(Common.URLs.netflixRatingsURL)?pg=\(page)")!
         
         let dataTask = session.dataTask(with: ratingsURL, completionHandler: { [weak self](data: Data?, response: URLResponse?, error: Error?) in
             if let httpResponse = (response as? HTTPURLResponse) {

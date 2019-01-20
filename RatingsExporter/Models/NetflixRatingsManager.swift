@@ -14,7 +14,7 @@ public protocol NetflixRatingsManagerDelegate {
      - Parameter manager : A reference to the manager that fetched the ratings.
      - Parameter indexes: A range of movie indexes that were retrieved or updated.
      */
-    func NetflixRatingsManager(_ manager: NetflixRatingsManager, didLoadRatingIndexes indexes: ClosedRange<Int>)
+    func NetflixRatingsManagerDelegate(_ manager: NetflixRatingsManager, didLoadRatingIndexes indexes: ClosedRange<Int>)
 }
 
 //TODO: Persist ratings on device.
@@ -153,6 +153,6 @@ extension NetflixRatingsManager: RatingsFetcherDelegate {
         
         let indexRange = (ratings.page * 100)...(((ratings.page + 1) * 100) - 1)
         
-        delegate?.NetflixRatingsManager(self, didLoadRatingIndexes: indexRange)
+        delegate?.NetflixRatingsManagerDelegate(self, didLoadRatingIndexes: indexRange)
     }
 }

@@ -10,28 +10,14 @@ import UIKit
 
 class RatingsViewController: UITableViewController {
     
-    ///Identifiers for this view controller in Storyboard
-    struct Identifiers {
-        ///Identifiers used for segues
-        struct Segue {
-            static let NetflixLoginSegue = "NetflixLoginSegue"
-            static let MoveiDetailsSegue = "MovieDetailsSegue"
-        }
-        ///Identifiers used for cell
-        struct Cell {
-            static let NetflixRatingsCell = "NetflixRatingsCell"
-            static let LoadingRatingCell = "LoadingRatingsCell"
-        }
-    }
-    
     public var ratingsLists: NetflixRatingsManager?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         //Register Nibs
-        tableView.register(UINib(nibName: Identifiers.Cell.NetflixRatingsCell, bundle: nil), forCellReuseIdentifier: Identifiers.Cell.NetflixRatingsCell)
-        tableView.register(UINib(nibName: Identifiers.Cell.LoadingRatingCell, bundle: nil), forCellReuseIdentifier: Identifiers.Cell.LoadingRatingCell)
+        tableView.register(UINib(nibName: Common.Identifiers.TableViewCell.NetflixRatingsCell, bundle: nil), forCellReuseIdentifier: Common.Identifiers.TableViewCell.NetflixRatingsCell)
+        tableView.register(UINib(nibName: Common.Identifiers.TableViewCell.LoadingRatingCell, bundle: nil), forCellReuseIdentifier: Common.Identifiers.TableViewCell.LoadingRatingCell)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -51,7 +37,7 @@ class RatingsViewController: UITableViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == Identifiers.Segue.MoveiDetailsSegue {
+        if segue.identifier == Common.Identifiers.Segue.MoveiDetailsSegue {
             //Load the rating into the controller
             let controller = segue.destination as! RatingsDetailViewController
             controller.movie = sender as? NetflixRating
@@ -69,12 +55,12 @@ class RatingsViewController: UITableViewController {
         let redBackgroundView = UIView()
         redBackgroundView.backgroundColor = UIColor(displayP3Red: 100/255, green: 20/255, blue: 0/255, alpha: 1.0)
         if let rating = ratingsLists?[indexPath.row] {
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.Cell.NetflixRatingsCell) as! NetflixRatingsCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: Common.Identifiers.TableViewCell.NetflixRatingsCell) as! NetflixRatingsCell
             cell.selectedBackgroundView = redBackgroundView
             cell.initFromRating(rating)
             return cell
         } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.Cell.LoadingRatingCell, for: indexPath)
+            let cell = tableView.dequeueReusableCell(withIdentifier: Common.Identifiers.TableViewCell.LoadingRatingCell, for: indexPath)
             cell.selectedBackgroundView = redBackgroundView
             return cell
         }
@@ -82,7 +68,7 @@ class RatingsViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let rating = ratingsLists?[indexPath.row] {
-            performSegue(withIdentifier: Identifiers.Segue.MoveiDetailsSegue, sender: rating)
+            performSegue(withIdentifier: Common.Identifiers.Segue.MoveiDetailsSegue, sender: rating)
         }
     }
 }
@@ -103,12 +89,12 @@ extension RatingsViewController {
 //MARK: - Helper Functions
 extension RatingsViewController {
     private func showLoginView() {
-        performSegue(withIdentifier: Identifiers.Segue.NetflixLoginSegue, sender: nil)
+        performSegue(withIdentifier: Common.Identifiers.Segue.NetflixLoginSegue, sender: nil)
     }
 }
 
 extension RatingsViewController: NetflixRatingsManagerDelegate {
-    func NetflixRatingsManager(_: NetflixRatingsManager, didLoadRatingIndexes indexes: ClosedRange<Int>) {
+    func NetflixRatingsManagerDelegate(_: NetflixRatingsManager, didLoadRatingIndexes indexes: ClosedRange<Int>) {
         
         if tableView.numberOfRows(inSection: 0) == 0 {
             tableView.reloadData()

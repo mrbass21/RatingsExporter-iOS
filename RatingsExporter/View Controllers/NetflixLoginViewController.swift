@@ -10,36 +10,6 @@ import UIKit
 import WebKit
 
 class NetflixLoginViewController: UIViewController {
-    
-    //MARK: - Convenience Structs
-    ///Stores the settings Netflix uses.
-    struct NetflixSettings {
-        ///IDs that Netflix uses in its cookies
-        struct NetflixCookie {
-            ///The Netflix ID Key in the cookie.
-            static let netflixID = "NetflixId"
-            ///The Secure NetflixID in the cookie.
-            static let netflixSecureID = "SecureNetflixId"
-        }
-        
-        ///URL endpoints Netflix uses
-        struct NetflixURLs {
-            ///The login URL. This is where users are directed to login.
-            static let netflixLoginURL = "https://www.netflix.com/login"
-            ///The redirect URL users are sent to if they have a valid login.
-            static let netflixSuccessRedirectURL = "https://www.netflix.com/browse"
-        }
-    }
-    
-    ///Identifiers for this view controller in Storyboard
-    struct Identifiers {
-        ///Identifiers for this view controller in Storyboardç
-        struct Storyboard {
-            ///The ID that refers to this login view controller
-            static let NetflixLoginController = "NetflixLoginViewController"
-        }
-    }
-    
     //MARK: - Outlets
     private weak var loginWebView: WKWebView!
     private weak var setupIndicatorView: UIActivityIndicatorView!
@@ -55,7 +25,7 @@ class NetflixLoginViewController: UIViewController {
         layoutViews()
         
         //Load the Netflix login page
-        let netflixLoginURL = URL(string: NetflixSettings.NetflixURLs.netflixLoginURL)!
+        let netflixLoginURL = URL(string: Common.URLs.netflixLoginURL)!
         let myRequest = URLRequest(url: netflixLoginURL)
         loginWebView.load(myRequest)
     }
@@ -77,7 +47,7 @@ extension NetflixLoginViewController: WKNavigationDelegate {
             
             //If there's a valid session, the url will ask for https://www.netflix.com/browse.
             if let destinationURL = navigationAction.request.url,
-                    destinationURL.absoluteString.elementsEqual(NetflixSettings.NetflixURLs.netflixSuccessRedirectURL){
+                    destinationURL.absoluteString.elementsEqual(Common.URLs.netflixSuccessRedirectURL){
                 
                 //Cancel the navigation
                 decisionHandler(.cancel)

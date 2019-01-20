@@ -17,18 +17,10 @@ protocol NetflixCredentialProtocol: UserCredentialProtocol {
 }
 
 ///A class for representing Netflix Credentials
-class NetflixCredential: NetflixCredentialProtocol {
+public class NetflixCredential: NetflixCredentialProtocol {
     
-    ///Definitision of the IDs used for the Storage Items. This is for quick unified identification.
-    struct RequiredIDs {
-        ///The IDs expected for the Cookie.
-        enum Cookie: String, CaseIterable {
-            ///The ID epected for the Cookie value of Netflix ID.
-            case netflixID = "NetflixId"
-            ///The ID expected for the Cooke value of Secure Netflix ID.
-            case secureNetflixID = "SecureNetflixId"
-        }
-        
+    ///Definition of the IDs used for the Storage Items. This is for quick unified identification.
+    private struct RequiredIDs {
         ///The IDs expected to be used as the Name field in the array of `CredentialStorageItems` returned to the `UserCredentialStore`.
         enum Credential: String {
             ///The ID for Netflix ID.
@@ -71,21 +63,21 @@ class NetflixCredential: NetflixCredentialProtocol {
      */
     private func parseCredentialFromCooke(_ cookies: [HTTPCookie]) -> Bool {
         let neededCookies = cookies.filter({ (cookie) -> Bool in
-            if RequiredIDs.Cookie.init(rawValue: cookie.name) != nil {
+            if Common.Identifiers.Cookie.init(rawValue: cookie.name) != nil {
                 return true
             }
             
             return false
         })
         
-        if neededCookies.count < RequiredIDs.Cookie.allCases.count {
+        if neededCookies.count < Common.Identifiers.Cookie.allCases.count {
             //We didn't find the minimum number of cookies we need
             return false
         } else {
             for item in neededCookies {
-                if item.name.elementsEqual(RequiredIDs.Cookie.netflixID.rawValue) {
+                if item.name.elementsEqual(Common.Identifiers.Cookie.netflixID.rawValue) {
                     self.netflixID = item.value
-                } else if item.name.elementsEqual(RequiredIDs.Cookie.secureNetflixID.rawValue) {
+                } else if item.name.elementsEqual(Common.Identifiers.Cookie.secureNetflixID.rawValue) {
                     self.secureNetflixID = item.value
                 }
             }
@@ -125,13 +117,13 @@ extension NetflixCredential: UserCredentialStorageProtocol {
     }
 }
 extension NetflixCredential: Equatable {
-    static func == (lhs: NetflixCredential, rhs: NetflixCredential) -> Bool {
+    public static func == (lhs: NetflixCredential, rhs: NetflixCredential) -> Bool {
         return ((lhs.netflixID == rhs.netflixID) && (lhs.secureNetflixID == lhs.secureNetflixID))
     }
 }
 
 extension NetflixCredential:  CustomStringConvertible {
-    var description: String {
+    public var description: String {
         return "NetflixID: \(self.netflixID ?? "nil")\nSecureNetflixId: \(self.secureNetflixID ?? "nil")"
     }
 }
