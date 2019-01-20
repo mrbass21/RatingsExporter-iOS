@@ -66,8 +66,6 @@ public class RatingsFetcher {
     public func fetchRatings(page: UInt) {
         
         if activeTasks[page] != nil {
-            //We are already downloading this item
-            debugPrint("\(#file): Decided not to reload page \(page) because the page is already downloading.")
             return
         }
         

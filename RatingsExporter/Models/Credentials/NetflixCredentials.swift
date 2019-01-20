@@ -100,7 +100,7 @@ extension NetflixCredential: UserCredentialStorageProtocol {
     func restoreFromStorageItems(_ storageItems: [CredentialStorageItem]) {
         
         if storageItems.count < 2 {
-            print("Warning: Minimum number of storage items not supplied")
+            print("NetflixCredential: Warning: Minimum number of storage items not supplied.")
         }
         
         for item in storageItems {
@@ -110,7 +110,7 @@ extension NetflixCredential: UserCredentialStorageProtocol {
             case RequiredIDs.Credential.secureNetflixID.rawValue:
                 self.secureNetflixID = item.value
             default:
-                print("NetflixCredential: Unknown credential item")
+                print("NetflixCredential: Unknown credential item \(item.name)")
                 continue
             }
         }

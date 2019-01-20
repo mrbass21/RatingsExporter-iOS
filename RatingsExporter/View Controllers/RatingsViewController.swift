@@ -46,7 +46,6 @@ class RatingsViewController: UITableViewController {
     
     //MARK: - Table View Data Source Delegate
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-     //   print("Creating \(ratingsLists.totalRatings) number of rows")
         return ratingsLists?.totalRatings ?? 0
     }
     
@@ -81,7 +80,7 @@ extension RatingsViewController {
             try UserCredentialStore.clearCredential(credential)
             showLoginView()
         } catch {
-            print("Error: \(error.localizedDescription)")
+            debugLog("Error: \(error.localizedDescription)")
         }
     }
 }

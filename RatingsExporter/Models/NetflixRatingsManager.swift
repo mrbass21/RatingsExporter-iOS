@@ -137,7 +137,7 @@ public class NetflixRatingsManager {
 
 extension NetflixRatingsManager: RatingsFetcherDelegate {
     public func errorFetchingRatingsForPage(page: UInt) {
-        print("Error on page \(page)")
+        debugLog("Error on page \(page)")
     }
     
     public func didFetchRatings(ratings: NetflixRatingsList) {
