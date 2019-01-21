@@ -6,8 +6,8 @@
 //  Copyright © 2018 Jason Beck. All rights reserved.
 //
 
-import Foundation
-import Security
+import Foundation.NSDate
+import Security.SecItem
 
 ///A struct used to represent the storage attributes that can be applied to a storage item.
 public struct UserCredentialStorageItem {
@@ -31,9 +31,12 @@ public struct UserCredentialStorageItem {
      Initialize a `Credential Store Item` struct that persists credential items.
      
      - Parameter key: The key used to identify the item in storage.
-     - Parameter value: The value to store
-     - Parameter netflixSecureID: The known cookie value for netflixSecureID that makes up a `Netflix Credential`.
-     - Returns: true if the credential was able to be populated from the provided cookies, false otherwise.
+     - Parameter value: The value to store.
+     - Parameter valueType: The type of data to be stored. This determines the storage strategy. For instance,
+                            cryptographic keys require a different storage method than internet passwords.
+                            For now, the only supported type is `Cookie`.
+     - Parameter description: A user readable description of the item. This is not used internally and is
+                                only for the benifit of the implementer.
      */
     public init(key: String, value: String? = nil, valueType: ValueType = .Cookie, description: String? = nil) {
         self.key = key
@@ -52,7 +55,7 @@ public struct UserCredentialStorageItem {
 //A Credential Item is defined as any part that makes up a whole credential. A username is a
 //Credential Item. A password is a Credential Item. These two Credential Items make up a Credential.
 
-protocol UserCredentialStorageProtocol: class {
+public protocol UserCredentialStorageProtocol: class {
     //We need an initializer to restore the item or delete it
     init()
     
@@ -64,10 +67,10 @@ protocol UserCredentialStorageProtocol: class {
 }
 
 ///A class used to persist items that conform to the `UserCredentialStorageProtocol`
-class UserCredentialStore {
+public class UserCredentialStore {
     
     ///Errors that can be encountered while working with UserCredentialStore
-    enum UserCredentialStoreError: Error, Equatable {
+    public enum UserCredentialStoreError: Error, Equatable {
         ///The attributes in the CredentialStorageItem were either invalid or unexpectedly nil
         case invalidItemAttributes
         ///When restoring tha data from storage, en error occured and invalid data was retrieved
@@ -78,16 +81,19 @@ class UserCredentialStore {
         case unexpectedStorageError(status: OSStatus)
     }
     
+    
     //MARK: - Public Interface
+    
+    
     /**
-        Restores the credential to it's stored value.
+    Restores the credential to it's stored value.
      
-     - Parameter forType: A type that implements `UserCredentialStorageProtocol`.
-     - Throws:
-            - `UserCredentialStoreError.itemNotFound` if the item is not stored.
-            - `UserCredentialStoreError.invalidData` if the data was corrupt on retrieval.
-            - `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
-     - Returns: A new instance of credentialType restored from the storage.
+    - Parameter forType: A type that implements `UserCredentialStorageProtocol`.
+    - Throws:
+        - `UserCredentialStoreError.itemNotFound` if the item is not stored.
+        - `UserCredentialStoreError.invalidData` if the data was corrupt on retrieval.
+        - `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
+    - Returns: A new instance of credentialType restored from the storage.
      */
     public static func restoreCredential<T: UserCredentialStorageProtocol>(forType credentialType: T.Type) throws -> T {
         let returnCredential = credentialType.self.init()
@@ -176,7 +182,7 @@ class UserCredentialStore {
      
      - Parameter credential: A type that conforms to `UserCredentialStorageProtocol` to be cleared from storage.
      - Throws:
-     - `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
+        - `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
      */
     public static func clearCredential<T: UserCredentialStorageProtocol>(forType credentialType: T.Type) throws {
         let clearCredential = credentialType.self.init()
