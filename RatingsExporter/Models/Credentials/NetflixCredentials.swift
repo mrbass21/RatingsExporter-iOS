@@ -43,11 +43,19 @@ public class NetflixCredential: NetflixCredentialProtocol {
         }
     }
     
+    /**
+     Initialize a netflix ID with a specific known cookie value.
+     
+     - Parameter netflixID: The known cookie value for netflixID that makes up a `Netflix Credential`.
+     - Parameter netflixSecureID: The known cookie value for netflixSecureID that makes up a `Netflix Credential`.
+     - Returns: true if the credential was able to be populated from the provided cookies, false otherwise.
+     */
     init(netflixID: String?, secureNetflixID: String?) {
         self.netflixID = netflixID
         self.secureNetflixID = secureNetflixID
     }
     
+    ///Initialize a blank credential
     required init() {
         self.netflixID = nil
         self.secureNetflixID = nil
@@ -88,29 +96,29 @@ public class NetflixCredential: NetflixCredentialProtocol {
 }
 
 extension NetflixCredential: UserCredentialStorageProtocol {
-    func getListOfCredentialItemsToStore() -> [CredentialStorageItem] {
+    func getListOfCredentialItemsToStore() -> [UserCredentialStorageItem] {
         let credentialItems = [
-            CredentialStorageItem(name: RequiredIDs.Credential.netflixID.rawValue, value: self.netflixID, description: "The Netflix cookie used in requests"),
-            CredentialStorageItem(name: RequiredIDs.Credential.secureNetflixID.rawValue, value: self.secureNetflixID, description: "The Secure Netflix cookie used in requests")
+            UserCredentialStorageItem(name: RequiredIDs.Credential.netflixID.rawValue, value: self.netflixID, description: "The Netflix cookie used in requests"),
+            UserCredentialStorageItem(name: RequiredIDs.Credential.secureNetflixID.rawValue, value: self.secureNetflixID, description: "The Secure Netflix cookie used in requests")
         ]
         
         return credentialItems
     }
     
-    func restoreFromStorageItems(_ storageItems: [CredentialStorageItem]) {
+    func restoreFromStorageItems(_ storageItems: [UserCredentialStorageItem]) {
         
         if storageItems.count < 2 {
             print("NetflixCredential: Warning: Minimum number of storage items not supplied.")
         }
         
         for item in storageItems {
-            switch item.name {
+            switch item.key {
             case RequiredIDs.Credential.netflixID.rawValue:
                 self.netflixID = item.value
             case RequiredIDs.Credential.secureNetflixID.rawValue:
                 self.secureNetflixID = item.value
             default:
-                print("NetflixCredential: Unknown credential item \(item.name)")
+                print("NetflixCredential: Unknown credential item \(item.key)")
                 continue
             }
         }
