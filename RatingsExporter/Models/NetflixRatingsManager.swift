@@ -136,11 +136,11 @@ public class NetflixRatingsManager {
 
 
 extension NetflixRatingsManager: RatingsFetcherDelegate {
-    public func errorFetchingRatingsForPage(page: UInt) {
+    public func errorFetchingRatingsForPage(_ page: UInt) {
         debugLog("Error on page \(page)")
     }
     
-    public func didFetchRatings(ratings: NetflixRatingsList) {
+    public func didFetchRatings(_ ratings: NetflixRatingsList) {
         if ratingsLists == nil {
             //This is the first run of the object and we are preloading the first page and setting up the lists
             ratingsLists = [NetflixRatingsList?].init(repeating: nil, count: (ratings.totalRatings / ratings.numberOfRequestedItems) + 1)
