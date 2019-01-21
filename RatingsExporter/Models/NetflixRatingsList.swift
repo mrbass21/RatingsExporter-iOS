@@ -28,6 +28,11 @@ public struct NetflixRatingsList {
 
 
 extension NetflixRatingsList {
+    /**
+     Initialize a Ratings List.
+     
+     - Parameter json: Tries to create a list of ratings from the JSON returned from Netflix.
+     */
     public init?(json: [String: Any]) {
         
         //Pull out the code name
@@ -59,7 +64,7 @@ extension NetflixRatingsList {
                 let typedRating = NetflixRating.ratingType(rawValue: ratingType),
                 let title = movieRating["title"] as? String,
                 let movieID = movieRating["movieID"] as? UInt,
-                let yourRating = movieRating["yourRating"] as? Int, //Why isn't this unsigned? *Grumble grumble*
+                let yourRating = movieRating["yourRating"] as? Double,
                 let intRating = movieRating["intRating"] as? Int, //Why isn't this unsigned? *Grumble grumble*
                 let date = movieRating["date"] as? String,
                 let timestamp = movieRating["timestamp"] as? UInt,
