@@ -8,7 +8,7 @@
 
 import UIKit
 
-class RatingsViewController: UITableViewController {
+final class RatingsViewController: UITableViewController {
     
     public var ratingsLists: NetflixRatingsManager?
     

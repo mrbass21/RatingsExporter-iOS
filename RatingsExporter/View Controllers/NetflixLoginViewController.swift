@@ -6,10 +6,10 @@
 //  Copyright © 2018 Jason Beck. All rights reserved.
 //
 
-import UIKit
+import UIKit.UIViewController
 import WebKit
 
-class NetflixLoginViewController: UIViewController {
+final class NetflixLoginViewController: UIViewController {
     //MARK: - Outlets
     private weak var loginWebView: WKWebView!
     private weak var setupIndicatorView: UIActivityIndicatorView!

@@ -6,9 +6,9 @@
 //  Copyright © 2019 Jason Beck. All rights reserved.
 //
 
-import UIKit
+import UIKit.UITableViewCell
 
-class NetflixRatingsCell: UITableViewCell {
+final class NetflixRatingsCell: UITableViewCell {
     @IBOutlet weak var ratingTitle: UILabel!
     @IBOutlet weak var ratingRating: UILabel!
 

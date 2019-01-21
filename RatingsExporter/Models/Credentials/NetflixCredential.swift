@@ -17,7 +17,7 @@ public protocol NetflixCredentialProtocol: UserCredentialProtocol {
 }
 
 ///A class for representing Netflix Credentials
-public class NetflixCredential: NetflixCredentialProtocol {
+public final class NetflixCredential: NetflixCredentialProtocol {
     
     ///Definition of the IDs used for the Storage Items. This is for quick unified identification.
     private struct RequiredIDs {

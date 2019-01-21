@@ -6,9 +6,9 @@
 //  Copyright © 2019 Jason Beck. All rights reserved.
 //
 
-import UIKit
+import UIKit.UIViewController
 
-class RatingsDetailViewController: UIViewController {
+final class RatingsDetailViewController: UIViewController {
     @IBOutlet weak var movieTitle: UILabel!
     @IBOutlet weak var rating: UILabel!
     @IBOutlet weak var dateRated: UILabel!

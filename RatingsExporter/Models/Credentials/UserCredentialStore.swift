@@ -75,7 +75,7 @@ public protocol UserCredentialStorageProtocol: class {
 }
 
 ///A class used to persist items that conform to the `UserCredentialStorageProtocol`
-public class UserCredentialStore {
+public final class UserCredentialStore {
     
     ///Errors that can be encountered while working with UserCredentialStore
     public enum UserCredentialStoreError: Error, Equatable {

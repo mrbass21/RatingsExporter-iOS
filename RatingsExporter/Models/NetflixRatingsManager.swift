@@ -19,7 +19,7 @@ public protocol NetflixRatingsManagerDelegate {
 
 //TODO: Persist ratings on device.
 ///A class used to manage the ratings NetflixFetcher retuns, and deals with device persistance.
-public class NetflixRatingsManager {
+public final class NetflixRatingsManager {
 	
     ///Describes the fetching behavior desired.
 	public enum FetchMode {
