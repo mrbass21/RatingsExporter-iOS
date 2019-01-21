@@ -35,22 +35,22 @@ class TestCredental: UserCredentialStorageProtocol, Equatable {
         return (lhs.credential1 == rhs.credential1) && (lhs.credential2 == rhs.credential2)
     }
     
-    func getListOfCredentialItemsToStore() -> [CredentialStorageItem] {
-        var returnCredentials: [CredentialStorageItem] = []
+    func getListOfCredentialItemsToStore() -> [UserCredentialStorageItem] {
+        var returnCredentials: [UserCredentialStorageItem] = []
         
-        let testCredentialItem1 = CredentialStorageItem(name: StorageName.testFirstItem, value: credential1)
+        let testCredentialItem1 = UserCredentialStorageItem(name: StorageName.testFirstItem, value: credential1)
         returnCredentials.append(testCredentialItem1)
-        let testCredentialItem2 = CredentialStorageItem(name: StorageName.testSecondItem, value: credential2)
+        let testCredentialItem2 = UserCredentialStorageItem(name: StorageName.testSecondItem, value: credential2)
         returnCredentials.append(testCredentialItem2)
         
         return returnCredentials
     }
     
-    func restoreFromStorageItems(_ storageItems: [CredentialStorageItem]) {
+    func restoreFromStorageItems(_ storageItems: [UserCredentialStorageItem]) {
         for credential in storageItems {
-            if credential.name.elementsEqual(StorageName.testFirstItem) {
+            if credential.key.elementsEqual(StorageName.testFirstItem) {
                 self.credential1 = credential.value
-            } else if credential.name.elementsEqual(StorageName.testSecondItem) {
+            } else if credential.key.elementsEqual(StorageName.testSecondItem) {
                 self.credential2 = credential.value
             }
         }

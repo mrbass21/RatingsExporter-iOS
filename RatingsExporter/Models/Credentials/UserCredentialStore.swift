@@ -6,29 +6,40 @@
 //  Copyright © 2018 Jason Beck. All rights reserved.
 //
 
-import Foundation
-import Security
+import Foundation.NSDate
+import Security.SecItem
 
 ///A struct used to represent the storage attributes that can be applied to a storage item.
-public struct CredentialStorageItem {
-    ///The name of the item to be used as the lookup key in Keychain. This value must be unique for all storage items.
-    let name: String
-    ///The value relating to the `Name` parameter
-    var value: String?
+public struct UserCredentialStorageItem {
+    ///The key used to identify the item in storage. This value must be unique for all storage items.
+    public let key: String
+    ///The value relating to the `key` parameter
+    public var value: String?
     ///The type of data. This determines how the data is stored in Keychain. Only Cookie supported at this time.
-    var valueType: ValueType
+    public var valueType: ValueType
     ///An optional description to be stored as the description for this item in Keychain.
-    var description: String?
+    public var description: String?
     
 
     ///Describes what kind of data this should be stored as.
-    enum ValueType {
+    public enum ValueType {
         ///A cookie value that is expressed internally as a String
         case Cookie
     }
     
-    init(name: String, value: String? = nil, valueType: ValueType = .Cookie, description: String? = nil) {
-        self.name = name
+    /**
+     Initialize a `Credential Store Item` struct that persists credential items.
+     
+     - Parameter key: The key used to identify the item in storage.
+     - Parameter value: The value to store.
+     - Parameter valueType: The type of data to be stored. This determines the storage strategy. For instance,
+                            cryptographic keys require a different storage method than internet passwords.
+                            For now, the only supported type is `Cookie`.
+     - Parameter description: A user readable description of the item. This is not used internally and is
+                                only for the benifit of the implementer.
+     */
+    public init(key: String, value: String? = nil, valueType: ValueType = .Cookie, description: String? = nil) {
+        self.key = key
         self.value = value
         self.valueType = valueType
         self.description = description
@@ -44,30 +55,30 @@ public struct CredentialStorageItem {
 //A Credential Item is defined as any part that makes up a whole credential. A username is a
 //Credential Item. A password is a Credential Item. These two Credential Items make up a Credential.
 
-protocol UserCredentialStorageProtocol: class {
+public protocol UserCredentialStorageProtocol: class {
     //We need an initializer to restore the item or delete it
     init()
     
-    ///Gets a list of credential items to store
-    func getListOfCredentialItemsToStore() -> [CredentialStorageItem]
+    /**
+     Returns a list of credential items that describe the credential from storage.
+     
+     - Returns: An array of `UserCredentialStorageItem` objects that were stored for the `UserCredential`.
+     */
+    func getListOfCredentialItemsToStore() -> [UserCredentialStorageItem]
     
-    ///Initialize a new credential item from Storage Attributes
-    func restoreFromStorageItems(_ storageItems: [CredentialStorageItem])
-    
-    ///The credential was deleted from storage
-    func didDeleteCredentialFromStorage()
+    /**
+     Gets a list of credential items that describe the credential for storage.
+     
+     - Parameter storageItems: An array of `UserCredentialStorageItem` objects that desicribe the `UserCredential`.
+     */
+    func restoreFromStorageItems(_ storageItems: [UserCredentialStorageItem])
 }
 
-extension UserCredentialStorageProtocol {
-    func didDeleteCredentialFromStorage() {
-        
-    }
-}
-
-class UserCredentialStore {
+///A class used to persist items that conform to the `UserCredentialStorageProtocol`
+public final class UserCredentialStore {
     
     ///Errors that can be encountered while working with UserCredentialStore
-    enum UserCredentialStoreError: Error, Equatable {
+    public enum UserCredentialStoreError: Error, Equatable {
         ///The attributes in the CredentialStorageItem were either invalid or unexpectedly nil
         case invalidItemAttributes
         ///When restoring tha data from storage, en error occured and invalid data was retrieved
@@ -78,23 +89,26 @@ class UserCredentialStore {
         case unexpectedStorageError(status: OSStatus)
     }
     
+    
     //MARK: - Public Interface
+    
+    
     /**
-        Restores the credential to it's stored value.
+    Restores the credential to it's stored value.
      
-     - Parameter forType: A type that implements `UserCredentialStorageProtocol`.
-     - Throws:
-            - `UserCredentialStoreError.itemNotFound` if the item is not stored.
-            - `UserCredentialStoreError.invalidData` if the data was corrupt on retrieval.
-            - `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
-     - Returns: A new instance of credentialType restored from the storage.
+    - Parameter forType: A type that implements `UserCredentialStorageProtocol`.
+    - Throws:
+        - `UserCredentialStoreError.itemNotFound` if the item is not stored.
+        - `UserCredentialStoreError.invalidData` if the data was corrupt on retrieval.
+        - `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
+    - Returns: A new instance of credentialType restored from the storage.
      */
     public static func restoreCredential<T: UserCredentialStorageProtocol>(forType credentialType: T.Type) throws -> T {
         let returnCredential = credentialType.self.init()
         
         let credentialItems = returnCredential.getListOfCredentialItemsToStore()
         
-        var returnCredentialItems = [CredentialStorageItem]()
+        var returnCredentialItems = [UserCredentialStorageItem]()
         for item in credentialItems {
             var mutItem = item
             try retrieveCredentialStorageItem(&mutItem)
@@ -176,7 +190,7 @@ class UserCredentialStore {
      
      - Parameter credential: A type that conforms to `UserCredentialStorageProtocol` to be cleared from storage.
      - Throws:
-     - `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
+        - `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
      */
     public static func clearCredential<T: UserCredentialStorageProtocol>(forType credentialType: T.Type) throws {
         let clearCredential = credentialType.self.init()
@@ -187,7 +201,10 @@ class UserCredentialStore {
         }
     }
     
+    
     //MARK: - Keychain functions
+    
+    
     /**
      Performs a search in Keychain for the item without returning the data.
      
@@ -196,11 +213,11 @@ class UserCredentialStore {
         - `UserCredentialStoreError.unexpectedStorageError(status:)` if an error was encountered with the OSStatus set.
      - Returns: `true` if the item was found in Keychain, and `false` if it was not located.
      */
-    private static func doesCredentialItemAlreadyExist(_ storageItem: CredentialStorageItem) throws -> Bool {
+    private static func doesCredentialItemAlreadyExist(_ storageItem: UserCredentialStorageItem) throws -> Bool {
         //Build the search query
         let keychainGetQuery: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
-            kSecAttrAccount: storageItem.name as CFString,
+            kSecAttrAccount: storageItem.key as CFString,
             kSecReturnData: kCFBooleanFalse,
             kSecMatchLimit: kSecMatchLimitOne
         ]
@@ -230,12 +247,12 @@ class UserCredentialStore {
         - `UserCredentialStoreError.itemNotFound` if the item was not found in Keychain.
         - `UserCredentialStoreError.unexpectedStorageError(status:)` if an error was encountered with the OSStatus set.
      */
-    private static func retrieveCredentialStorageItem(_ storageItem: inout CredentialStorageItem)
+    private static func retrieveCredentialStorageItem(_ storageItem: inout UserCredentialStorageItem)
         throws {
             //Build the search query
             let keychainGetQuery: [CFString: Any] = [
                 kSecClass: kSecClassGenericPassword,
-                kSecAttrAccount: storageItem.name as CFString,
+                kSecAttrAccount: storageItem.key as CFString,
                 kSecReturnData: kCFBooleanTrue,
                 kSecMatchLimit: kSecMatchLimitOne
             ]
@@ -275,7 +292,7 @@ class UserCredentialStore {
         - `UserCredentialStoreError.invalidItemAttributes if the attributes of the provided storeage item are invalid.
         - `UserCredentialStoreError.unexpectedStorageError(status:)` if an error was encountered with the OSStatus set.
      */
-    private static func updateCredentialItem(_ storageItem: CredentialStorageItem) throws {
+    private static func updateCredentialItem(_ storageItem: UserCredentialStorageItem) throws {
         guard storageItem.value != nil else {
             throw UserCredentialStoreError.invalidItemAttributes
         }
@@ -286,7 +303,7 @@ class UserCredentialStore {
         //Build the search query
         let updateQueryDict: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
-            kSecAttrAccount: storageItem.name as CFString,
+            kSecAttrAccount: storageItem.key as CFString,
         ]
         
         //Create a list of changed attributes
@@ -313,7 +330,7 @@ class UserCredentialStore {
         - `UserCredentialStoreError.invalidData if the `Value` field of the `CredentialStorageItem` was unable to be converted to UTF-8 Data.
         - `UserCredentialStoreError.unexpectedStorageError(status:)` if an error was encountered with the OSStatus set.
      */
-    private static func createCredentialItem(_ storageItem: CredentialStorageItem) throws {
+    private static func createCredentialItem(_ storageItem: UserCredentialStorageItem) throws {
         guard storageItem.value != nil else {
             throw UserCredentialStoreError.invalidItemAttributes
         }
@@ -328,7 +345,7 @@ class UserCredentialStore {
             kSecClass: kSecClassGenericPassword,
             kSecAttrCreationDate: Date(),
             kSecAttrDescription: storageItem.description ?? "No Description",
-            kSecAttrAccount: storageItem.name as CFString,
+            kSecAttrAccount: storageItem.key as CFString,
             kSecValueData: UTF8data,
             kSecReturnData: kCFBooleanFalse
         ]
@@ -348,10 +365,10 @@ class UserCredentialStore {
      - Throws:
         - `UserCredentialStoreError.unexpectedStorageError(status:)` if an error was encountered with the OSStatus set.
      */
-    private static func deleteCredentialItem(_ storageItem: CredentialStorageItem) throws {
+    private static func deleteCredentialItem(_ storageItem: UserCredentialStorageItem) throws {
         let queryDict: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
-            kSecAttrAccount: storageItem.name
+            kSecAttrAccount: storageItem.key
         ]
         
         let status = SecItemDelete(queryDict as CFDictionary)

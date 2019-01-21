@@ -114,9 +114,9 @@ class NetflixCredentialTest: XCTestCase {
         XCTAssertEqual(storageItems.count, 2) //Assert we have two storage items
         
         for credential in storageItems {
-            if !(credential.name.elementsEqual(NetflixCredential.RequiredIDs.Credential.netflixID.rawValue) ||
-                credential.name.elementsEqual(NetflixCredential.RequiredIDs.Credential.secureNetflixID.rawValue)) {
-                XCTFail("Unexpected credential name: \(credential.name)")
+            if !(credential.key.elementsEqual(NetflixCredential.RequiredIDs.Credential.netflixID.rawValue) ||
+                credential.key.elementsEqual(NetflixCredential.RequiredIDs.Credential.secureNetflixID.rawValue)) {
+                XCTFail("Unexpected credential name: \(credential.key)")
             }
             XCTAssertNotNil(credential.value)
         }
@@ -126,12 +126,12 @@ class NetflixCredentialTest: XCTestCase {
         //given
         let restoredNetflixCredential = NetflixCredential()
         let expectedNetflixCredential = NetflixCredential(netflixID: Values.NetflixIdValue, secureNetflixID: Values.SecureNetflicIDValue)
-        var storageItems: [CredentialStorageItem] = []
+        var storageItems: [UserCredentialStorageItem] = []
         
-        let netflixID = CredentialStorageItem(name: NetflixCredential.RequiredIDs.Credential.netflixID.rawValue, value: Values.NetflixIdValue)
+        let netflixID = UserCredentialStorageItem(name: NetflixCredential.RequiredIDs.Credential.netflixID.rawValue, value: Values.NetflixIdValue)
         storageItems.append(netflixID)
         
-        let secureNetflixID = CredentialStorageItem(name: NetflixCredential.RequiredIDs.Credential.secureNetflixID.rawValue, value: Values.SecureNetflicIDValue)
+        let secureNetflixID = UserCredentialStorageItem(name: NetflixCredential.RequiredIDs.Credential.secureNetflixID.rawValue, value: Values.SecureNetflicIDValue)
         storageItems.append(secureNetflixID)
         
         //when
