@@ -6,10 +6,10 @@
 //  Copyright © 2018 Jason Beck. All rights reserved.
 //
 
-import Foundation
+import Foundation.NSHTTPCookie
 
 ///A protocol for creating a Netflix Credential
-protocol NetflixCredentialProtocol: UserCredentialProtocol {
+public protocol NetflixCredentialProtocol: UserCredentialProtocol {
     ///The Netflix ID provided by a valid Netflix login.
     var netflixID: String? { get set }
     ///The Secure Netflix ID provided by a valid Netflix login.
@@ -50,13 +50,13 @@ public class NetflixCredential: NetflixCredentialProtocol {
      - Parameter netflixSecureID: The known cookie value for netflixSecureID that makes up a `Netflix Credential`.
      - Returns: true if the credential was able to be populated from the provided cookies, false otherwise.
      */
-    init(netflixID: String?, secureNetflixID: String?) {
+    public init(netflixID: String?, secureNetflixID: String?) {
         self.netflixID = netflixID
         self.secureNetflixID = secureNetflixID
     }
     
     ///Initialize a blank credential
-    required init() {
+    required public init() {
         self.netflixID = nil
         self.secureNetflixID = nil
     }
@@ -96,16 +96,16 @@ public class NetflixCredential: NetflixCredentialProtocol {
 }
 
 extension NetflixCredential: UserCredentialStorageProtocol {
-    func getListOfCredentialItemsToStore() -> [UserCredentialStorageItem] {
+    public func getListOfCredentialItemsToStore() -> [UserCredentialStorageItem] {
         let credentialItems = [
-            UserCredentialStorageItem(name: RequiredIDs.Credential.netflixID.rawValue, value: self.netflixID, description: "The Netflix cookie used in requests"),
-            UserCredentialStorageItem(name: RequiredIDs.Credential.secureNetflixID.rawValue, value: self.secureNetflixID, description: "The Secure Netflix cookie used in requests")
+            UserCredentialStorageItem(key: RequiredIDs.Credential.netflixID.rawValue, value: self.netflixID, description: "The Netflix cookie used in requests"),
+            UserCredentialStorageItem(key: RequiredIDs.Credential.secureNetflixID.rawValue, value: self.secureNetflixID, description: "The Secure Netflix cookie used in requests")
         ]
         
         return credentialItems
     }
     
-    func restoreFromStorageItems(_ storageItems: [UserCredentialStorageItem]) {
+    public func restoreFromStorageItems(_ storageItems: [UserCredentialStorageItem]) {
         
         if storageItems.count < 2 {
             print("NetflixCredential: Warning: Minimum number of storage items not supplied.")

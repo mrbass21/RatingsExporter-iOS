@@ -15,5 +15,5 @@ import WebKit
 
 //MARK: - UserCredentialsProtocol
 ///A protocol that defines a credential used for some service.
-protocol UserCredentialProtocol: Equatable {
+public protocol UserCredentialProtocol: Equatable {
 }

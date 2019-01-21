@@ -59,10 +59,18 @@ public protocol UserCredentialStorageProtocol: class {
     //We need an initializer to restore the item or delete it
     init()
     
-    ///Gets a list of credential items to store
+    /**
+     Returns a list of credential items that describe the credential from storage.
+     
+     - Returns: An array of `UserCredentialStorageItem` objects that were stored for the `UserCredential`.
+     */
     func getListOfCredentialItemsToStore() -> [UserCredentialStorageItem]
     
-    ///Initialize a new credential item from Storage Attributes
+    /**
+     Gets a list of credential items that describe the credential for storage.
+     
+     - Parameter storageItems: An array of `UserCredentialStorageItem` objects that desicribe the `UserCredential`.
+     */
     func restoreFromStorageItems(_ storageItems: [UserCredentialStorageItem])
 }
 
@@ -193,7 +201,10 @@ public class UserCredentialStore {
         }
     }
     
+    
     //MARK: - Keychain functions
+    
+    
     /**
      Performs a search in Keychain for the item without returning the data.
      
