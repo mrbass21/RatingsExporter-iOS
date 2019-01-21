@@ -9,9 +9,19 @@ import Foundation.NSURLSession
 
 ///Notifies the delegate of calls in the RatingsFetcher lifecycle.
 public protocol RatingsFetcherDelegate: class {
-    ///A successful return for a page of ratings was completed.
+    /**
+     The returned ratings for a specific page.
+     
+     - Parameter ratings : The list of retrieved ratings.
+     */
 	func didFetchRatings(_ ratings: NetflixRatingsList)
-    ///An error was encounteres fetching the `page`.
+    
+    //TODO: Pass the error, maybe?.
+    /**
+     An error occured fetching a specific page.
+     
+     - Parameter page : The page that failed to retrieve.
+     */
 	func errorFetchingRatingsForPage(_ page: UInt)
 }
 
