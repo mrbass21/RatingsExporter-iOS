@@ -28,7 +28,7 @@ public struct NetflixRatingsList {
 
 
 extension NetflixRatingsList {
-    init?(json: [String: Any]) {
+    public init?(json: [String: Any]) {
         
         //Pull out the code name
         guard let codeName = json["codeName"] as? String,
