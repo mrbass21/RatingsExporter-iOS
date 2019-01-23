@@ -26,12 +26,31 @@ public protocol RatingsFetcherDelegate: class {
 }
 
 ///Fetches Netflix ratings
-public final class RatingsFetcher {
+public final class RatingsFetcher: NSObject {
     
     ///Errors that can be encountered while working with RatingsFetcher
     public enum RatingsFetcherError: Error, Equatable {
         ///The credentials provided were invalid.
         case invalidCredentials
+    }
+    
+    private enum SessionState: Equatable {
+        case invalidated
+        case willInvalidate
+        case active(Timer?)
+        
+        static func ==(lhs: SessionState, rhs: SessionState) -> Bool {
+            switch (lhs, rhs) {
+            case (.invalidated, .invalidated):
+                return true
+            case (.willInvalidate, .willInvalidate):
+                return true
+            case (let .active(lhsTimer), let .active(rhsTimer)):
+                return lhsTimer === rhsTimer
+            default:
+                return false
+            }
+        }
     }
 	
 	///The delegate to inform of updates.
@@ -40,6 +59,10 @@ public final class RatingsFetcher {
     //NOTE: The session cannot be a let verb, because we need to inject cookies into it.
     ///The session to use when making a request.
     public var session: URLSession!
+    
+    private var sessionState: SessionState = .invalidated
+    
+    private var requestedConfiguration: URLSessionConfiguration?
 	
 	///The array of currently executing dataTasks.
     private var activeTasks: [UInt : URLSessionDataTask] = [:]
@@ -55,29 +78,19 @@ public final class RatingsFetcher {
                         ephemeral storage. If a session is provided, RatingsFetcher will try and inject the credentials into the data store
                         for the provided session.
      */
-    public init(forCredential credential: NetflixCredential, with session: URLSession?) {
+    public init(forCredential credential: NetflixCredential, with sessionConfig: URLSessionConfiguration?) {
         
         //Set the credential
         self.credential = credential
         
-        //Create the configuration
-        let configuration: URLSessionConfiguration!
+        //Set the requested session configuration requested to be used
+        self.requestedConfiguration = sessionConfig
         
-        if let session = session {
-            //If we've been passed a session, get a copy of the current configuration
-            configuration = session.configuration
-        } else {
-            configuration = URLSessionConfiguration.ephemeral
-        }
+        //Continue initialization
+        super.init()
         
-        //Set the headers for the session
-        setHeadersForSessionConfiguration(&configuration)
-        
-        //Inject the cookie values for the credential
-        try? injectCookiesForSessionConfiguration(&configuration, forCredential: self.credential)
-        
-        //Finally create a session with the updated configuration
-        self.session = URLSession(configuration: configuration)
+        //Configure the connection
+        createValidSession(withConfiguration: sessionConfig)
     }
     
     /**
@@ -87,7 +100,18 @@ public final class RatingsFetcher {
      */
     public func fetchRatings(page: UInt) {
         
+        //Check if we are already fetching this page and return back nil if we are.
         if activeTasks[page] != nil {
+            return
+        }
+        
+        //Check that the session is still valid
+        if sessionState == SessionState.invalidated {
+            debugLog("The session is currently invalid. Creating a new one.")
+            createValidSession(withConfiguration: self.requestedConfiguration)
+        } else if sessionState == .willInvalidate {
+            //TODO: Inform delegate that we are waiting for a session to invalidate and inform when we are ready to create a new session again?
+            debugLog("The session is starting to be invalidated, but not yet invalidated. Doing nothing.")
             return
         }
         
@@ -208,9 +232,68 @@ public final class RatingsFetcher {
         //Release the task. We're done.
         self.activeTasks[UInt(list.page)] = nil
         
+        if activeTasks.count <= 0 {
+            debugLog("Invalidating URLSession")
+            invalidateButFinishSession()
+        }
+        
         //return it to the delegate
         DispatchQueue.main.async {
             self.delegate?.didFetchRatings(list)
+        }
+    }
+    
+    private func createValidSession(withConfiguration configuration: URLSessionConfiguration?) {
+        //Create the configuration
+        let useConfiguration: URLSessionConfiguration!
+        
+        if let configuration = configuration {
+            //If we've been passed a session, get a copy of the current configuration
+            useConfiguration = configuration
+        } else {
+            useConfiguration = URLSessionConfiguration.ephemeral
+        }
+        
+        //Set the headers for the session
+        setHeadersForSessionConfiguration(&useConfiguration)
+        
+        //Inject the cookie values for the credential
+        try? injectCookiesForSessionConfiguration(&useConfiguration, forCredential: self.credential)
+        
+        //Finally create a session with the updated configuration
+        //NOTE: The session now contains a strong reference to this class! You _must_ invalidate the session when you are done!
+        self.session = URLSession(configuration: useConfiguration, delegate: self, delegateQueue: nil)
+        self.sessionState = .active(nil)
+    }
+    
+    private func invalidateAndCancelSession() {
+        session.invalidateAndCancel()
+        sessionState = .willInvalidate
+    }
+    
+    private func invalidateButFinishSession() {
+        session.finishTasksAndInvalidate()
+        sessionState = .willInvalidate
+    }
+}
+
+///Certificate Pinning
+extension RatingsFetcher: URLSessionDelegate {
+    public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+        debugLog("Received an auth challenge!")
+        completionHandler(.performDefaultHandling, nil)
+    }
+    
+    private func verifyCertificate() {
+        
+    }
+}
+
+///Handling invalidation
+extension RatingsFetcher {
+    public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
+        if session === self.session && sessionState != .invalidated {
+            sessionState = .invalidated
         }
     }
 }
