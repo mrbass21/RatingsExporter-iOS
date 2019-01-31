@@ -10,29 +10,29 @@ import Foundation
 import WebKit
 
 class MockWKNavigationAction: WKNavigationAction {
-    var mockNavigationType: WKNavigationType
-    var mockRequestURL: URLRequest
-    
-    init(navigationType: WKNavigationType, with request: URLRequest) {
-        mockNavigationType = navigationType
-        mockRequestURL = request
-    }
-    
-    override var navigationType: WKNavigationType {
-        get {
-            return mockNavigationType
-        }
-        set {
-            mockNavigationType = newValue
-        }
-    }
-    
-    override var request: URLRequest {
-        get {
-            return mockRequestURL
-        }
-        set{
-            mockRequestURL = request
-        }
-    }
+	var mockNavigationType: WKNavigationType
+	var mockRequestURL: URLRequest
+	
+	init(navigationType: WKNavigationType, with request: URLRequest) {
+		mockNavigationType = navigationType
+		mockRequestURL = request
+	}
+	
+	override var navigationType: WKNavigationType {
+		get {
+			return mockNavigationType
+		}
+		set {
+			mockNavigationType = newValue
+		}
+	}
+	
+	override var request: URLRequest {
+		get {
+			return mockRequestURL
+		}
+		set{
+			mockRequestURL = request
+		}
+	}
 }
