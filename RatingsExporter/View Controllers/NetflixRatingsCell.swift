@@ -9,11 +9,11 @@
 import UIKit.UITableViewCell
 
 final class NetflixRatingsCell: UITableViewCell {
-    @IBOutlet weak var ratingTitle: UILabel!
-    @IBOutlet weak var ratingRating: UILabel!
-
-    func initFromRating(_ rating: NetflixRating) {
-        self.ratingTitle.text = rating.title
-        self.ratingRating.text = "\(rating.yourRating)"
-    }
+	@IBOutlet weak var ratingTitle: UILabel!
+	@IBOutlet weak var ratingRating: UILabel!
+	
+	func initFromRating(_ rating: NetflixRating) {
+		self.ratingTitle.text = rating.title
+		self.ratingRating.text = "\(rating.yourRating)"
+	}
 }
