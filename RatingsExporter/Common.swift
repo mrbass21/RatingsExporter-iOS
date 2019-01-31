@@ -54,7 +54,7 @@ public struct Common {
 
 //Define some debug helpers
 ///Prints to log exactly as Print() does, only if we are in the debug configuration.
-public func debugLog(_ items: Any..., file: String = #file, lineNumber: UInt = #line ,separator: String = " ", terminator: String = "\n") {
+public func debugLog(_ items: Any, file: String = #file, lineNumber: UInt = #line ,separator: String = " ", terminator: String = "\n") {
     if _isDebugAssertConfiguration() {
         let fileURL: URL = URL(fileURLWithPath: file)
         print("file: \(fileURL.lastPathComponent) line: \(lineNumber) \(items)", separator: separator, terminator: terminator)
