@@ -98,7 +98,7 @@ public final class RatingsFetcher: NSObject {
      
      - Parameter page: The page number to fetch.
      */
-    public func fetchRatings(page: UInt) {
+    public final func fetchRatings(page: UInt) {
         
         //Check if we are already fetching this page and return back nil if we are.
         if activeTasks[page] != nil {
@@ -150,7 +150,12 @@ public final class RatingsFetcher: NSObject {
     
     //Private interface
     
-    private func setHeadersForSessionConfiguration(_ sessionConfig: inout URLSessionConfiguration) {
+    /**
+     Modifies the session provided `URLSessionConfiguration` to contain common headers that are used for `RatingsFetcher`.
+     
+     - Parameter sessionConfig: The `URLSessionConfiguration` to update with required headers.
+     */
+    private final func setHeadersForSessionConfiguration(_ sessionConfig: inout URLSessionConfiguration) {
         
         //Get a copy of the current headers
         var headers = sessionConfig.httpAdditionalHeaders
@@ -177,7 +182,7 @@ public final class RatingsFetcher: NSObject {
      - Throws:
         - RatingsFetcherError.invalidCredentials if netflixID or secureNetflixID are nil or the `HTTPCookie` creation failed.
      */
-    private func injectCookiesForSessionConfiguration(_ sessionConfig: inout URLSessionConfiguration, forCredential credential: NetflixCredential) throws {
+    private final func injectCookiesForSessionConfiguration(_ sessionConfig: inout URLSessionConfiguration, forCredential credential: NetflixCredential) throws {
         
         //Check that we have what we need
         guard credential.netflixID != nil, credential.secureNetflixID != nil else {
@@ -228,7 +233,7 @@ public final class RatingsFetcher: NSObject {
      
      - Parameter list: The list of returned Netflix ratings.
      */
-    private func didRetrieveList(list: NetflixRatingsList) {
+    private final func didRetrieveList(list: NetflixRatingsList) {
         //Release the task. We're done.
         self.activeTasks[UInt(list.page)] = nil
         
@@ -243,7 +248,12 @@ public final class RatingsFetcher: NSObject {
         }
     }
     
-    private func createValidSession(withConfiguration configuration: URLSessionConfiguration?) {
+    /**
+     Creates a new session object, using the provided URLSessionConfiguration as a base for required settings.
+     
+     - Parameter configuration: The `URLSessionConfiguration` to create the session from.
+     */
+    private final func createValidSession(withConfiguration configuration: URLSessionConfiguration?) {
         //Create the configuration
         let useConfiguration: URLSessionConfiguration!
         
@@ -266,12 +276,12 @@ public final class RatingsFetcher: NSObject {
         self.sessionState = .active(nil)
     }
     
-    private func invalidateAndCancelSession() {
+    private final func invalidateAndCancelSession() {
         session.invalidateAndCancel()
         sessionState = .willInvalidate
     }
     
-    private func invalidateButFinishSession() {
+    private final func invalidateButFinishSession() {
         session.finishTasksAndInvalidate()
         sessionState = .willInvalidate
     }
@@ -281,11 +291,61 @@ public final class RatingsFetcher: NSObject {
 extension RatingsFetcher: URLSessionDelegate {
     public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
         debugLog("Received an auth challenge!")
+        
+        //We need a server trust. If we don't have it, bail.
+        guard let serverTrust = challenge.protectionSpace.serverTrust,
+            let certificate = SecTrustGetCertificateAtIndex(serverTrust, 0) else {
+            completionHandler(.cancelAuthenticationChallenge, nil)
+            return
+        }
+        
+        //Set policies for domain name check
+        let policies = NSMutableArray()
+        policies.add(SecPolicyCreateSSL(true, (challenge.protectionSpace.host as CFString)))
+        SecTrustSetPolicies(serverTrust, policies)
+        
         completionHandler(.performDefaultHandling, nil)
+        
+        //Evaluate Trust
+        var result: SecTrustResultType = .invalid
+        SecTrustEvaluate(serverTrust, &result)
+        
+        let isServerTrusted: Bool = (result == .proceed || result == .unspecified)
+        
+        if isServerTrusted && certificateIsValid(certificate) {
+            let credential = URLCredential(trust: serverTrust)
+            completionHandler(.useCredential, credential)
+        } else {
+            debugLog("Certificate not trusted. Connection dropped.")
+            completionHandler(.cancelAuthenticationChallenge, nil)
+        }
     }
     
-    private func verifyCertificate() {
+    @available (iOS 10.0, *)
+    private final func certificateIsValid(_ certificate: SecCertificate) -> Bool {
         
+        //Load the expected certificate.
+        guard let knownNetflixCertPath = Bundle.main.path(forResource: "netflix", ofType: "cer"),
+            let expectedCertificateData = try? Data(contentsOf: URL(fileURLWithPath: knownNetflixCertPath)),
+            let expectedCertificate = SecCertificateCreateWithData(nil, expectedCertificateData as CFData),
+            let providedCertPubKey = SecCertificateCopyKey(certificate),
+            let expectedCertPubKey = SecCertificateCopyKey(expectedCertificate),
+            let providedCertPubKeyData = SecKeyCopyExternalRepresentation(providedCertPubKey, nil),
+            let expectedCertPubKeyData = SecKeyCopyExternalRepresentation(expectedCertPubKey, nil) else {
+                //Could not load the expected certificate. Return failure.
+                debugLog("Unable to load requred data to compare certificates")
+                return false
+        }
+        
+        //Check that the public keys match
+        if providedCertPubKeyData == expectedCertPubKeyData {
+            debugLog("Certificates match")
+            return true
+        }
+        
+        //Only one case results in `true`, and if we got here, we didn't hit it.
+        debugLog("Certificates did not match")
+        return false
     }
 }
 
