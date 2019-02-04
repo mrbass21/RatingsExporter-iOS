@@ -53,7 +53,7 @@ extension NetflixLoginViewController: WKNavigationDelegate {
 				decisionHandler(.cancel)
 				
 				//Extract out the cookie values we need
-				loginWebView.configuration.websiteDataStore.httpCookieStore.getAllCookies { [weak self] (cookies) in
+				webView.configuration.websiteDataStore.httpCookieStore.getAllCookies { [weak self] (cookies) in
 					if let credential = NetflixCredential(from: cookies) {
 						do {
 							try UserCredentialStore.storeCredential(credential)
