@@ -48,7 +48,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	//MARK: - Global UI Customization
 	func setGlobalCustomUISettings() {
 		let lightRedTintColor = UIColor(displayP3Red: 157/255, green: 23/255, blue: 1/255, alpha: 1.0)
-		let darkRedTintColor = UIColor(displayP3Red: 86/255, green: 13/255, blue: 0/255, alpha: 1.0)
 		
 		window!.tintColor = lightRedTintColor
 	}
