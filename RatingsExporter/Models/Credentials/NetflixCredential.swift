@@ -20,9 +20,9 @@ public protocol NetflixCredentialProtocol: UserCredentialProtocol {
 public final class NetflixCredential: NetflixCredentialProtocol {
 	
 	///Definition of the IDs used for the Storage Items. This is for quick unified identification.
-	private struct RequiredIDs {
+	public struct RequiredIDs {
 		///The IDs expected to be used as the Name field in the array of `CredentialStorageItems` returned to the `UserCredentialStore`.
-		enum Credential: String {
+		public enum Credential: String {
 			///The ID for Netflix ID.
 			case netflixID = "NetflixId"
 			///The ID for the Secure Netflix ID.
