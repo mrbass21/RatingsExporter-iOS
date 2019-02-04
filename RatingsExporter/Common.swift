@@ -19,6 +19,12 @@ public struct Common {
 			public static let MoveiDetailsSegue = "MovieDetailsSegue"
 		}
 		
+		///Storyboard identifiers
+		public struct Storyboard {
+			///Identifiter for the Netflix Login Controller
+			public static let NetflixLoginConroller = "NetflixLoginViewController"
+		}
+		
 		///TableViewCell identifiers.
 		public struct TableViewCell {
 			///Identifier for the filled out netflix ratings cell.

@@ -13,7 +13,7 @@ import WebKit
 
 class NetflixLoginViewControllerTests: XCTestCase {
 	
-	var controllerUnderTest: NetflixLoginViewController = (UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: NetflixLoginViewController.Identifiers.Storyboard.NetflixLoginController) as! NetflixLoginViewController)
+	var controllerUnderTest: NetflixLoginViewController = (UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: Common.Identifiers.Storyboard.NetflixLoginConroller) as! NetflixLoginViewController)
 	var bundle: Bundle = Bundle.init(for: NetflixLoginViewControllerTests.classForCoder())
 	
 	enum TestCertType: String {
@@ -228,7 +228,7 @@ class NetflixLoginViewControllerTests: XCTestCase {
 	
 	func testShouldNotNavigateOnFormSubmittedAndRedirectURL() {
 		//given
-		let request = URLRequest(url: URL(string: NetflixLoginViewController.NetflixSettings.NetflixURLs.netflixSuccessRedirectURL)!)
+		let request = URLRequest(url: URL(string: Common.URLs.netflixSuccessRedirectURL)!)
 		let navigationAction = MockWKNavigationAction(navigationType: .formSubmitted, with: request)
 		
 		//then
@@ -240,7 +240,7 @@ class NetflixLoginViewControllerTests: XCTestCase {
 	
 	func testShouldNotNavigateOnOtherAndRedirectURL() {
 		//given
-		let request = URLRequest(url: URL(string: NetflixLoginViewController.NetflixSettings.NetflixURLs.netflixSuccessRedirectURL)!)
+		let request = URLRequest(url: URL(string: Common.URLs.netflixSuccessRedirectURL)!)
 		let navigationAction = MockWKNavigationAction(navigationType: .other, with: request)
 		let webView = WKWebView(frame: CGRect.zero)
 		

@@ -11,9 +11,9 @@ import XCTest
 
 class NetflixCredentialTest: XCTestCase {
 	
-	struct Values {
-		static let NetflixIdValue = "FAKE_NETFLIX_ID_VALUE"
-		static let SecureNetflicIDValue = "FAKE_SECURE_NETFLIX_ID_VALUE"
+	struct TestValues {
+		static let netflixIdValue = "FAKE_NETFLIX_ID_VALUE"
+		static let secureNetflixIDValue = "FAKE_SECURE_NETFLIX_ID_VALUE"
 	}
 	
 	override func setUp() {
@@ -28,14 +28,14 @@ class NetflixCredentialTest: XCTestCase {
 	func generateValidCookies() -> [HTTPCookie] {
 		let cookieNetflixIDProps: [HTTPCookiePropertyKey: Any] = [
 			.path: "/",
-			.name: NetflixCredential.RequiredIDs.Cookie.netflixID.rawValue,
-			.value: Values.NetflixIdValue,
+			.name: Common.Identifiers.Cookie.netflixID.rawValue,
+			.value: TestValues.netflixIdValue,
 			.domain: "test"
 		]
 		let cookieSecureNetflixIDProps: [HTTPCookiePropertyKey: Any] = [
 			.path: "/",
-			.name: NetflixCredential.RequiredIDs.Cookie.secureNetflixID.rawValue,
-			.value: Values.SecureNetflicIDValue,
+			.name: Common.Identifiers.Cookie.secureNetflixID.rawValue,
+			.value: TestValues.secureNetflixIDValue,
 			.domain: "test"
 		]
 		
@@ -51,14 +51,14 @@ class NetflixCredentialTest: XCTestCase {
 	func generateInvalidCookies() -> [HTTPCookie] {
 		let cookieNetflixIDProps: [HTTPCookiePropertyKey: Any] = [
 			.path: "/",
-			.name: "NotValidName",
-			.value: Values.NetflixIdValue,
+			.name: "NotValidName1",
+			.value: TestValues.netflixIdValue,
 			.domain: "test"
 		]
 		let cookieSecureNetflixIDProps: [HTTPCookiePropertyKey: Any] = [
 			.path: "/",
-			.name: "StillNotValidName",
-			.value: Values.SecureNetflicIDValue,
+			.name: "NotValidName2",
+			.value: TestValues.secureNetflixIDValue,
 			.domain: "test"
 		]
 		
@@ -88,10 +88,10 @@ class NetflixCredentialTest: XCTestCase {
 	
 	func testValueInit() {
 		//given
-		let credential = NetflixCredential(netflixID: Values.NetflixIdValue, secureNetflixID: Values.SecureNetflicIDValue)
+		let credential = NetflixCredential(netflixID: TestValues.netflixIdValue, secureNetflixID: TestValues.secureNetflixIDValue)
 		
 		//then
-		XCTAssertEqual(credential, NetflixCredential(netflixID: Values.NetflixIdValue, secureNetflixID: Values.SecureNetflicIDValue))
+		XCTAssertEqual(credential, NetflixCredential(netflixID: TestValues.netflixIdValue, secureNetflixID: TestValues.secureNetflixIDValue))
 	}
 	
 	func testInitNil() {
@@ -105,7 +105,7 @@ class NetflixCredentialTest: XCTestCase {
 	
 	func testGetListOfCredentials() {
 		//given
-		let credential = NetflixCredential(netflixID: Values.NetflixIdValue, secureNetflixID: Values.SecureNetflicIDValue)
+		let credential = NetflixCredential(netflixID: TestValues.netflixIdValue, secureNetflixID: TestValues.secureNetflixIDValue)
 		
 		//when
 		let storageItems = credential.getListOfCredentialItemsToStore()
@@ -114,8 +114,8 @@ class NetflixCredentialTest: XCTestCase {
 		XCTAssertEqual(storageItems.count, 2) //Assert we have two storage items
 		
 		for credential in storageItems {
-			if !(credential.key.elementsEqual(NetflixCredential.RequiredIDs.Credential.netflixID.rawValue) ||
-				credential.key.elementsEqual(NetflixCredential.RequiredIDs.Credential.secureNetflixID.rawValue)) {
+			if !(credential.key == NetflixCredential.RequiredIDs.CredentialItemKeys.netflixID.rawValue ||
+				credential.key == NetflixCredential.RequiredIDs.CredentialItemKeys.secureNetflixID.rawValue) {
 				XCTFail("Unexpected credential name: \(credential.key)")
 			}
 			XCTAssertNotNil(credential.value)
@@ -125,13 +125,13 @@ class NetflixCredentialTest: XCTestCase {
 	func testRestoreFromStorageItems() {
 		//given
 		let restoredNetflixCredential = NetflixCredential()
-		let expectedNetflixCredential = NetflixCredential(netflixID: Values.NetflixIdValue, secureNetflixID: Values.SecureNetflicIDValue)
+		let expectedNetflixCredential = NetflixCredential(netflixID: TestValues.netflixIdValue, secureNetflixID: TestValues.secureNetflixIDValue)
 		var storageItems: [UserCredentialStorageItem] = []
 		
-		let netflixID = UserCredentialStorageItem(name: NetflixCredential.RequiredIDs.Credential.netflixID.rawValue, value: Values.NetflixIdValue)
+		let netflixID = UserCredentialStorageItem(key: NetflixCredential.RequiredIDs.CredentialItemKeys.netflixID.rawValue, value: TestValues.netflixIdValue)
 		storageItems.append(netflixID)
 		
-		let secureNetflixID = UserCredentialStorageItem(name: NetflixCredential.RequiredIDs.Credential.secureNetflixID.rawValue, value: Values.SecureNetflicIDValue)
+		let secureNetflixID = UserCredentialStorageItem(key: NetflixCredential.RequiredIDs.CredentialItemKeys.secureNetflixID.rawValue, value: TestValues.secureNetflixIDValue)
 		storageItems.append(secureNetflixID)
 		
 		//when

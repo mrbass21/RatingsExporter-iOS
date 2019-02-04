@@ -20,9 +20,9 @@ public protocol NetflixCredentialProtocol: UserCredentialProtocol {
 public final class NetflixCredential: NetflixCredentialProtocol {
 	
 	///Definition of the IDs used for the Storage Items. This is for quick unified identification.
-	private struct RequiredIDs {
+	public struct RequiredIDs {
 		///The IDs expected to be used as the Name field in the array of `CredentialStorageItems` returned to the `UserCredentialStore`.
-		enum Credential: String {
+		public enum CredentialItemKeys: String {
 			///The ID for Netflix ID.
 			case netflixID = "NetflixId"
 			///The ID for the Secure Netflix ID.
@@ -98,8 +98,8 @@ public final class NetflixCredential: NetflixCredentialProtocol {
 extension NetflixCredential: UserCredentialStorageProtocol {
 	public func getListOfCredentialItemsToStore() -> [UserCredentialStorageItem] {
 		let credentialItems = [
-			UserCredentialStorageItem(key: RequiredIDs.Credential.netflixID.rawValue, value: self.netflixID, description: "The Netflix cookie used in requests"),
-			UserCredentialStorageItem(key: RequiredIDs.Credential.secureNetflixID.rawValue, value: self.secureNetflixID, description: "The Secure Netflix cookie used in requests")
+			UserCredentialStorageItem(key: RequiredIDs.CredentialItemKeys.netflixID.rawValue, value: self.netflixID, description: "The Netflix cookie used in requests"),
+			UserCredentialStorageItem(key: RequiredIDs.CredentialItemKeys.secureNetflixID.rawValue, value: self.secureNetflixID, description: "The Secure Netflix cookie used in requests")
 		]
 		
 		return credentialItems
@@ -113,9 +113,9 @@ extension NetflixCredential: UserCredentialStorageProtocol {
 		
 		for item in storageItems {
 			switch item.key {
-			case RequiredIDs.Credential.netflixID.rawValue:
+			case RequiredIDs.CredentialItemKeys.netflixID.rawValue:
 				self.netflixID = item.value
-			case RequiredIDs.Credential.secureNetflixID.rawValue:
+			case RequiredIDs.CredentialItemKeys.secureNetflixID.rawValue:
 				self.secureNetflixID = item.value
 			default:
 				print("NetflixCredential: Unknown credential item \(item.key)")
