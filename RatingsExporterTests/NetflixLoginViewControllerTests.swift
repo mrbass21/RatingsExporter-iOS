@@ -249,6 +249,18 @@ class NetflixLoginViewControllerTests: XCTestCase {
 			XCTAssertEqual(policy, .cancel)
 		}
 	}
+	
+	func testShouldNavigate() {
+		//given
+		let request = URLRequest(url: URL(string: Common.URLs.netflixLoginURL)!)
+		let navigationAction = MockWKNavigationAction(navigationType: .formSubmitted, with: request)
+		
+		//then
+		let webView = WKWebView(frame: CGRect.zero)
+		controllerUnderTest.webView(webView, decidePolicyFor: navigationAction) { (policy) in
+			XCTAssertEqual(policy, WKNavigationActionPolicy.allow)
+		}
+	}
 }
 
 //MARK: - URLAuthenticationChallengeSender
