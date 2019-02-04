@@ -109,7 +109,7 @@ extension NetflixCredential: UserCredentialStorageProtocol {
 		
 		if storageItems.count < 2 {
 			//This isn't an error, potentially. The object just won't fully populate
-			debugLog("NetflixCredential: Warning: Minimum number of storage items not supplied.")
+			debugLog("Warning: Minimum number of storage items to fully restore the credential were not supplied.")
 		}
 		
 		for item in storageItems {
@@ -120,7 +120,7 @@ extension NetflixCredential: UserCredentialStorageProtocol {
 				self.secureNetflixID = item.value
 			default:
 				//This is not always an error. We were asked to populate a field we don't currently support
-				print("NetflixCredential: Unknown credential item \(item.key)")
+				print("Unknown credential item \(item.key). Skipping.")
 				continue
 			}
 		}

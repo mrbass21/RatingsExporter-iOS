@@ -14,6 +14,7 @@ class NetflixCredentialTest: XCTestCase {
 	struct TestValues {
 		static let netflixIdValue = "FAKE_NETFLIX_ID_VALUE"
 		static let secureNetflixIDValue = "FAKE_SECURE_NETFLIX_ID_VALUE"
+		static let unknownIDValue = "UNKNOWN_ID_VALUE"
 	}
 	
 	override func setUp() {
@@ -149,6 +150,28 @@ class NetflixCredentialTest: XCTestCase {
 		
 		let netflixID = UserCredentialStorageItem(key: NetflixCredential.RequiredIDs.CredentialItemKeys.netflixID.rawValue, value: TestValues.netflixIdValue, valueType: .Cookie, description: nil)
 		storageItems.append(netflixID)
+		
+		//when
+		restoredNetflixCredential.restoreFromStorageItems(storageItems)
+		
+		//then
+		XCTAssertEqual(restoredNetflixCredential, expectedNetflixCredential)
+	}
+	
+	func testUnknownItemAdded() {
+		//given
+		let restoredNetflixCredential = NetflixCredential()
+		let expectedNetflixCredential = NetflixCredential(netflixID: TestValues.netflixIdValue, secureNetflixID: TestValues.secureNetflixIDValue)
+		var storageItems: [UserCredentialStorageItem] = []
+		
+		let netflixIDItem = UserCredentialStorageItem(key: NetflixCredential.RequiredIDs.CredentialItemKeys.netflixID.rawValue, value: TestValues.netflixIdValue, valueType: .Cookie, description: nil)
+		storageItems.append(netflixIDItem)
+		
+		let secureNetflixIDItem = UserCredentialStorageItem(key: NetflixCredential.RequiredIDs.CredentialItemKeys.netflixID.rawValue, value: TestValues.netflixIdValue, valueType: .Cookie, description: nil)
+		storageItems.append(secureNetflixIDItem)
+		
+		let UnknownIDItem = UserCredentialStorageItem(key: "Unknown", value: TestValues.unknownIDValue, valueType: .Cookie, description: nil)
+		storageItems.append(UnknownIDItem)
 		
 		//when
 		restoredNetflixCredential.restoreFromStorageItems(storageItems)
