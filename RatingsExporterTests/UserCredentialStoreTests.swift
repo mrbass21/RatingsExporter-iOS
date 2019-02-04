@@ -38,9 +38,9 @@ class TestCredental: UserCredentialStorageProtocol, Equatable {
 	func getListOfCredentialItemsToStore() -> [UserCredentialStorageItem] {
 		var returnCredentials: [UserCredentialStorageItem] = []
 		
-		let testCredentialItem1 = UserCredentialStorageItem(name: StorageName.testFirstItem, value: credential1)
+		let testCredentialItem1 = UserCredentialStorageItem(key: StorageName.testFirstItem, value: credential1)
 		returnCredentials.append(testCredentialItem1)
-		let testCredentialItem2 = UserCredentialStorageItem(name: StorageName.testSecondItem, value: credential2)
+		let testCredentialItem2 = UserCredentialStorageItem(key: StorageName.testSecondItem, value: credential2)
 		returnCredentials.append(testCredentialItem2)
 		
 		return returnCredentials
@@ -176,7 +176,7 @@ class UserCredentialStoreTests: XCTestCase {
 	func testClearCredential() {
 		//given
 		let testClearCredential = TestCredental(credential1: "testC1", credential2: "testC2")
-		var testRestoreClearedCredential: TestCredental!
+		var testRestoreClearedCredential: TestCredental! //We never read this variable. We only care if it threw or not.
 		
 		//when
 		XCTAssertNoThrow(try UserCredentialStore.storeCredential(testClearCredential))
@@ -185,13 +185,16 @@ class UserCredentialStoreTests: XCTestCase {
 		//then
 		XCTAssertThrowsError(testRestoreClearedCredential = try UserCredentialStore.restoreCredential(forType: TestCredental.self)) { (Error) in
 			XCTAssertEqual(Error as! UserCredentialStore.UserCredentialStoreError, UserCredentialStore.UserCredentialStoreError.itemNotFound)
+			
+			//Satisfy the compiler warning for not being read.
+			XCTAssertNil(testRestoreClearedCredential)
 		}
 	}
 	
 	func testClearCredentialByType() {
 		//given
 		let testClearCredential = TestCredental(credential1: "testC1", credential2: "testC2")
-		var testRestoreClearedCredential: TestCredental!
+		var testRestoreClearedCredential: TestCredental! //We never read this variable. We only care if it threw or not.
 		
 		//when
 		XCTAssertNoThrow(try UserCredentialStore.storeCredential(testClearCredential))
@@ -200,12 +203,9 @@ class UserCredentialStoreTests: XCTestCase {
 		//then
 		XCTAssertThrowsError(testRestoreClearedCredential = try UserCredentialStore.restoreCredential(forType: TestCredental.self)) { (Error) in
 			XCTAssertEqual(Error as! UserCredentialStore.UserCredentialStoreError, UserCredentialStore.UserCredentialStoreError.itemNotFound)
+			
+			//Satisfy the compiler warning for not being read.
+			XCTAssertNil(testRestoreClearedCredential)
 		}
-	}
-	
-	func testDidClearCredential() {
-		let testCredential = TestCredental()
-		
-		testCredential.didDeleteCredentialFromStorage()
 	}
 }
