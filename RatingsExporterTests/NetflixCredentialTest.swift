@@ -140,4 +140,20 @@ class NetflixCredentialTest: XCTestCase {
 		//then
 		XCTAssertEqual(restoredNetflixCredential, expectedNetflixCredential)
 	}
+	
+	func testTooFewCredentialItems() {
+		//given
+		let restoredNetflixCredential = NetflixCredential()
+		let expectedNetflixCredential = NetflixCredential(netflixID: TestValues.netflixIdValue, secureNetflixID: nil)
+		var storageItems: [UserCredentialStorageItem] = []
+		
+		let netflixID = UserCredentialStorageItem(key: NetflixCredential.RequiredIDs.CredentialItemKeys.netflixID.rawValue, value: TestValues.netflixIdValue, valueType: .Cookie, description: nil)
+		storageItems.append(netflixID)
+		
+		//when
+		restoredNetflixCredential.restoreFromStorageItems(storageItems)
+		
+		//then
+		XCTAssertEqual(restoredNetflixCredential, expectedNetflixCredential)
+	}
 }

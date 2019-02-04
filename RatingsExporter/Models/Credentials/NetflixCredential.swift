@@ -108,7 +108,8 @@ extension NetflixCredential: UserCredentialStorageProtocol {
 	public func restoreFromStorageItems(_ storageItems: [UserCredentialStorageItem]) {
 		
 		if storageItems.count < 2 {
-			print("NetflixCredential: Warning: Minimum number of storage items not supplied.")
+			//This isn't an error, potentially. The object just won't fully populate
+			debugLog("NetflixCredential: Warning: Minimum number of storage items not supplied.")
 		}
 		
 		for item in storageItems {
@@ -118,6 +119,7 @@ extension NetflixCredential: UserCredentialStorageProtocol {
 			case RequiredIDs.CredentialItemKeys.secureNetflixID.rawValue:
 				self.secureNetflixID = item.value
 			default:
+				//This is not always an error. We were asked to populate a field we don't currently support
 				print("NetflixCredential: Unknown credential item \(item.key)")
 				continue
 			}
