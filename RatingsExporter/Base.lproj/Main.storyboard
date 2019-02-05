@@ -51,7 +51,7 @@
         <!--Ratings Detail View Controller-->
         <scene sceneID="tKA-tV-yq5">
             <objects>
-                <viewController id="55O-2W-rug" customClass="RatingsDetailViewController" customModule="RatingsExporter" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="RatingsDetailViewController" id="55O-2W-rug" customClass="RatingsDetailViewController" customModule="RatingsExporter" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="UHn-8z-vzB">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

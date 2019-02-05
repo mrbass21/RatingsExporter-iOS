@@ -37,7 +37,7 @@ final class RatingsViewController: UITableViewController {
 	}
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		if segue.identifier == Common.Identifiers.Segue.MoveiDetailsSegue {
+		if segue.identifier == Common.Identifiers.Segue.MovieDetailsSegue {
 			//Load the rating into the controller
 			let controller = segue.destination as! RatingsDetailViewController
 			controller.movie = sender as? NetflixRating
@@ -67,7 +67,7 @@ final class RatingsViewController: UITableViewController {
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		if let rating = ratingsLists?[indexPath.row] {
-			performSegue(withIdentifier: Common.Identifiers.Segue.MoveiDetailsSegue, sender: rating)
+			performSegue(withIdentifier: Common.Identifiers.Segue.MovieDetailsSegue, sender: rating)
 		}
 	}
 }

@@ -16,7 +16,7 @@ public struct Common {
 			///Identifier for the login view segue.
 			public static let NetflixLoginSegue = "NetflixLoginSegue"
 			///Identifier for the movie details segue.
-			public static let MoveiDetailsSegue = "MovieDetailsSegue"
+			public static let MovieDetailsSegue = "MovieDetailsSegue"
 		}
 		
 		///Storyboard identifiers
@@ -25,6 +25,8 @@ public struct Common {
 			public static let NetflixLoginController = "NetflixLoginViewController"
 			///Identifier for the Ratings View Controller
 			public static let RatingsViewController = "RatingsViewController"
+			///Identifier for the Ratings Detail View Controller
+			public static let RatingsDetailViewController = "RatingsDetailViewController"
 		}
 		
 		///TableViewCell identifiers.

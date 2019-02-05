@@ -9,7 +9,7 @@
 import Foundation.NSDate
 
 ///A struct representing the individual rating items. Items with * are assumed types and might be wrong. Praise the crash Gods.
-public struct NetflixRating {
+public struct NetflixRating: Equatable {
 	///Date of the Rating in UNIX timestamp for comparisons
 	var comparableDate: Date
 	///A string of the rating date
