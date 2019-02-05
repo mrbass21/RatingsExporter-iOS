@@ -25,8 +25,13 @@ public protocol RatingsFetcherDelegate: class {
 	func errorFetchingRatingsForPage(_ page: UInt)
 }
 
+///Protocol that a RatingsFetcher implements.
+public protocol RatingsFetcherProtocol {
+	func fetchRatings(page: UInt)
+}
+
 ///Fetches Netflix ratings
-public final class RatingsFetcher: NSObject {
+public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	
 	///Errors that can be encountered while working with RatingsFetcher
 	public enum RatingsFetcherError: Error, Equatable {
