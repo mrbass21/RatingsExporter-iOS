@@ -16,6 +16,8 @@ class NetflixLoginViewControllerTests: XCTestCase {
 	var controllerUnderTest: NetflixLoginViewController = (UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: Common.Identifiers.Storyboard.NetflixLoginConroller) as! NetflixLoginViewController)
 	var bundle: Bundle = Bundle.init(for: NetflixLoginViewControllerTests.classForCoder())
 	
+	private var hasLoaded = false
+	
 	enum TestCertType: String {
 		case goodNetflixCert = "netflix"
 		case goodNetflixAssetCert = "netflix-assets"
@@ -25,6 +27,9 @@ class NetflixLoginViewControllerTests: XCTestCase {
 	
 	override func setUp() {
 		super.setUp()
+		if (!hasLoaded) {
+			let _ = controllerUnderTest.view
+		}
 	}
 	
 	override func tearDown() {
