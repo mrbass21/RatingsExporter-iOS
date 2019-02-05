@@ -13,7 +13,7 @@ import WebKit
 
 class NetflixLoginViewControllerTests: XCTestCase {
 	
-	var controllerUnderTest: NetflixLoginViewController = (UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: Common.Identifiers.Storyboard.NetflixLoginConroller) as! NetflixLoginViewController)
+	var controllerUnderTest: NetflixLoginViewController = (UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: Common.Identifiers.Storyboard.NetflixLoginController) as! NetflixLoginViewController)
 	var bundle: Bundle = Bundle.init(for: NetflixLoginViewControllerTests.classForCoder())
 	
 	private var hasLoaded = false

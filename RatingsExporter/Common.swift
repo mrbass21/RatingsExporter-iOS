@@ -22,7 +22,9 @@ public struct Common {
 		///Storyboard identifiers
 		public struct Storyboard {
 			///Identifiter for the Netflix Login Controller
-			public static let NetflixLoginConroller = "NetflixLoginViewController"
+			public static let NetflixLoginController = "NetflixLoginViewController"
+			///Identifier for the Ratings View Controller
+			public static let RatingsViewController = "RatingsViewController"
 		}
 		
 		///TableViewCell identifiers.
