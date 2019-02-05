@@ -20,6 +20,11 @@ class RatingsViewControllerTest: XCTestCase {
 		super.setUp()
 		controllerUnderTest.loadViewIfNeeded()
     }
+	
+	override func tearDown() {
+		super.tearDown()
+		// Put teardown code here. This method is called after the invocation of each test method in the class.
+	}
 
 	func testPrepareForSegue() {
 		//given
@@ -34,9 +39,16 @@ class RatingsViewControllerTest: XCTestCase {
 		XCTAssertNotNil(detailVC.movie)
 		XCTAssertEqual(rating, detailVC.movie)
 	}
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
 
-
+	func testPrepareForSegueNilRating() {
+		//given
+		let detailVC: RatingsDetailViewController = (UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: Common.Identifiers.Storyboard.RatingsDetailViewController) as! RatingsDetailViewController)
+		let segue = UIStoryboardSegue(identifier: Common.Identifiers.Segue.MovieDetailsSegue, source: controllerUnderTest, destination: detailVC)
+		
+		//when
+		controllerUnderTest.prepare(for: segue, sender: nil)
+		
+		//then
+		XCTAssertNil(detailVC.movie)
+	}
 }
