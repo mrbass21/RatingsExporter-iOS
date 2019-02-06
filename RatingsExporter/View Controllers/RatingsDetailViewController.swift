@@ -19,7 +19,7 @@ final class RatingsDetailViewController: UIViewController {
 	
 	override func viewDidLoad() {
 		movieTitle.text = movie?.title
-		rating.text = "\(movie?.yourRating ?? 0)"
+		rating.text = "\(movie?.intRating ?? 0)"
 		dateRated.text = movie?.date
 	}
 }
