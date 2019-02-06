@@ -17,9 +17,19 @@ public protocol NetflixRatingsManagerDelegate {
 	func NetflixRatingsManagerDelegate(_ manager: NetflixRatingsManager, didLoadRatingIndexes indexes: ClosedRange<Int>)
 }
 
+///The protocol that a RatingsManager should conform to.
+public protocol NetflixRatingsManagerProtocol {
+	var fetchMode: NetflixRatingsManager.FetchMode {get set}
+	var delegate: NetflixRatingsManagerDelegate? {get set}
+	var fetcher: RatingsFetcher! {get set}
+	var totalPages: Int {get}
+	var itemsPerPage: Int {get}
+	subscript(index: Int) -> NetflixRating? {get}
+}
+
 //TODO: Persist ratings on device.
 ///A class used to manage the ratings NetflixFetcher retuns, and deals with device persistance.
-public final class NetflixRatingsManager {
+public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 	
 	///Describes the fetching behavior desired.
 	public enum FetchMode {
@@ -74,7 +84,7 @@ public final class NetflixRatingsManager {
 	}
 	
 	///Get's the rating for the item at the index.
-	subscript(index: Int) -> NetflixRating? {
+	public subscript(index: Int) -> NetflixRating? {
 		get {
 			//Let's math where the item is!
 			let page = (index / 100) //Page is treated is 0 indexed on Netflixs back end!

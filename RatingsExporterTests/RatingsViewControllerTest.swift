@@ -9,6 +9,16 @@
 import XCTest
 @testable import RatingsExporter
 
+class mockRatingsFetcher: RatingsFetcherProtocol {
+	public var ratings: [NetflixRating]
+	
+	init() {}
+	
+	func fetchRatings(page: UInt) {
+		<#code#>
+	}
+}
+
 class RatingsViewControllerTest: XCTestCase {
 	
 	var controllerUnderTest: RatingsViewController = (UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: Common.Identifiers.Storyboard.RatingsViewController) as! RatingsViewController)
