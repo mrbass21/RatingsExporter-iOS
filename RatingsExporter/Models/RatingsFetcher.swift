@@ -26,7 +26,7 @@ public protocol RatingsFetcherDelegate: class {
 }
 
 ///Protocol that a RatingsFetcher implements.
-public protocol RatingsFetcherProtocol {
+public protocol RatingsFetcherProtocol: class {
 	func fetchRatings(page: UInt)
 }
 

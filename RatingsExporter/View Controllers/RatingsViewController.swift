@@ -10,7 +10,7 @@ import UIKit
 
 final class RatingsViewController: UITableViewController {
 	
-	public var ratingsLists: NetflixRatingsManager?
+	public var ratingsLists: NetflixRatingsManagerProtocol?
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()

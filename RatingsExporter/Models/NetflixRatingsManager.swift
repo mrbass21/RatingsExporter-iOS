@@ -7,7 +7,7 @@
 //
 
 ///Notifications that NetflixRatingsManger will send to notify the delegate of status.
-public protocol NetflixRatingsManagerDelegate {
+public protocol NetflixRatingsManagerDelegate: class {
 	/**
 	Notification that the manager loaded a new range of titles.
 	
@@ -18,12 +18,13 @@ public protocol NetflixRatingsManagerDelegate {
 }
 
 ///The protocol that a RatingsManager should conform to.
-public protocol NetflixRatingsManagerProtocol {
+public protocol NetflixRatingsManagerProtocol: class {
 	var fetchMode: NetflixRatingsManager.FetchMode {get set}
 	var delegate: NetflixRatingsManagerDelegate? {get set}
 	var fetcher: RatingsFetcher! {get set}
 	var totalPages: Int {get}
 	var itemsPerPage: Int {get}
+	var totalRatings: Int {get}
 	subscript(index: Int) -> NetflixRating? {get}
 }
 

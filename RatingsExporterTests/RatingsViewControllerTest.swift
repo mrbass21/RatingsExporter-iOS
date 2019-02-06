@@ -9,22 +9,57 @@
 import XCTest
 @testable import RatingsExporter
 
-class mockRatingsFetcher: RatingsFetcherProtocol {
-	public var ratings: [NetflixRating]
+class mockNetflixRatingsManager: NetflixRatingsManagerProtocol {
+	var fetchMode: NetflixRatingsManager.FetchMode
 	
-	init() {}
+	public weak var delegate: NetflixRatingsManagerDelegate? = nil
 	
-	func fetchRatings(page: UInt) {
-		<#code#>
+	var fetcher: RatingsFetcher! {
+		get {
+			return nil
+		}
+		
+		set {
+			return
+		}
 	}
+	
+	var totalPages: Int
+	var itemsPerPage: Int
+	var totalRatings: Int
+	
+	private var storedItems: [NetflixRating]? = nil
+	
+	subscript(index: Int) -> NetflixRating? {
+		
+		guard storedItems == nil, let itemCount = storedItems?.count, index > itemCount else {
+			return nil
+		}
+		
+		return storedItems![index]
+	}
+	
+	init(withRatings: [NetflixRating]? = nil, usingFetchMode: NetflixRatingsManager.FetchMode = .sequential) {
+		storedItems = withRatings
+		fetchMode = usingFetchMode
+		totalPages = 0
+		itemsPerPage = 0
+		totalRatings = 0
+	}
+	
 }
 
 class RatingsViewControllerTest: XCTestCase {
 	
-	var controllerUnderTest: RatingsViewController = (UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: Common.Identifiers.Storyboard.RatingsViewController) as! RatingsViewController)
+	var controllerUnderTest: RatingsViewController = {
+		let controller: RatingsViewController = (UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: Common.Identifiers.Storyboard.RatingsViewController)) as! RatingsViewController
+		
+		//We never need a "real" ratings manager to unit test the VC.
+		controller.ratingsLists = mockNetflixRatingsManager()
+		
+		return controller
+	}()
 	var bundle: Bundle = Bundle.init(for: NetflixLoginViewControllerTests.classForCoder())
-	
-	private var hasLoaded = false
 
     override func setUp() {
 		super.setUp()
@@ -60,5 +95,16 @@ class RatingsViewControllerTest: XCTestCase {
 		
 		//then
 		XCTAssertNil(detailVC.movie)
+	}
+	
+	func testLoadingCellDidDequeue() {
+		//given
+		let firstItem = IndexPath(row: 0, section: 0)
+		
+		//when
+		let cell = controllerUnderTest.tableView(controllerUnderTest.tableView, cellForRowAt: firstItem)
+		
+		//then
+		XCTAssert(cell.reuseIdentifier == Common.Identifiers.TableViewCell.LoadingRatingCell)
 	}
 }
