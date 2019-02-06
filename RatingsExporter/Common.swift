@@ -63,7 +63,7 @@ public struct Common {
 
 
 //Define some debug helpers
-///Prints to log exactly as Print() does, only if we are in the debug configuration.
+///Prints to log nearly like Print() does, only if we are in the debug configuration. No array if items is taken because it won't do a pretty print currently.
 public func debugLog(_ items: Any, file: String = #file, lineNumber: UInt = #line ,separator: String = " ", terminator: String = "\n") {
 	if _isDebugAssertConfiguration() {
 		let fileURL: URL = URL(fileURLWithPath: file)
