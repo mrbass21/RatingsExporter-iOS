@@ -14,7 +14,7 @@ class mockNetflixRatingsManager: NetflixRatingsManagerProtocol {
 	
 	public weak var delegate: NetflixRatingsManagerDelegate? = nil
 	
-	var fetcher: RatingsFetcher! {
+	public var fetcher: RatingsFetcher! {
 		get {
 			return nil
 		}
@@ -24,15 +24,27 @@ class mockNetflixRatingsManager: NetflixRatingsManagerProtocol {
 		}
 	}
 	
-	var totalPages: Int
-	var itemsPerPage: Int
-	var totalRatings: Int
+	public var totalPages: Int {
+		get {
+			return (storedItems?.count ?? 0) / self.itemsPerPage
+		}
+	}
+	var itemsPerPage: Int {
+		get {
+			return 100
+		}
+	}
+	var totalRatings: Int {
+		get {
+			return storedItems?.count ?? 0
+		}
+	}
 	
 	private var storedItems: [NetflixRating]? = nil
 	
 	subscript(index: Int) -> NetflixRating? {
 		
-		guard storedItems == nil, let itemCount = storedItems?.count, index > itemCount else {
+		guard storedItems != nil, let itemCount = storedItems?.count, index < itemCount else {
 			return nil
 		}
 		
@@ -42,9 +54,6 @@ class mockNetflixRatingsManager: NetflixRatingsManagerProtocol {
 	init(withRatings: [NetflixRating]? = nil, usingFetchMode: NetflixRatingsManager.FetchMode = .sequential) {
 		storedItems = withRatings
 		fetchMode = usingFetchMode
-		totalPages = 0
-		itemsPerPage = 0
-		totalRatings = 0
 	}
 	
 }
@@ -106,5 +115,18 @@ class RatingsViewControllerTest: XCTestCase {
 		
 		//then
 		XCTAssert(cell.reuseIdentifier == Common.Identifiers.TableViewCell.LoadingRatingCell)
+	}
+	
+	func testRatingCellDidDequeue() {
+		//givem
+		let indexPath = IndexPath(row: 0, section: 0)
+		let rating = NetflixRating(movieID: 5)
+		controllerUnderTest.ratingsLists = mockNetflixRatingsManager(withRatings: [rating])
+		
+		//when
+		let cell = controllerUnderTest.tableView(controllerUnderTest.tableView, cellForRowAt: indexPath)
+		
+		//then
+		XCTAssert(cell.reuseIdentifier == Common.Identifiers.TableViewCell.NetflixRatingsCell)
 	}
 }

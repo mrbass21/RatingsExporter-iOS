@@ -53,6 +53,7 @@ final class RatingsViewController: UITableViewController {
 		//This is just to test that the global tint color was applied to the control
 		let redBackgroundView = UIView()
 		redBackgroundView.backgroundColor = UIColor(displayP3Red: 100/255, green: 20/255, blue: 0/255, alpha: 1.0)
+		
 		if let rating = ratingsLists?[indexPath.row] {
 			let cell = tableView.dequeueReusableCell(withIdentifier: Common.Identifiers.TableViewCell.NetflixRatingsCell) as! NetflixRatingsCell
 			cell.selectedBackgroundView = redBackgroundView
