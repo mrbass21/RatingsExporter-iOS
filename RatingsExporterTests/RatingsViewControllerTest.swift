@@ -12,9 +12,9 @@ import XCTest
 class mockNetflixRatingsManager: NetflixRatingsManagerProtocol {
 	var fetchMode: NetflixRatingsManager.FetchMode
 	
-	public weak var delegate: NetflixRatingsManagerDelegate? = nil
+	weak var delegate: NetflixRatingsManagerDelegate? = nil
 	
-	public var fetcher: RatingsFetcher! {
+	var fetcher: RatingsFetcher! {
 		get {
 			return nil
 		}
@@ -24,7 +24,7 @@ class mockNetflixRatingsManager: NetflixRatingsManagerProtocol {
 		}
 	}
 	
-	public var totalPages: Int {
+	var totalPages: Int {
 		get {
 			return (storedItems?.count ?? 0) / self.itemsPerPage
 		}
@@ -128,5 +128,20 @@ class RatingsViewControllerTest: XCTestCase {
 		
 		//then
 		XCTAssert(cell.reuseIdentifier == Common.Identifiers.TableViewCell.NetflixRatingsCell)
+	}
+	
+	func testDidReloadNewData() {
+		//given
+		XCTAssert(controllerUnderTest.tableView.numberOfRows(inSection: 0) == 0, "Table view must not contain any data at the start of this test")
+		
+		let rating = NetflixRating(movieID: 5)
+		controllerUnderTest.ratingsLists = mockNetflixRatingsManager(withRatings: [rating])
+		
+		//when
+		XCTAssertNotNil(controllerUnderTest.ratingsLists, "Ratings manager cannot be nil")
+		controllerUnderTest.NetflixRatingsManagerDelegate(controllerUnderTest.ratingsLists!, didLoadRatingIndexes: 0...0)
+		
+		//then
+		XCTAssertEqual(controllerUnderTest.tableView.numberOfRows(inSection: 0), 1)
 	}
 }

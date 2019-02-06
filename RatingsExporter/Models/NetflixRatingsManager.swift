@@ -14,7 +14,7 @@ public protocol NetflixRatingsManagerDelegate: class {
 	- Parameter manager : A reference to the manager that fetched the ratings.
 	- Parameter indexes: A range of movie indexes that were retrieved or updated.
 	*/
-	func NetflixRatingsManagerDelegate(_ manager: NetflixRatingsManager, didLoadRatingIndexes indexes: ClosedRange<Int>)
+	func NetflixRatingsManagerDelegate(_ manager: NetflixRatingsManagerProtocol, didLoadRatingIndexes indexes: ClosedRange<Int>)
 }
 
 ///The protocol that a RatingsManager should conform to.

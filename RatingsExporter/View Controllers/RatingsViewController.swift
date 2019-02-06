@@ -94,7 +94,7 @@ extension RatingsViewController {
 }
 
 extension RatingsViewController: NetflixRatingsManagerDelegate {
-	func NetflixRatingsManagerDelegate(_: NetflixRatingsManager, didLoadRatingIndexes indexes: ClosedRange<Int>) {
+	func NetflixRatingsManagerDelegate(_: NetflixRatingsManagerProtocol, didLoadRatingIndexes indexes: ClosedRange<Int>) {
 		
 		if tableView.numberOfRows(inSection: 0) == 0 {
 			tableView.reloadData()
