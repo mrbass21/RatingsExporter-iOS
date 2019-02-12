@@ -29,6 +29,7 @@ public struct NetflixRating: Equatable {
 	
 	public enum ratingType: String {
 		case star = "star"
+		case thumb = "thumb"
 	}
 	
 	/**

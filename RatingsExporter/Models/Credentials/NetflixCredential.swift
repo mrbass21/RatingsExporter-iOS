@@ -8,6 +8,8 @@
 
 import Foundation.NSHTTPCookie
 
+//TODO: After a bit more reverse engineering, I found that credentials really coorespond, not just to an account holder, but a profile within that account. Thus, it is entirely possible that a User would have multiple NetflixCredential objects. Currently this object was written with the assumption that a user would only ever have a single credential item. Re-factor for this new information.
+
 ///A protocol for creating a Netflix Credential
 public protocol NetflixCredentialProtocol: UserCredentialProtocol {
 	///The Netflix ID provided by a valid Netflix login.
