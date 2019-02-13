@@ -15,6 +15,10 @@ class NetflixRatingsListTest: XCTestCase {
 		static let validJSONRatingsString = """
 							{"codeName":"S-Icarus-6.Demitasse-5","ratingItems":[{"ratingType":"star","title":"Prisoners","movieID":70273235,"yourRating":4.0,"intRating":40,"date":"1/4/15","timestamp":1420420307158,"comparableDate":1420420307},{"ratingType":"star","title":"Enough Said","movieID":70288428,"yourRating":3.0,"intRating":30,"date":"1/4/15","timestamp":1420420242591,"comparableDate":1420420242},{"ratingType":"star","title":"Nebraska","movieID":70275595,"yourRating":3.0,"intRating":30,"date":"1/4/15","timestamp":1420420222036,"comparableDate":1420420222}],"totalRatings":2188,"page":3,"size":100,"trkid":200250784,"tz":"CST"}
 							"""
+		
+		static let invalidJSONRatingsString = """
+							{"codeName":"S-Icarus-6.Demitasse-5","ratingItems":[{"ratingType":"star","title":"Prisoners","movieID":70273235,"yourRating":4.0,"intRating":40,"date":"1/4/15","timestamp":1420420307158,"comparableDate":1420420307},{"ratingType":"star","title":"Enough Said","movieID":70288428,"yourRating":3.0,"intRating":30,"date":"1/4/15","timestamp":1420420242591,"comparableDate":1420420242},{"ratingType":"star","title":"Nebraska","movieID":70275595,"yourRating":3.0,"intRating":30,"date":"1/4/15","timestamp":1420420222036,"comparableDate":1420420222}]}
+							"""
 	}
 
     override func setUp() {
@@ -55,6 +59,21 @@ class NetflixRatingsListTest: XCTestCase {
 		XCTAssertEqual(ratingsList!.ratingItems[0], firstRating)
 		XCTAssertEqual(ratingsList!.ratingItems[1], secondRating)
 		XCTAssertEqual(ratingsList!.ratingItems[2], thirdRating)
+	}
+	
+	func testInvlaidJSONInit() {
+		//given
+		guard let JSONData = TestData.invalidJSONRatingsString.data(using: .utf8),
+			let JSONObject = try? JSONSerialization.jsonObject(with: JSONData, options:[]) as! [String: Any] else {
+				XCTFail()
+				return
+		}
+		
+		//when
+		let ratingsList = NetflixRatingsList(json: JSONObject)
+		
+		//then
+		XCTAssertNil(ratingsList)
 	}
 	
 	func testInit() {
