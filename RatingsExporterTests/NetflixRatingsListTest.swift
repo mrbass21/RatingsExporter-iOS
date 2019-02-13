@@ -56,4 +56,26 @@ class NetflixRatingsListTest: XCTestCase {
 		XCTAssertEqual(ratingsList!.ratingItems[1], secondRating)
 		XCTAssertEqual(ratingsList!.ratingItems[2], thirdRating)
 	}
+	
+	func testInit() {
+		//given
+		let ratings = [
+			NetflixRating(comparableDate: Date(timeIntervalSince1970: 0), date: "1/1/1970", intRating: 10, movieID: 00010101, ratingType: .star, timestamp: 0, title: "rating1", yourRating: 1.0),
+			NetflixRating(comparableDate: Date(timeIntervalSince1970: 0), date: "1/1/1970", intRating: 20, movieID: 00010101, ratingType: .star, timestamp: 0, title: "rating2", yourRating: 2.0),
+			NetflixRating(comparableDate: Date(timeIntervalSince1970: 0), date: "1/1/1970", intRating: 30, movieID: 00010103, ratingType: .star, timestamp: 0, title: "rating3", yourRating: 3.0)
+		]
+		
+		
+		//when
+		let ratingList = NetflixRatingsList(codeName: "CODENAME", ratingItems: ratings, totalRatings: 3, page: 1, numberOfRequestedItems: 100, trackId: 1, timeZoneAbbrev: "CST")
+		
+		//then
+		XCTAssertEqual(ratingList.codeName, "CODENAME")
+		XCTAssertEqual(ratingList.ratingItems, ratings)
+		XCTAssertEqual(ratingList.totalRatings, 3)
+		XCTAssertEqual(ratingList.page, 1)
+		XCTAssertEqual(ratingList.numberOfRequestedItems, 100)
+		XCTAssertEqual(ratingList.trackId, 1)
+		XCTAssertEqual(ratingList.timeZoneAbbrev, "CST")
+	}
 }
