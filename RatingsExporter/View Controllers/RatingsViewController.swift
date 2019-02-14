@@ -10,7 +10,7 @@ import UIKit
 
 final class RatingsViewController: UITableViewController {
 	
-	public var ratingsLists: NetflixRatingsManager?
+	public var ratingsLists: NetflixRatingsManagerProtocol?
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -37,7 +37,7 @@ final class RatingsViewController: UITableViewController {
 	}
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		if segue.identifier == Common.Identifiers.Segue.MoveiDetailsSegue {
+		if segue.identifier == Common.Identifiers.Segue.MovieDetailsSegue {
 			//Load the rating into the controller
 			let controller = segue.destination as! RatingsDetailViewController
 			controller.movie = sender as? NetflixRating
@@ -53,6 +53,7 @@ final class RatingsViewController: UITableViewController {
 		//This is just to test that the global tint color was applied to the control
 		let redBackgroundView = UIView()
 		redBackgroundView.backgroundColor = UIColor(displayP3Red: 100/255, green: 20/255, blue: 0/255, alpha: 1.0)
+		
 		if let rating = ratingsLists?[indexPath.row] {
 			let cell = tableView.dequeueReusableCell(withIdentifier: Common.Identifiers.TableViewCell.NetflixRatingsCell) as! NetflixRatingsCell
 			cell.selectedBackgroundView = redBackgroundView
@@ -67,7 +68,7 @@ final class RatingsViewController: UITableViewController {
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		if let rating = ratingsLists?[indexPath.row] {
-			performSegue(withIdentifier: Common.Identifiers.Segue.MoveiDetailsSegue, sender: rating)
+			performSegue(withIdentifier: Common.Identifiers.Segue.MovieDetailsSegue, sender: rating)
 		}
 	}
 }
@@ -93,7 +94,7 @@ extension RatingsViewController {
 }
 
 extension RatingsViewController: NetflixRatingsManagerDelegate {
-	func NetflixRatingsManagerDelegate(_: NetflixRatingsManager, didLoadRatingIndexes indexes: ClosedRange<Int>) {
+	func NetflixRatingsManagerDelegate(_: NetflixRatingsManagerProtocol, didLoadRatingIndexes indexes: ClosedRange<Int>) {
 		
 		if tableView.numberOfRows(inSection: 0) == 0 {
 			tableView.reloadData()

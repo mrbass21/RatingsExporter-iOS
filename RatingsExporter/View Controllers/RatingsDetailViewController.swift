@@ -18,8 +18,8 @@ final class RatingsDetailViewController: UIViewController {
 	public var movie: NetflixRating?
 	
 	override func viewDidLoad() {
-		movieTitle.text = movie?.title
-		rating.text = "\(movie?.yourRating ?? 0)"
-		dateRated.text = movie?.date
+		movieTitle.text = movie?.title ?? NSLocalizedString("Unknown Title", comment: "An unknown movie title")
+		rating.text = "\(movie?.intRating ?? 0)"
+		dateRated.text = movie?.date ?? NSLocalizedString("Unknown Date", comment: "An unknown date when the movie was rated")
 	}
 }

@@ -98,9 +98,9 @@ public final class UserCredentialStore {
 	
 	- Parameter forType: A type that implements `UserCredentialStorageProtocol`.
 	- Throws:
-	- `UserCredentialStoreError.itemNotFound` if the item is not stored.
-	- `UserCredentialStoreError.invalidData` if the data was corrupt on retrieval.
-	- `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
+		- `UserCredentialStoreError.itemNotFound` if the item is not stored.
+		- `UserCredentialStoreError.invalidData` if the data was corrupt on retrieval.
+		- `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
 	- Returns: A new instance of credentialType restored from the storage.
 	*/
 	public static func restoreCredential<T: UserCredentialStorageProtocol>(forType credentialType: T.Type) throws -> T {
@@ -125,9 +125,9 @@ public final class UserCredentialStore {
 	
 	- Parameter credential: A populated credential that conforms to `UserCredentialStorageProtocol` to be stored.
 	- Throws:
-	- `UserCredentialStoreError.itemNotFound` if the item is not stored.
-	- `UserCredentialStoreError.invalidItemAttribute' if an attribute is nil
-	- `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
+		- `UserCredentialStoreError.itemNotFound` if the item is not stored.
+		- `UserCredentialStoreError.invalidItemAttribute' if an attribute is nil
+		- `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
 	*/
 	public static func storeCredential(_ credential: UserCredentialStorageProtocol) throws {
 		
@@ -149,9 +149,9 @@ public final class UserCredentialStore {
 	
 	- Parameter forType: A type that implements `UserCredentialStorageProtocol`.
 	- Throws:
-	- `UserCredentialStoreError.itemNotFound` if the item is not stored.
-	- `UserCredentialStoreError.invalidItemAttribute' if an attribute is nil
-	- `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
+		- `UserCredentialStoreError.itemNotFound` if the item is not stored.
+		- `UserCredentialStoreError.invalidItemAttribute' if an attribute is nil
+		- `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
 	- Returns: A Bool indicating if the item is currently stored or not
 	*/
 	public static func isCredentialStored<T: UserCredentialStorageProtocol>(forType credentialType: T.Type) throws -> Bool {
@@ -175,7 +175,7 @@ public final class UserCredentialStore {
 	
 	- Parameter credential: A populated credential that conforms to `UserCredentialStorageProtocol` to be cleared from storage.
 	- Throws:
-	- `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
+		- `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
 	*/
 	public static func clearCredential(_ credential: UserCredentialStorageProtocol) throws {
 		let credentialItems = credential.getListOfCredentialItemsToStore()
@@ -190,7 +190,7 @@ public final class UserCredentialStore {
 	
 	- Parameter credential: A type that conforms to `UserCredentialStorageProtocol` to be cleared from storage.
 	- Throws:
-	- `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
+		- `UserCredentialStoreError.unexpectedStorageError(status:)` if another error was encountered with the OSStatus set.
 	*/
 	public static func clearCredential<T: UserCredentialStorageProtocol>(forType credentialType: T.Type) throws {
 		let clearCredential = credentialType.self.init()
@@ -210,7 +210,7 @@ public final class UserCredentialStore {
 	
 	- Parameter storageItem: A `CredentialStorageItem` to search for.
 	- Throws:
-	- `UserCredentialStoreError.unexpectedStorageError(status:)` if an error was encountered with the OSStatus set.
+		- `UserCredentialStoreError.unexpectedStorageError(status:)` if an error was encountered with the OSStatus set.
 	- Returns: `true` if the item was found in Keychain, and `false` if it was not located.
 	*/
 	private static func doesCredentialItemAlreadyExist(_ storageItem: UserCredentialStorageItem) throws -> Bool {
@@ -244,8 +244,8 @@ public final class UserCredentialStore {
 	
 	- Parameter storageItem: A `CredentialStorageItem` to search for. This is an inout parameter and will be updated with it's data on success.
 	- Throws:
-	- `UserCredentialStoreError.itemNotFound` if the item was not found in Keychain.
-	- `UserCredentialStoreError.unexpectedStorageError(status:)` if an error was encountered with the OSStatus set.
+		- `UserCredentialStoreError.itemNotFound` if the item was not found in Keychain.
+		- `UserCredentialStoreError.unexpectedStorageError(status:)` if an error was encountered with the OSStatus set.
 	*/
 	private static func retrieveCredentialStorageItem(_ storageItem: inout UserCredentialStorageItem)
 		throws {
@@ -289,8 +289,8 @@ public final class UserCredentialStore {
 	
 	- Parameter storageItem: A `CredentialStorageItem` to search for and update stored information for.
 	- Throws:
-	- `UserCredentialStoreError.invalidItemAttributes if the attributes of the provided storeage item are invalid.
-	- `UserCredentialStoreError.unexpectedStorageError(status:)` if an error was encountered with the OSStatus set.
+		- `UserCredentialStoreError.invalidItemAttributes if the attributes of the provided storeage item are invalid.
+		- `UserCredentialStoreError.unexpectedStorageError(status:)` if an error was encountered with the OSStatus set.
 	*/
 	private static func updateCredentialItem(_ storageItem: UserCredentialStorageItem) throws {
 		guard storageItem.value != nil else {
@@ -326,9 +326,9 @@ public final class UserCredentialStore {
 	
 	- Parameter storageItem: A `CredentialStorageItem` to store in Keychain.
 	- Throws:
-	- `UserCredentialStoreError.invalidItemAttributes if the attributes of the provided storeage item are invalid.
-	- `UserCredentialStoreError.invalidData if the `Value` field of the `CredentialStorageItem` was unable to be converted to UTF-8 Data.
-	- `UserCredentialStoreError.unexpectedStorageError(status:)` if an error was encountered with the OSStatus set.
+		- `UserCredentialStoreError.invalidItemAttributes if the attributes of the provided storeage item are invalid.
+		- `UserCredentialStoreError.invalidData if the `Value` field of the `CredentialStorageItem` was unable to be converted to UTF-8 Data.
+		- `UserCredentialStoreError.unexpectedStorageError(status:)` if an error was encountered with the OSStatus set.
 	*/
 	private static func createCredentialItem(_ storageItem: UserCredentialStorageItem) throws {
 		guard storageItem.value != nil else {
@@ -363,7 +363,7 @@ public final class UserCredentialStore {
 	
 	- Parameter storageItem: A `CredentialStorageItem` to delete from Keychain.
 	- Throws:
-	- `UserCredentialStoreError.unexpectedStorageError(status:)` if an error was encountered with the OSStatus set.
+		- `UserCredentialStoreError.unexpectedStorageError(status:)` if an error was encountered with the OSStatus set.
 	*/
 	private static func deleteCredentialItem(_ storageItem: UserCredentialStorageItem) throws {
 		let queryDict: [CFString: Any] = [

@@ -16,13 +16,17 @@ public struct Common {
 			///Identifier for the login view segue.
 			public static let NetflixLoginSegue = "NetflixLoginSegue"
 			///Identifier for the movie details segue.
-			public static let MoveiDetailsSegue = "MovieDetailsSegue"
+			public static let MovieDetailsSegue = "MovieDetailsSegue"
 		}
 		
 		///Storyboard identifiers
 		public struct Storyboard {
 			///Identifiter for the Netflix Login Controller
-			public static let NetflixLoginConroller = "NetflixLoginViewController"
+			public static let NetflixLoginController = "NetflixLoginViewController"
+			///Identifier for the Ratings View Controller
+			public static let RatingsViewController = "RatingsViewController"
+			///Identifier for the Ratings Detail View Controller
+			public static let RatingsDetailViewController = "RatingsDetailViewController"
 		}
 		
 		///TableViewCell identifiers.
@@ -59,7 +63,7 @@ public struct Common {
 
 
 //Define some debug helpers
-///Prints to log exactly as Print() does, only if we are in the debug configuration.
+///Prints to log nearly like Print() does, only if we are in the debug configuration. No array if items is taken because it won't do a pretty print currently.
 public func debugLog(_ items: Any, file: String = #file, lineNumber: UInt = #line ,separator: String = " ", terminator: String = "\n") {
 	if _isDebugAssertConfiguration() {
 		let fileURL: URL = URL(fileURLWithPath: file)

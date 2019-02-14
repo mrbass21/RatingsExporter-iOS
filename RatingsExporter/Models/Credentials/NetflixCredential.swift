@@ -8,6 +8,8 @@
 
 import Foundation.NSHTTPCookie
 
+//TODO: After a bit more reverse engineering, I found that credentials really coorespond, not just to an account holder, but a profile within that account. Thus, it is entirely possible that a User would have multiple NetflixCredential objects. Currently this object was written with the assumption that a user would only ever have a single credential item. Re-factor for this new information.
+
 ///A protocol for creating a Netflix Credential
 public protocol NetflixCredentialProtocol: UserCredentialProtocol {
 	///The Netflix ID provided by a valid Netflix login.
@@ -108,7 +110,8 @@ extension NetflixCredential: UserCredentialStorageProtocol {
 	public func restoreFromStorageItems(_ storageItems: [UserCredentialStorageItem]) {
 		
 		if storageItems.count < 2 {
-			print("NetflixCredential: Warning: Minimum number of storage items not supplied.")
+			//This isn't an error, potentially. The object just won't fully populate
+			debugLog("Warning: Minimum number of storage items to fully restore the credential were not supplied.")
 		}
 		
 		for item in storageItems {
@@ -118,7 +121,8 @@ extension NetflixCredential: UserCredentialStorageProtocol {
 			case RequiredIDs.CredentialItemKeys.secureNetflixID.rawValue:
 				self.secureNetflixID = item.value
 			default:
-				print("NetflixCredential: Unknown credential item \(item.key)")
+				//This is not always an error. We were asked to populate a field we don't currently support
+				print("Unknown credential item \(item.key). Skipping.")
 				continue
 			}
 		}

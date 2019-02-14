@@ -7,19 +7,30 @@
 //
 
 ///Notifications that NetflixRatingsManger will send to notify the delegate of status.
-public protocol NetflixRatingsManagerDelegate {
+public protocol NetflixRatingsManagerDelegate: class {
 	/**
 	Notification that the manager loaded a new range of titles.
 	
 	- Parameter manager : A reference to the manager that fetched the ratings.
 	- Parameter indexes: A range of movie indexes that were retrieved or updated.
 	*/
-	func NetflixRatingsManagerDelegate(_ manager: NetflixRatingsManager, didLoadRatingIndexes indexes: ClosedRange<Int>)
+	func NetflixRatingsManagerDelegate(_ manager: NetflixRatingsManagerProtocol, didLoadRatingIndexes indexes: ClosedRange<Int>)
+}
+
+///The protocol that a RatingsManager should conform to.
+public protocol NetflixRatingsManagerProtocol: class {
+	var fetchMode: NetflixRatingsManager.FetchMode {get set}
+	var delegate: NetflixRatingsManagerDelegate? {get set}
+	var fetcher: RatingsFetcher! {get set}
+	var totalPages: Int {get}
+	var itemsPerPage: Int {get}
+	var totalRatings: Int {get}
+	subscript(index: Int) -> NetflixRating? {get}
 }
 
 //TODO: Persist ratings on device.
 ///A class used to manage the ratings NetflixFetcher retuns, and deals with device persistance.
-public final class NetflixRatingsManager {
+public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 	
 	///Describes the fetching behavior desired.
 	public enum FetchMode {
@@ -74,7 +85,7 @@ public final class NetflixRatingsManager {
 	}
 	
 	///Get's the rating for the item at the index.
-	subscript(index: Int) -> NetflixRating? {
+	public subscript(index: Int) -> NetflixRating? {
 		get {
 			//Let's math where the item is!
 			let page = (index / 100) //Page is treated is 0 indexed on Netflixs back end!

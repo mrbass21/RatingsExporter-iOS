@@ -25,8 +25,13 @@ public protocol RatingsFetcherDelegate: class {
 	func errorFetchingRatingsForPage(_ page: UInt)
 }
 
+///Protocol that a RatingsFetcher implements.
+public protocol RatingsFetcherProtocol: class {
+	func fetchRatings(page: UInt)
+}
+
 ///Fetches Netflix ratings
-public final class RatingsFetcher: NSObject {
+public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	
 	///Errors that can be encountered while working with RatingsFetcher
 	public enum RatingsFetcherError: Error, Equatable {
@@ -34,12 +39,12 @@ public final class RatingsFetcher: NSObject {
 		case invalidCredentials
 	}
 	
-	private enum SessionState: Equatable {
+	public enum SessionState: Equatable {
 		case invalidated
 		case willInvalidate
 		case active(Timer?)
 		
-		static func ==(lhs: SessionState, rhs: SessionState) -> Bool {
+		public static func ==(lhs: SessionState, rhs: SessionState) -> Bool {
 			switch (lhs, rhs) {
 			case (.invalidated, .invalidated):
 				return true
@@ -158,16 +163,19 @@ public final class RatingsFetcher: NSObject {
 	private final func setHeadersForSessionConfiguration(_ sessionConfig: inout URLSessionConfiguration) {
 		
 		//Get a copy of the current headers
-		var headers = sessionConfig.httpAdditionalHeaders
+		var headers: [AnyHashable: Any]
+		if let existingHeaders = requestedConfiguration?.httpAdditionalHeaders {
+			headers = existingHeaders
+		}
+		else {
+			headers = [:]
+		}
+		
+		//Set the user agent string
 		let userAgentString = "RatingsExporter (https://github.com/mrbass21/RatingsExporter-iOS)(iPhone; CPU iPhone OS like Mac OS X) Version/0.1"
 		
-		if var headers = headers {
-			//Update the headers
-			headers["User-Agent"] = userAgentString
-		} else {
-			//There are no headers. Create a new dictionary
-			headers = ["User-Agent": userAgentString]
-		}
+		//Update the headers
+		headers["User-Agent"] = userAgentString
 		
 		//Modify it
 		sessionConfig.httpAdditionalHeaders = headers

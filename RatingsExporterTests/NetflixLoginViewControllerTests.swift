@@ -13,7 +13,7 @@ import WebKit
 
 class NetflixLoginViewControllerTests: XCTestCase {
 	
-	var controllerUnderTest: NetflixLoginViewController = (UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: Common.Identifiers.Storyboard.NetflixLoginConroller) as! NetflixLoginViewController)
+	var controllerUnderTest: NetflixLoginViewController = (UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: Common.Identifiers.Storyboard.NetflixLoginController) as! NetflixLoginViewController)
 	var bundle: Bundle = Bundle.init(for: NetflixLoginViewControllerTests.classForCoder())
 	
 	enum TestCertType: String {
@@ -25,6 +25,7 @@ class NetflixLoginViewControllerTests: XCTestCase {
 	
 	override func setUp() {
 		super.setUp()
+		controllerUnderTest.loadViewIfNeeded()
 	}
 	
 	override func tearDown() {
@@ -247,6 +248,18 @@ class NetflixLoginViewControllerTests: XCTestCase {
 		//then
 		controllerUnderTest.webView(webView, decidePolicyFor: navigationAction) { (policy: WKNavigationActionPolicy) in
 			XCTAssertEqual(policy, .cancel)
+		}
+	}
+	
+	func testShouldNavigate() {
+		//given
+		let request = URLRequest(url: URL(string: Common.URLs.netflixLoginURL)!)
+		let navigationAction = MockWKNavigationAction(navigationType: .formSubmitted, with: request)
+		
+		//then
+		let webView = WKWebView(frame: CGRect.zero)
+		controllerUnderTest.webView(webView, decidePolicyFor: navigationAction) { (policy) in
+			XCTAssertEqual(policy, WKNavigationActionPolicy.allow)
 		}
 	}
 }
