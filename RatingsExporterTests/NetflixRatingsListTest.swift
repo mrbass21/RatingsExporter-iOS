@@ -61,7 +61,7 @@ class NetflixRatingsListTest: XCTestCase {
 		XCTAssertEqual(ratingsList!.ratingItems[2], thirdRating)
 	}
 	
-	func testInvlaidJSONInit() {
+	func testInvalidJSONInit() {
 		//given
 		guard let JSONData = TestData.invalidJSONRatingsString.data(using: .utf8),
 			let JSONObject = try? JSONSerialization.jsonObject(with: JSONData, options:[]) as! [String: Any] else {
