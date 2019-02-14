@@ -22,11 +22,12 @@
         <scene sceneID="GOW-dE-a8o">
             <objects>
                 <tableViewController storyboardIdentifier="RatingsViewController" id="EHm-aD-Y2M" customClass="RatingsViewController" customModule="RatingsExporter" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="88" estimatedRowHeight="-1" sectionHeaderHeight="1" sectionFooterHeight="1" id="cRJ-Ez-oRX">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="88" estimatedRowHeight="-1" sectionHeaderHeight="1" sectionFooterHeight="1" contentViewInsetsToSafeArea="NO" id="cRJ-Ez-oRX">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="separatorColor" red="0.47901696329794563" green="0.10575327288138681" blue="0.0017065797489015182" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         <connections>
                             <outlet property="dataSource" destination="EHm-aD-Y2M" id="7SG-GB-UVw"/>
                             <outlet property="delegate" destination="EHm-aD-Y2M" id="DVh-3k-tXx"/>

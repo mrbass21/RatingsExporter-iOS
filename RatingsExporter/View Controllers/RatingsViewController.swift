@@ -62,6 +62,7 @@ final class RatingsViewController: UITableViewController {
 		} else {
 			let cell = tableView.dequeueReusableCell(withIdentifier: Common.Identifiers.TableViewCell.LoadingRatingCell, for: indexPath)
 			cell.selectedBackgroundView = redBackgroundView
+			cell.accessoryView?.isHidden = false
 			return cell
 		}
 	}
