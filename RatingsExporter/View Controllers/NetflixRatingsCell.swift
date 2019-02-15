@@ -29,7 +29,6 @@ final class NetflixRatingsCell: UITableViewCell {
 		
 		//Get the URL
 		if let boxArtURL = rating.getBoxArtURL(boxArtType: .SMALL) {
-			print(boxArtURL)
 			imageDownload = self.ratingBoxArtView.loadImage(url: boxArtURL)
 		}
 	}
