@@ -27,9 +27,34 @@ public struct NetflixRating: Equatable {
 	///The rating you gave it. As far as I can tell this is a whole number, which can also be negative... yes. I'm still irritated.
 	var yourRating: Double
 	
+	var boxArtWasFound: Bool = false
+	
 	public enum ratingType: String {
 		case star = "star"
 		case thumb = "thumb"
+	}
+	
+	public enum DVDBoxArtType: String {
+		case TINY = "tiny"
+		case SMALL = "small"
+		case LARGE = "large"
+		case GSD = "gsd"
+		case GHD = "ghd"
+		case HD1080 = "hd1080"
+		case W150 = "150" ///Width of 150px
+		case I88 = "88"
+		case W1_1 = "124"
+		case TV_SDP = "tv_sdp"
+		case TV_TCARD = "tv_tcard"
+		case TV_SDP_S = "tv_sdp_s"
+		case S166 = "166"
+		case TV_350 = "tv_350"
+		case S197 = "197" ///Most common format
+		case W650 = "650"
+		case LAND1056 = "land1056"
+		case LAND704 = "land704"
+		case LAND528 = "land528"
+		case LAND352 = "land352"
 	}
 	
 	/**
@@ -55,5 +80,19 @@ public struct NetflixRating: Equatable {
 		self.timestamp = timestamp
 		self.title = title
 		self.yourRating = yourRating
+	}
+	
+	public func getBoxArtURL(boxArtType: DVDBoxArtType) -> URL? {
+		let boxArtURL: URL?
+		if self.ratingType == .star {
+			//Box art on the DVD site is probably available
+			boxArtURL = URL(string:"\(Common.URLs.netflixDVDBoxArtBaseURL)/\(boxArtType.rawValue)/\(self.movieID).jpg")
+			
+		} else {
+			//Don't have any logic for this endpoint yet. Need to reverse engineer it.
+			boxArtURL = nil
+		}
+		
+		return boxArtURL
 	}
 }

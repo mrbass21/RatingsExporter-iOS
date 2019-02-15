@@ -9,11 +9,27 @@
 import UIKit.UITableViewCell
 
 final class NetflixRatingsCell: UITableViewCell {
-	@IBOutlet weak var ratingTitle: UILabel!
-	@IBOutlet weak var ratingRating: UILabel!
+	@IBOutlet weak var ratingTitleLabel: UILabel!
+	@IBOutlet weak var ratingRatingLabel: UILabel!
+	@IBOutlet weak var ratingBoxArtView: UIImageView!
+	
+	private var rating: NetflixRating!
+	private var imageDownload: URLSessionDownloadTask?
+	
+	deinit {
+		if let download = imageDownload {
+			download.cancel()
+		}
+	}
 	
 	func initFromRating(_ rating: NetflixRating) {
-		self.ratingTitle.text = rating.title
-		self.ratingRating.text = "\(rating.yourRating)"
+		self.rating = rating
+		self.ratingTitleLabel.text = rating.title
+		self.ratingRatingLabel.text = "\(rating.yourRating)"
+		
+		//Get the URL
+		if let boxArtURL = rating.getBoxArtURL(boxArtType: .SMALL) {
+			imageDownload = self.ratingBoxArtView.loadImage(url: boxArtURL)
+		}
 	}
 }
