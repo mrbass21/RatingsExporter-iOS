@@ -58,6 +58,8 @@ public struct Common {
 		static let netflixLoginURL = "https://www.netflix.com/login"
 		///The redirect URL users are sent to if they have a valid login.
 		static let netflixSuccessRedirectURL = "https://www.netflix.com/browse"
+		///The base URL for DVD box art
+		static let netflixDVDBoxArtBaseURL = "https://assets.nflxext.com/us/boxshots"
 	}
 }
 

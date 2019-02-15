@@ -11,7 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="NetflixRatingsCell" rowHeight="88" id="ctH-XG-RuN" customClass="NetflixRatingsCell" customModule="RatingsExporter" customModuleProvider="target">
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="NetflixRatingsCell" rowHeight="95" id="ctH-XG-RuN" customClass="NetflixRatingsCell" customModule="RatingsExporter" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="375" height="88"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ctH-XG-RuN" id="yWH-0p-2jN">
@@ -19,19 +19,26 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Movie Title" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mrF-X8-qIM">
-                        <rect key="frame" x="16" y="32" width="95" height="24"/>
+                        <rect key="frame" x="72" y="11" width="95" height="24"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleTitle3"/>
                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="QyU-VB-X8o">
+                        <rect key="frame" x="0.0" y="-1.5" width="64" height="90.5"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="90" id="OgX-SG-WF9"/>
+                            <constraint firstAttribute="width" constant="64" id="nqd-sW-plH"/>
+                        </constraints>
+                    </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Stars" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yVJ-jI-1kd">
-                        <rect key="frame" x="303" y="36.5" width="30" height="15"/>
+                        <rect key="frame" x="83" y="62.5" width="30" height="15"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                         <color key="textColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Eef-SX-y3K">
-                        <rect key="frame" x="292" y="37" width="7" height="14"/>
+                        <rect key="frame" x="72" y="63" width="7" height="14"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
                         <color key="textColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
@@ -39,19 +46,23 @@
                 </subviews>
                 <color key="tintColor" red="0.61568627450000002" green="0.090196078430000007" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                 <constraints>
-                    <constraint firstItem="mrF-X8-qIM" firstAttribute="centerY" secondItem="yWH-0p-2jN" secondAttribute="centerY" id="7yU-ui-HIF"/>
-                    <constraint firstItem="Eef-SX-y3K" firstAttribute="centerY" secondItem="mrF-X8-qIM" secondAttribute="centerY" id="Yc4-OR-nVC"/>
-                    <constraint firstItem="yVJ-jI-1kd" firstAttribute="centerY" secondItem="mrF-X8-qIM" secondAttribute="centerY" id="awo-GS-ddC"/>
-                    <constraint firstItem="Eef-SX-y3K" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="mrF-X8-qIM" secondAttribute="trailing" constant="18" id="erz-Pi-ehk"/>
-                    <constraint firstItem="yVJ-jI-1kd" firstAttribute="trailing" secondItem="yWH-0p-2jN" secondAttribute="trailingMargin" id="oX0-f3-55V"/>
-                    <constraint firstItem="yVJ-jI-1kd" firstAttribute="leading" secondItem="Eef-SX-y3K" secondAttribute="trailing" constant="4" id="s5k-qI-aHs"/>
-                    <constraint firstItem="mrF-X8-qIM" firstAttribute="leading" secondItem="yWH-0p-2jN" secondAttribute="leadingMargin" id="wOa-ZV-UE5"/>
+                    <constraint firstItem="Eef-SX-y3K" firstAttribute="leading" secondItem="QyU-VB-X8o" secondAttribute="trailing" constant="8" id="8Pq-gZ-Cgh"/>
+                    <constraint firstItem="mrF-X8-qIM" firstAttribute="leading" secondItem="QyU-VB-X8o" secondAttribute="trailing" constant="8" id="9gg-Wv-TKT"/>
+                    <constraint firstItem="mrF-X8-qIM" firstAttribute="top" secondItem="yWH-0p-2jN" secondAttribute="topMargin" id="Bf9-Eb-vTi"/>
+                    <constraint firstItem="Eef-SX-y3K" firstAttribute="bottom" secondItem="yWH-0p-2jN" secondAttribute="bottomMargin" id="L7B-UW-ekQ"/>
+                    <constraint firstItem="yVJ-jI-1kd" firstAttribute="centerY" secondItem="Eef-SX-y3K" secondAttribute="centerY" id="MJf-Dj-oxj"/>
+                    <constraint firstItem="yVJ-jI-1kd" firstAttribute="top" relation="greaterThanOrEqual" secondItem="mrF-X8-qIM" secondAttribute="bottom" constant="8" id="Qm3-D0-GtL"/>
+                    <constraint firstItem="yVJ-jI-1kd" firstAttribute="leading" secondItem="Eef-SX-y3K" secondAttribute="trailing" constant="4" id="S7J-Hf-FHQ"/>
+                    <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="mrF-X8-qIM" secondAttribute="trailing" id="bat-XU-3pD"/>
+                    <constraint firstItem="QyU-VB-X8o" firstAttribute="centerY" secondItem="yWH-0p-2jN" secondAttribute="centerY" id="bew-Ea-7ye"/>
+                    <constraint firstItem="QyU-VB-X8o" firstAttribute="leading" secondItem="yWH-0p-2jN" secondAttribute="leading" id="pih-bz-Niw"/>
                 </constraints>
             </tableViewCellContentView>
             <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
             <connections>
-                <outlet property="ratingRating" destination="Eef-SX-y3K" id="N2g-gr-TSH"/>
-                <outlet property="ratingTitle" destination="mrF-X8-qIM" id="O0i-15-LPF"/>
+                <outlet property="ratingBoxArtView" destination="QyU-VB-X8o" id="j6A-eg-8CY"/>
+                <outlet property="ratingRatingLabel" destination="Eef-SX-y3K" id="L98-uX-y8f"/>
+                <outlet property="ratingTitleLabel" destination="mrF-X8-qIM" id="URO-pw-Nex"/>
             </connections>
             <point key="canvasLocation" x="-7.2000000000000002" y="-5.3973013493253381"/>
         </tableViewCell>
