@@ -24,7 +24,7 @@
                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="QyU-VB-X8o">
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="not_found" translatesAutoresizingMaskIntoConstraints="NO" id="QyU-VB-X8o">
                         <rect key="frame" x="0.0" y="-1.5" width="64" height="90.5"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="90" id="OgX-SG-WF9"/>
@@ -67,4 +67,7 @@
             <point key="canvasLocation" x="-7.2000000000000002" y="-5.3973013493253381"/>
         </tableViewCell>
     </objects>
+    <resources>
+        <image name="not_found" width="64" height="90"/>
+    </resources>
 </document>

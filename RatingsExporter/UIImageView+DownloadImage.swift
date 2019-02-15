@@ -13,11 +13,16 @@ extension UIImageView {
 		let session = URLSession.shared
 		
 		let downloadTask = session.downloadTask(with: url) { [weak self] (url, response, error) in
-			if error == nil, let url = url, let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
-				DispatchQueue.main.async {
-					if let weakSelf = self {
-						weakSelf.image = image
-					}
+			if error == nil,
+				let url = url,
+				let data = try? Data(contentsOf: url),
+				let image = UIImage(data: data),
+				let httpResponse = response as? HTTPURLResponse,
+				httpResponse.statusCode == 200 {
+					DispatchQueue.main.async {
+						if let weakSelf = self {
+							weakSelf.image = image
+						}
 				}
 			}
 		}

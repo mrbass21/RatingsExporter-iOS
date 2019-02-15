@@ -87,6 +87,7 @@ public struct NetflixRating: Equatable {
 		if self.ratingType == .star {
 			//Box art on the DVD site is probably available
 			boxArtURL = URL(string:"\(Common.URLs.netflixDVDBoxArtBaseURL)/\(boxArtType.rawValue)/\(self.movieID).jpg")
+			
 		} else {
 			//Don't have any logic for this endpoint yet. Need to reverse engineer it.
 			boxArtURL = nil
