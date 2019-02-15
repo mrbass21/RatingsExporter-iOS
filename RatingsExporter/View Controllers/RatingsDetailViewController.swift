@@ -16,7 +16,6 @@ final class RatingsDetailViewController: UIViewController {
 	
 	private var downloadTask: URLSessionDownloadTask?
 	
-	
 	///The movie to display
 	public var movie: NetflixRating?
 	

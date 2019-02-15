@@ -34,7 +34,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="My Ratings" id="olW-8d-hCS">
-                        <barButtonItem key="rightBarButtonItem" title="Logout" style="done" id="HQp-Xc-ohX">
+                        <barButtonItem key="leftBarButtonItem" title="Logout" style="done" id="HQp-Xc-ohX">
                             <connections>
                                 <action selector="logOut" destination="EHm-aD-Y2M" id="Oib-Ke-5QG"/>
                             </connections>
@@ -63,7 +63,7 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="5rC-FU-u3W">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="5rC-FU-u3W">
                                 <rect key="frame" x="18" y="20" width="284" height="405"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="405" id="4GX-Gz-uu9"/>
