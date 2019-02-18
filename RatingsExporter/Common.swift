@@ -53,13 +53,21 @@ public struct Common {
 	///URLs used on Netflixs back end.
 	public struct URLs {
 		///The URL where the ratings are fetched from.
-		public static let netflixRatingsURL = "https://www.netflix.com/api/shakti/va5e8014f/ratinghistory"
+		public static var netflixRatingsURL: String  {
+			return "https://www.netflix.com/api/shakti/\(NetflixAPIConstants.shaktiVersion)/ratinghistory"
+		}
 		///The login URL. This is where users are directed to login.
 		static let netflixLoginURL = "https://www.netflix.com/login"
 		///The redirect URL users are sent to if they have a valid login.
 		static let netflixSuccessRedirectURL = "https://www.netflix.com/browse"
 		///The base URL for DVD box art
 		static let netflixDVDBoxArtBaseURL = "https://assets.nflxext.com/us/boxshots"
+	}
+	
+	///Constants used to talk to the Netflix API
+	public struct NetflixAPIConstants {
+		///The version of the shakti API to use.
+		public static let shaktiVersion = "ve059a69f"
 	}
 }
 
