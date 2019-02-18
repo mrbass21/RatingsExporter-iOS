@@ -32,4 +32,10 @@ final class NetflixRatingsCell: UITableViewCell {
 			imageDownload = self.ratingBoxArtView.loadImage(url: boxArtURL)
 		}
 	}
+	
+	override func prepareForReuse() {
+		super.prepareForReuse()
+		
+		ratingBoxArtView.image = UIImage(named: "not_found")
+	}
 }
