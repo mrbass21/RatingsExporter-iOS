@@ -62,6 +62,8 @@ public struct Common {
 		static let netflixSuccessRedirectURL = "https://www.netflix.com/browse"
 		///The base URL for DVD box art
 		static let netflixDVDBoxArtBaseURL = "https://assets.nflxext.com/us/boxshots"
+		///The "Your Accounts" page. This is used to resolve the global netflix object for authentication with Shakti.
+		static let netflixChangePlan = "https://www.netflix.com/ChangePlan"
 	}
 	
 	///Constants used to talk to the Netflix API

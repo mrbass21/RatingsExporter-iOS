@@ -27,6 +27,7 @@ public protocol RatingsFetcherDelegate: class {
 
 ///Protocol that a RatingsFetcher implements.
 public protocol RatingsFetcherProtocol: class {
+	var authURL: String? {get set}
 	func fetchRatings(page: UInt)
 }
 
@@ -75,6 +76,8 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	///The credentials to use for the fetch
 	private let credential: NetflixCredential
 	
+	public var authURL: String?
+	
 	/**
 	Initialize a RatingsFetcher object.
 	
@@ -96,6 +99,9 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 		
 		//Configure the connection
 		createValidSession(withConfiguration: sessionConfig)
+		
+		//Get credentials for the Shakti resources
+		initShakti()
 	}
 	
 	/**
@@ -153,7 +159,63 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 		activeTasks[page] = dataTask
 	}
 	
+	public func getStreamingBoxArtForTitle(_ title: Int) {
+		
+	}
+	
+	
+	private final func initShakti() {
+		//The "Change Plan" page. Just want a lightweight page that gets the global netflix react object
+		let changePlan = URL(string: Common.URLs.netflixChangePlan)!
+		
+		activeTasks[0] = session.dataTask(with: changePlan, completionHandler: { (data, response, error) in
+			guard (response as! HTTPURLResponse).statusCode == 200, let data = data else {
+				debugLog("Unable to fetch account settings page!")
+				return
+			}
+			
+			//Find the global object
+			let html = String(bytes: data, encoding: .utf8)!
+			
+			//How we find the start of the JSON
+			let searchMatchStartElement = "netflix.reactContext = "
+			let searchMatchEndElement = ";</script><script "
+			
+			//The indexes for the start and end of the string
+			let globalJSONStartIndex = html.range(of: searchMatchStartElement)!
+			let globalJSONEndIndex = html.range(of: searchMatchEndElement)!
+			
+			//Finally. The JSON!
+			let globalJSON = String(html[globalJSONStartIndex.upperBound..<globalJSONEndIndex.lowerBound])
+			
+			//Remove the hex codes
+			let finalJSON = globalJSON.deencodeHexToUTF8()
+			
+			let json: [String: Any?] = try! JSONSerialization.jsonObject(with: finalJSON.data(using: .utf8)!, options: []) as! [String : Any?]
+			
+			print("Auth url: \(self.getAuthURLFromReactContextJSON(json))")
+			
+//			print(json["authURL"])
+			//print(json)
+			
+			self.activeTasks[0] = nil
+		})
+		
+		activeTasks[0]?.resume()
+	}
+	
 	//Private interface
+	
+	final private func getAuthURLFromReactContextJSON(_ reactContext: [String: Any?]) -> String? {
+		if let models = (reactContext["models"] as? [String: Any?]),
+		let userInfo = models["userInfo"] as? [String: Any?],
+		let data = userInfo["data"] as? [String: Any?],
+		let authURL: String? = data["authURL"] as? String? {
+			return authURL
+		}
+		
+		return nil
+	}
 	
 	/**
 	Modifies the session provided `URLSessionConfiguration` to contain common headers that are used for `RatingsFetcher`.

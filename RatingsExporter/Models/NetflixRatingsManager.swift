@@ -141,7 +141,7 @@ public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 		self.fetcher.delegate = self
 		
 		//Fetch the first page
-		self.fetcher.fetchRatings(page: 0)
+		//self.fetcher.fetchRatings(page: 0)
 	}
 }
 
