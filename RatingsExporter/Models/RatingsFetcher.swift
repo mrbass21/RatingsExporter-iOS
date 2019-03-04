@@ -84,15 +84,18 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	ephemeral storage. If a session is provided, RatingsFetcher will try and inject the credentials into the data store
 	for the provided session.
 	*/
-	public init(forCredential credential: NetflixCredential, with sessionConfig: URLSessionConfiguration?) {
+	public init<netflixSessionType: NetflixSessionProtocol>(forCredential credential: NetflixCredential,
+															with netflixSession: netflixSessionType?) {
 		
 		//Set the credential
 		self.credential = credential
 		
 		//Set the requested session configuration requested to be used
-		self.requestedConfiguration = sessionConfig
-		
-		netflixSession = NetflixSession(withCredential: credential)
+		if let netflixSession = netflixSession {
+			self.netflixSession = netflixSession
+		} else {
+			self.netflixSession = NetflixSession(withCredential: credential)
+		}
 		
 		//Continue initialization
 		super.init()

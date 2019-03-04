@@ -7,7 +7,7 @@
 //
 import Foundation.NSURLSession
 
-protocol NetflixSessionProtocol {
+public protocol NetflixSessionProtocol {
 	///Determines if it should check additionally for the Asset certificate pin
 	var willDownloadAssets: Bool {get set}
 	
