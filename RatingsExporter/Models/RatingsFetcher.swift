@@ -22,13 +22,13 @@ public protocol RatingsFetcherDelegate: class {
 	
 	- Parameter page : The page that failed to retrieve.
 	*/
-	func errorFetchingRatingsForPage(_ page: Int)
+	func errorFetchingRatingsForPage(_ page: UInt)
 }
 
 ///Protocol that a RatingsFetcher implements.
 public protocol RatingsFetcherProtocol: class {
 	var authURL: String? {get set}
-	func fetchRatings(page: Int)
+	func fetchRatings(page: UInt)
 }
 
 ///Fetches Netflix ratings
@@ -98,12 +98,20 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 		super.init()
 	}
 	
+	deinit {
+		let _ = self.activeTasks.map {
+			$0.cancel()
+		}
+		
+		self.activeTasks.removeAll()
+	}
+	
 	/**
 	Initialize a RatingsFetcher object. If the page is fetched, `didRetrieveList(list:)` is called, otherwise `errorFetchingRatingsForPage` is called.
 	
 	- Parameter page: The page number to fetch.
 	*/
-	public final func fetchRatings(page: Int) {
+	public final func fetchRatings(page: UInt) {
 		
 		let ratingsURL = URL(string: "\(Common.URLs.netflixRatingsURL)?pg=\(page)")
 		
@@ -134,7 +142,7 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 				}
 			}
 			if let task = task {
-				self.activeTasks.insert(task, at: page)
+				self.activeTasks.insert(task, at: Int(page))
 			}
 		}
 		
@@ -196,13 +204,8 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	- Parameter list: The list of returned Netflix ratings.
 	*/
 	private final func didRetrieveList(list: NetflixRatingsList) {
-//		//Release the task. We're done.
-//		self.activeTasks[UInt(list.page)] = nil
-//
-//		if activeTasks.count <= 0 {
-//			debugLog("Invalidating URLSession")
-//			invalidateButFinishSession()
-//		}
+		//Release the task. We're done.
+		self.activeTasks.remove(at: list.page)
 		
 		//return it to the delegate
 		DispatchQueue.main.async {
