@@ -75,9 +75,11 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	
 	///The credentials to use for the fetch
 	private let credential: NetflixCredential
-	private var shakti: ShaktiProtocol?
+	//private var shakti: ShaktiProtocol?
 	
 	public var authURL: String?
+	
+	var netflixSession: NetflixSessionProtocol
 	
 	/**
 	Initialize a RatingsFetcher object.
@@ -95,11 +97,17 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 		//Set the requested session configuration requested to be used
 		self.requestedConfiguration = sessionConfig
 		
+		netflixSession = NetflixSession(withCredential: credential)
+		
 		//Continue initialization
 		super.init()
 		
-		//Configure the connection
-		createValidSession(withConfiguration: sessionConfig)
+		let _ = netflixSession.netflixRequest(url: URL(string: Common.URLs.netflixRatingsURL)!) { (data, response, error) in
+			debugLog("Data Task lived Long Enough!")
+		}
+		
+//		//Configure the connection
+//		createValidSession(withConfiguration: sessionConfig)
 		
 		//Get credentials for the Shakti resources
 		
@@ -121,7 +129,7 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 		//Check that the session is still valid
 		if sessionState == SessionState.invalidated {
 			debugLog("The session is currently invalid. Creating a new one.")
-			createValidSession(withConfiguration: self.requestedConfiguration)
+			//createValidSession(withConfiguration: self.requestedConfiguration)
 		} else if sessionState == .willInvalidate {
 			//TODO: Inform delegate that we are waiting for a session to invalidate and inform when we are ready to create a new session again?
 			debugLog("The session is starting to be invalidated, but not yet invalidated. Doing nothing.")
@@ -194,9 +202,9 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 			
 			let json: [String: Any?] = try! JSONSerialization.jsonObject(with: finalJSON.data(using: .utf8)!, options: []) as! [String : Any?]
 			
-			self.shakti = Shakti(fromReactContextJSON: json)
+			//self.shakti = Shakti(fromReactContextJSON: json)
 			
-			debugLog("Auth URL: \(self.shakti?.authURL)\nShakti Version: \(self.shakti?.shaktiVersion)")
+			//debugLog("Auth URL: \(self.shakti?.authURL)\nShakti Version: \(self.shakti?.shaktiVersion)")
 			
 			self.activeTasks[0] = nil
 		})
@@ -206,86 +214,9 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	
 	//Private interface
 	
-	/**
-	Modifies the session provided `URLSessionConfiguration` to contain common headers that are used for `RatingsFetcher`.
 	
-	- Parameter sessionConfig: The `URLSessionConfiguration` to update with required headers.
-	*/
-	private final func setHeadersForSessionConfiguration(_ sessionConfig: inout URLSessionConfiguration) {
-		
-		//Get a copy of the current headers
-		var headers: [AnyHashable: Any]
-		if let existingHeaders = requestedConfiguration?.httpAdditionalHeaders {
-			headers = existingHeaders
-		}
-		else {
-			headers = [:]
-		}
-		
-		//Set the user agent string
-		let userAgentString = "RatingsExporter (https://github.com/mrbass21/RatingsExporter-iOS)(iPhone; CPU iPhone OS like Mac OS X) Version/0.1"
-		
-		//Update the headers
-		headers["User-Agent"] = userAgentString
-		
-		//Modify it
-		sessionConfig.httpAdditionalHeaders = headers
-	}
 	
-	/**
-	Injects the required cookies from a Netflix Credential into the session storage.
 	
-	- Parameter sessionConfig: The session configuration to inject the cookies into.
-	- Parameter forCredential: The Netflix Credential to attempt to inject.
-	
-	- Throws:
-	- RatingsFetcherError.invalidCredentials if netflixID or secureNetflixID are nil or the `HTTPCookie` creation failed.
-	*/
-	private final func injectCookiesForSessionConfiguration(_ sessionConfig: inout URLSessionConfiguration, forCredential credential: NetflixCredential) throws {
-		
-		//Check that we have what we need
-		guard credential.netflixID != nil, credential.secureNetflixID != nil else {
-			throw RatingsFetcherError.invalidCredentials
-		}
-		
-		//Get a handle to the cookie store
-		let cookieStore: HTTPCookieStorage!
-		
-		if let existingStore = sessionConfig.httpCookieStorage {
-			cookieStore = existingStore
-		} else {
-			cookieStore = HTTPCookieStorage()
-		}
-		
-		//Set the minimum values to create a cookie
-		let cookieDict = [
-			HTTPCookiePropertyKey.path: "/",
-			HTTPCookiePropertyKey.domain: ".netflix.com"
-		]
-		
-		//Create the cookies from the credential
-		
-		//Create NetflixId
-		var netflixCookieDict = cookieDict
-		netflixCookieDict[HTTPCookiePropertyKey.name] = "NetflixId"
-		netflixCookieDict[HTTPCookiePropertyKey.value] = credential.netflixID!
-		guard let netflixCookie = HTTPCookie(properties: netflixCookieDict) else {
-			throw RatingsFetcherError.invalidCredentials
-		}
-		
-		cookieStore.setCookie(netflixCookie)
-		
-		//Create SecureNetflixId
-		var secureNetflixCookieDict: [HTTPCookiePropertyKey: Any] = cookieDict
-		secureNetflixCookieDict[HTTPCookiePropertyKey.secure] = true
-		secureNetflixCookieDict[HTTPCookiePropertyKey.name] = "SecureNetflixId"
-		secureNetflixCookieDict[HTTPCookiePropertyKey.value] = credential.secureNetflixID!
-		guard let secureNetflixCookie = HTTPCookie(properties: secureNetflixCookieDict) else {
-			throw RatingsFetcherError.invalidCredentials
-		}
-		
-		cookieStore.setCookie(secureNetflixCookie)
-	}
 	
 	/**
 	Manages the activeTasks and alerts the delegate of success.
@@ -305,34 +236,6 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 		DispatchQueue.main.async {
 			self.delegate?.didFetchRatings(list)
 		}
-	}
-	
-	/**
-	Creates a new session object, using the provided URLSessionConfiguration as a base for required settings.
-	
-	- Parameter configuration: The `URLSessionConfiguration` to create the session from.
-	*/
-	private final func createValidSession(withConfiguration configuration: URLSessionConfiguration?) {
-		//Create the configuration
-		let useConfiguration: URLSessionConfiguration!
-		
-		if let configuration = configuration {
-			//If we've been passed a session, get a copy of the current configuration
-			useConfiguration = configuration
-		} else {
-			useConfiguration = URLSessionConfiguration.ephemeral
-		}
-		
-		//Set the headers for the session
-		setHeadersForSessionConfiguration(&useConfiguration)
-		
-		//Inject the cookie values for the credential
-		try? injectCookiesForSessionConfiguration(&useConfiguration, forCredential: self.credential)
-		
-		//Finally create a session with the updated configuration
-		//NOTE: The session now contains a strong reference to this class! You _must_ invalidate the session when you are done!
-		self.session = URLSession(configuration: useConfiguration, delegate: self, delegateQueue: nil)
-		self.sessionState = .active(nil)
 	}
 	
 	private final func invalidateAndCancelSession() {
