@@ -22,13 +22,13 @@ public protocol RatingsFetcherDelegate: class {
 	
 	- Parameter page : The page that failed to retrieve.
 	*/
-	func errorFetchingRatingsForPage(_ page: UInt)
+	func errorFetchingRatingsForPage(_ page: Int)
 }
 
 ///Protocol that a RatingsFetcher implements.
 public protocol RatingsFetcherProtocol: class {
 	var authURL: String? {get set}
-	func fetchRatings(page: UInt)
+	func fetchRatings(page: Int)
 }
 
 ///Fetches Netflix ratings
@@ -66,6 +66,8 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	
 	private var requestedConfiguration: URLSessionConfiguration?
 	
+	private var activeTasks: [URLSessionTask] = []
+	
 	///The credentials to use for the fetch
 	private let credential: NetflixCredential
 	//private var shakti: ShaktiProtocol?
@@ -101,12 +103,12 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	
 	- Parameter page: The page number to fetch.
 	*/
-	public final func fetchRatings(page: UInt) {
+	public final func fetchRatings(page: Int) {
 		
 		let ratingsURL = URL(string: "\(Common.URLs.netflixRatingsURL)?pg=\(page)")
 		
 		if let ratingsURL = ratingsURL {
-			let _ = netflixSession.netflixRequest(url: ratingsURL) { [weak self] (data, urlResponse, error) in
+			let task = netflixSession.netflixRequest(url: ratingsURL) { [weak self] (data, urlResponse, error) in
 				if let httpResponse = (urlResponse as? HTTPURLResponse) {
 					
 					if httpResponse.statusCode != 200 {
@@ -131,7 +133,12 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 					}
 				}
 			}
+			if let task = task {
+				self.activeTasks.insert(task, at: page)
+			}
 		}
+		
+		
 	}
 	
 	public func getStreamingBoxArtForTitle(_ title: Int) {
