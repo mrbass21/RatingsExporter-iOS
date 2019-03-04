@@ -232,7 +232,7 @@ extension NetflixSession: URLSessionDelegate {
 				let providedAssetsCertPubKeyData = SecKeyCopyExternalRepresentation(providedAssetsCertPubKey, nil),
 				let expectedAssetsCertPubKeyData = SecKeyCopyExternalRepresentation(expectedAssetsCertPubKey, nil) else {
 					//Could not load the expected certificate. Return failure.
-					debugLog("Unable to load requred data to compare certificates")
+					debugLog("Unable to load requred data to compare assets certificates")
 					return false
 			}
 			
