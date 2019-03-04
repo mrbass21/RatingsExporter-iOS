@@ -192,7 +192,7 @@ extension NetflixSession: URLSessionDelegate {
 		
 		let isServerTrusted: Bool = (result == .proceed || result == .unspecified)
 		
-		if isServerTrusted && certificateIsValid(certificate) {
+		if isServerTrusted && certificateIsExpected(certificate) {
 			let credential = URLCredential(trust: serverTrust)
 			completionHandler(.useCredential, credential)
 		} else {
@@ -202,7 +202,7 @@ extension NetflixSession: URLSessionDelegate {
 	}
 	
 	@available (iOS 10.0, *)
-	private final func certificateIsValid(_ certificate: SecCertificate) -> Bool {
+	private final func certificateIsExpected(_ certificate: SecCertificate) -> Bool {
 		
 		//Load the expected certificate.
 		guard let knownNetflixCertPath = Bundle.main.path(forResource: "netflix", ofType: "cer"),
@@ -221,6 +221,26 @@ extension NetflixSession: URLSessionDelegate {
 		if providedCertPubKeyData == expectedCertPubKeyData {
 			debugLog("Certificates match")
 			return true
+		}
+		
+		if willDownloadAssets {
+			guard let knownNetflixAssetsCertPath = Bundle.main.path(forResource: "netflix-assets", ofType: "cer"),
+				let expectedAssetsCertificateData = try? Data(contentsOf: URL(fileURLWithPath: knownNetflixAssetsCertPath)),
+				let expectedAssetsCertificate = SecCertificateCreateWithData(nil, expectedAssetsCertificateData as CFData),
+				let providedAssetsCertPubKey = SecCertificateCopyKey(certificate),
+				let expectedAssetsCertPubKey = SecCertificateCopyKey(expectedAssetsCertificate),
+				let providedAssetsCertPubKeyData = SecKeyCopyExternalRepresentation(providedAssetsCertPubKey, nil),
+				let expectedAssetsCertPubKeyData = SecKeyCopyExternalRepresentation(expectedAssetsCertPubKey, nil) else {
+					//Could not load the expected certificate. Return failure.
+					debugLog("Unable to load requred data to compare certificates")
+					return false
+			}
+			
+			//Check that the public keys match for assets cert
+			if providedAssetsCertPubKeyData == expectedAssetsCertPubKeyData {
+				debugLog("Certificates match")
+				return true
+			}
 		}
 		
 		//Only one case results in `true`, and if we got here, we didn't hit it.
