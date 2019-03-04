@@ -126,8 +126,7 @@ public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 		//Create a fetcher instance if one was not provided to us
 		if fetcher == nil {
 			//It's fine to force unwrap here. We checked that credentials has a value.
-			//self.fetcher =
-			let fetcher: RatingsFetcher = RatingsFetcher.init(forCredential: useCredentials)
+			self.fetcher = RatingsFetcher(forCredential: useCredentials)
 			guard self.fetcher != nil else {
 				return nil
 			}
