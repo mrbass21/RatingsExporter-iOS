@@ -62,16 +62,9 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	///The delegate to inform of updates.
 	public weak var delegate: RatingsFetcherDelegate?
 	
-	//NOTE: The session cannot be a let verb, because we need to inject cookies into it.
-	///The session to use when making a request.
-	public var session: URLSession!
-	
 	private var sessionState: SessionState = .invalidated
 	
 	private var requestedConfiguration: URLSessionConfiguration?
-	
-	///The array of currently executing dataTasks.
-	private var activeTasks: [UInt : URLSessionDataTask] = [:]
 	
 	///The credentials to use for the fetch
 	private let credential: NetflixCredential
@@ -101,17 +94,6 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 		
 		//Continue initialization
 		super.init()
-		
-		let _ = netflixSession.netflixRequest(url: URL(string: Common.URLs.netflixRatingsURL)!) { (data, response, error) in
-			debugLog("Data Task lived Long Enough!")
-		}
-		
-//		//Configure the connection
-//		createValidSession(withConfiguration: sessionConfig)
-		
-		//Get credentials for the Shakti resources
-		
-		//initShakti()
 	}
 	
 	/**
@@ -121,97 +103,80 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	*/
 	public final func fetchRatings(page: UInt) {
 		
-		//Check if we are already fetching this page and return back nil if we are.
-		if activeTasks[page] != nil {
-			return
-		}
+		let ratingsURL = URL(string: "\(Common.URLs.netflixRatingsURL)?pg=\(page)")
 		
-		//Check that the session is still valid
-		if sessionState == SessionState.invalidated {
-			debugLog("The session is currently invalid. Creating a new one.")
-			//createValidSession(withConfiguration: self.requestedConfiguration)
-		} else if sessionState == .willInvalidate {
-			//TODO: Inform delegate that we are waiting for a session to invalidate and inform when we are ready to create a new session again?
-			debugLog("The session is starting to be invalidated, but not yet invalidated. Doing nothing.")
-			return
-		}
-		
-		debugLog("Downloading page \(page)")
-		
-		let ratingsURL = URL(string: "\(Common.URLs.netflixRatingsURL)?pg=\(page)")!
-		
-		let dataTask = session.dataTask(with: ratingsURL, completionHandler: { [weak self](data: Data?, response: URLResponse?, error: Error?) in
-			if let httpResponse = (response as? HTTPURLResponse) {
-				
-				if httpResponse.statusCode != 200 {
-					//TODO: Make this a little more friendly for the consuming API
-					DispatchQueue.main.async {
-						self?.delegate?.errorFetchingRatingsForPage(page)
-					}
-				}
-				
-				if let responseData = data {
-					//Serialize the data
-					let json = try? JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any]
+		if let ratingsURL = ratingsURL {
+			let _ = netflixSession.netflixRequest(url: ratingsURL) { [weak self] (data, urlResponse, error) in
+				if let httpResponse = (urlResponse as? HTTPURLResponse) {
 					
-					if let json = json, let finalJson = json {
-						guard let ratings = NetflixRatingsList(json: finalJson) else {
+					if httpResponse.statusCode != 200 {
+						//TODO: Make this a little more friendly for the consuming API
+						DispatchQueue.main.async {
 							self?.delegate?.errorFetchingRatingsForPage(page)
-							return
 						}
+					}
+					
+					if let responseData = data {
+						//Serialize the data
+						let json = try? JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any]
 						
-						self?.didRetrieveList(list: ratings)
+						if let json = json, let finalJson = json {
+							guard let ratings = NetflixRatingsList(json: finalJson) else {
+								self?.delegate?.errorFetchingRatingsForPage(page)
+								return
+							}
+							
+							self?.didRetrieveList(list: ratings)
+						}
 					}
 				}
 			}
-		})
-		dataTask.resume()
-		activeTasks[page] = dataTask
+		}
 	}
 	
 	public func getStreamingBoxArtForTitle(_ title: Int) {
 		
 	}
 	
-	private final func initShakti() {
-		//The "Change Plan" page. Just want a lightweight page that gets the global netflix react object
-		let changePlan = URL(string: Common.URLs.netflixChangePlan)!
-		
-		activeTasks[0] = session.dataTask(with: changePlan, completionHandler: { (data, response, error) in
-			guard (response as! HTTPURLResponse).statusCode == 200, let data = data else {
-				debugLog("Unable to fetch account settings page!")
-				return
-			}
-			
-			//Find the global object
-			let html = String(bytes: data, encoding: .utf8)!
-			
-			//How we find the start of the JSON
-			let searchMatchStartElement = "netflix.reactContext = "
-			let searchMatchEndElement = ";</script><script "
-			
-			//The indexes for the start and end of the string
-			let globalJSONStartIndex = html.range(of: searchMatchStartElement)!
-			let globalJSONEndIndex = html.range(of: searchMatchEndElement)!
-			
-			//Finally. The JSON!
-			let globalJSON = String(html[globalJSONStartIndex.upperBound..<globalJSONEndIndex.lowerBound])
-			
-			//Remove the hex codes
-			let finalJSON = globalJSON.deencodeHexToUTF8()
-			
-			let json: [String: Any?] = try! JSONSerialization.jsonObject(with: finalJSON.data(using: .utf8)!, options: []) as! [String : Any?]
-			
-			//self.shakti = Shakti(fromReactContextJSON: json)
-			
-			//debugLog("Auth URL: \(self.shakti?.authURL)\nShakti Version: \(self.shakti?.shaktiVersion)")
-			
-			self.activeTasks[0] = nil
-		})
-		
-		activeTasks[0]?.resume()
-	}
-	
+//	private final func initShakti() {
+//		//The "Change Plan" page. Just want a lightweight page that gets the global netflix react object
+//		let changePlan = URL(string: Common.URLs.netflixChangePlan)!
+//
+//		activeTasks[0] = session.dataTask(with: changePlan, completionHandler: { (data, response, error) in
+//			guard (response as! HTTPURLResponse).statusCode == 200, let data = data else {
+//				debugLog("Unable to fetch account settings page!")
+//				return
+//			}
+//
+//			//Find the global object
+//			let html = String(bytes: data, encoding: .utf8)!
+//
+//			//How we find the start of the JSON
+//			let searchMatchStartElement = "netflix.reactContext = "
+//			let searchMatchEndElement = ";</script><script "
+//
+//			//The indexes for the start and end of the string
+//			let globalJSONStartIndex = html.range(of: searchMatchStartElement)!
+//			let globalJSONEndIndex = html.range(of: searchMatchEndElement)!
+//
+//			//Finally. The JSON!
+//			let globalJSON = String(html[globalJSONStartIndex.upperBound..<globalJSONEndIndex.lowerBound])
+//
+//			//Remove the hex codes
+//			let finalJSON = globalJSON.deencodeHexToUTF8()
+//
+//			let json: [String: Any?] = try! JSONSerialization.jsonObject(with: finalJSON.data(using: .utf8)!, options: []) as! [String : Any?]
+//
+//			//self.shakti = Shakti(fromReactContextJSON: json)
+//
+//			//debugLog("Auth URL: \(self.shakti?.authURL)\nShakti Version: \(self.shakti?.shaktiVersion)")
+//
+//			self.activeTasks[0] = nil
+//		})
+//
+//		activeTasks[0]?.resume()
+//	}
+//
 	//Private interface
 	
 	
@@ -224,13 +189,13 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	- Parameter list: The list of returned Netflix ratings.
 	*/
 	private final func didRetrieveList(list: NetflixRatingsList) {
-		//Release the task. We're done.
-		self.activeTasks[UInt(list.page)] = nil
-		
-		if activeTasks.count <= 0 {
-			debugLog("Invalidating URLSession")
-			invalidateButFinishSession()
-		}
+//		//Release the task. We're done.
+//		self.activeTasks[UInt(list.page)] = nil
+//
+//		if activeTasks.count <= 0 {
+//			debugLog("Invalidating URLSession")
+//			invalidateButFinishSession()
+//		}
 		
 		//return it to the delegate
 		DispatchQueue.main.async {
@@ -239,83 +204,21 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	}
 	
 	private final func invalidateAndCancelSession() {
-		session.invalidateAndCancel()
+		//session.invalidateAndCancel()
 		sessionState = .willInvalidate
 	}
 	
 	private final func invalidateButFinishSession() {
-		session.finishTasksAndInvalidate()
+		//session.finishTasksAndInvalidate()
 		sessionState = .willInvalidate
-	}
-}
-
-///Certificate Pinning
-extension RatingsFetcher: URLSessionDelegate {
-	public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-		debugLog("Received an auth challenge!")
-		
-		//We need a server trust. If we don't have it, bail.
-		guard let serverTrust = challenge.protectionSpace.serverTrust,
-			let certificate = SecTrustGetCertificateAtIndex(serverTrust, 0) else {
-				completionHandler(.cancelAuthenticationChallenge, nil)
-				return
-		}
-		
-		//Set policies for domain name check
-		let policies = NSMutableArray()
-		policies.add(SecPolicyCreateSSL(true, (challenge.protectionSpace.host as CFString)))
-		SecTrustSetPolicies(serverTrust, policies)
-		
-		completionHandler(.performDefaultHandling, nil)
-		
-		//Evaluate Trust
-		var result: SecTrustResultType = .invalid
-		SecTrustEvaluate(serverTrust, &result)
-		
-		let isServerTrusted: Bool = (result == .proceed || result == .unspecified)
-		
-		if isServerTrusted && certificateIsValid(certificate) {
-			let credential = URLCredential(trust: serverTrust)
-			completionHandler(.useCredential, credential)
-		} else {
-			debugLog("Certificate not trusted. Connection dropped.")
-			completionHandler(.cancelAuthenticationChallenge, nil)
-		}
-	}
-	
-	@available (iOS 10.0, *)
-	private final func certificateIsValid(_ certificate: SecCertificate) -> Bool {
-		
-		//Load the expected certificate.
-		guard let knownNetflixCertPath = Bundle.main.path(forResource: "netflix", ofType: "cer"),
-			let expectedCertificateData = try? Data(contentsOf: URL(fileURLWithPath: knownNetflixCertPath)),
-			let expectedCertificate = SecCertificateCreateWithData(nil, expectedCertificateData as CFData),
-			let providedCertPubKey = SecCertificateCopyKey(certificate),
-			let expectedCertPubKey = SecCertificateCopyKey(expectedCertificate),
-			let providedCertPubKeyData = SecKeyCopyExternalRepresentation(providedCertPubKey, nil),
-			let expectedCertPubKeyData = SecKeyCopyExternalRepresentation(expectedCertPubKey, nil) else {
-				//Could not load the expected certificate. Return failure.
-				debugLog("Unable to load requred data to compare certificates")
-				return false
-		}
-		
-		//Check that the public keys match
-		if providedCertPubKeyData == expectedCertPubKeyData {
-			debugLog("Certificates match")
-			return true
-		}
-		
-		//Only one case results in `true`, and if we got here, we didn't hit it.
-		debugLog("Certificates did not match")
-		return false
 	}
 }
 
 ///Handling invalidation
 extension RatingsFetcher {
-	public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
-		if session === self.session && sessionState != .invalidated {
-			sessionState = .invalidated
-		}
-	}
+//	public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
+//		if session === self.session && sessionState != .invalidated {
+//			sessionState = .invalidated
+//		}
+//	}
 }
