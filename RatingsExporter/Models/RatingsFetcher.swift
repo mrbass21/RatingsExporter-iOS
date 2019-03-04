@@ -84,24 +84,35 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	ephemeral storage. If a session is provided, RatingsFetcher will try and inject the credentials into the data store
 	for the provided session.
 	*/
-	public init<netflixSessionType: NetflixSessionProtocol>(forCredential credential: NetflixCredential,
-															with netflixSession: netflixSessionType?) {
+	public init<NetflixCredentialType: NetflixCredentialProtocol>(forCredential credential: NetflixCredentialType) {
 		
 		//Set the credential
-		self.credential = credential
+		self.credential = NetflixCredential(netflixID: credential.netflixID, secureNetflixID: credential.secureNetflixID)
+		
+		//Create a new session
+		self.netflixSession = NetflixSession(withCredential: credential)
+		
+		//Continue initialization
+		super.init()
+	}
+	
+	public init<NetflixCredentialType: NetflixCredentialProtocol,
+		netflixSessionType: NetflixSessionProtocol>
+		(forCredential credential: NetflixCredentialType,
+		 with netflixSession: netflixSessionType) {
+		
+		//Set the credential
+		self.credential = NetflixCredential(netflixID: credential.netflixID, secureNetflixID: credential.secureNetflixID)
 		
 		//Set the requested session configuration requested to be used
-		if let netflixSession = netflixSession {
-			self.netflixSession = netflixSession
-		} else {
-			self.netflixSession = NetflixSession(withCredential: credential)
-		}
+		self.netflixSession = netflixSession
 		
 		//Continue initialization
 		super.init()
 	}
 	
 	deinit {
+		debugLog("De-initializing")
 		let _ = self.activeTasks.map {
 			$0.cancel()
 		}

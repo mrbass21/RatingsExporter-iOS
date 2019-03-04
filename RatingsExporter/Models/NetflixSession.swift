@@ -42,6 +42,10 @@ class NetflixSession: NSObject, NetflixSessionProtocol {
 		sessionToUse = createValidSession(withConfiguration: nil, usingNetflixCredential: credential)
 	}
 	
+	deinit {
+		debugLog("De-initializing")
+	}
+	
 	public func netflixRequest(url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> () ) -> URLSessionTask? {
 		let task = sessionToUse?.dataTask(with: url, completionHandler: { (data, urlResponse, error) in
 			completion(data, urlResponse, error)
