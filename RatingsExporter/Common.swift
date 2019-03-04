@@ -69,7 +69,7 @@ public struct Common {
 	///Constants used to talk to the Netflix API
 	public struct NetflixAPIConstants {
 		///The version of the shakti API to use.
-		public static let shaktiVersion = "ve059a69f"
+		public static let shaktiVersion = "vd94e5075"
 	}
 }
 

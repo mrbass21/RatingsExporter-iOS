@@ -36,6 +36,7 @@
 		8FDBC31C220CC43C0018A513 /* NetflixRatingsListTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FDBC31B220CC43C0018A513 /* NetflixRatingsListTest.swift */; };
 		8FF66E4821F528B0001ED348 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF66E4721F528B0001ED348 /* Common.swift */; };
 		8FFD4A8E2224ADC7003018B5 /* String+deencodeHexToUTF8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FFD4A8D2224ADC7003018B5 /* String+deencodeHexToUTF8.swift */; };
+		8FFD4A902225D852003018B5 /* Shakti.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FFD4A8F2225D852003018B5 /* Shakti.swift */; };
 		8FFF272E21D454CE006E45FC /* NetflixCredentialTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FFF272D21D454CE006E45FC /* NetflixCredentialTest.swift */; };
 		8FFF4BE921D550E700FEAA59 /* netflix.cer in Resources */ = {isa = PBXBuildFile; fileRef = 8FFF4BE821D550E700FEAA59 /* netflix.cer */; };
 		8FFF4BEB21D5561100FEAA59 /* netflix-assets.cer in Resources */ = {isa = PBXBuildFile; fileRef = 8FFF4BEA21D5561100FEAA59 /* netflix-assets.cer */; };
@@ -90,6 +91,7 @@
 		8FDBC31B220CC43C0018A513 /* NetflixRatingsListTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixRatingsListTest.swift; sourceTree = "<group>"; };
 		8FF66E4721F528B0001ED348 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		8FFD4A8D2224ADC7003018B5 /* String+deencodeHexToUTF8.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+deencodeHexToUTF8.swift"; sourceTree = "<group>"; };
+		8FFD4A8F2225D852003018B5 /* Shakti.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shakti.swift; sourceTree = "<group>"; };
 		8FFF272D21D454CE006E45FC /* NetflixCredentialTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixCredentialTest.swift; sourceTree = "<group>"; };
 		8FFF4BE821D550E700FEAA59 /* netflix.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = netflix.cer; sourceTree = "<group>"; };
 		8FFF4BEA21D5561100FEAA59 /* netflix-assets.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "netflix-assets.cer"; sourceTree = "<group>"; };
@@ -173,6 +175,7 @@
 				8F8E85F721D95D290097602C /* NetflixRating.swift */,
 				8F8E85F921D96ABD0097602C /* RatingsFetcher.swift */,
 				8F28FBE221EBE44F00FBCFB0 /* NetflixRatingsManager.swift */,
+				8FFD4A8F2225D852003018B5 /* Shakti.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -366,6 +369,7 @@
 				8F28FBDB21EA98BC00FBCFB0 /* NetflixRatingsCell.swift in Sources */,
 				8FA78DF121C7104E00814E05 /* UserCredentialStore.swift in Sources */,
 				8FA78DEC21C6FB7F00814E05 /* NetflixCredential.swift in Sources */,
+				8FFD4A902225D852003018B5 /* Shakti.swift in Sources */,
 				8F5A58A221C1D9700058B77A /* UserCredential.swift in Sources */,
 				8F8E85F621D95CED0097602C /* NetflixRatingsList.swift in Sources */,
 				8F8E85F821D95D290097602C /* NetflixRating.swift in Sources */,

@@ -75,6 +75,7 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	
 	///The credentials to use for the fetch
 	private let credential: NetflixCredential
+	private var shakti: ShaktiProtocol?
 	
 	public var authURL: String?
 	
@@ -101,7 +102,8 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 		createValidSession(withConfiguration: sessionConfig)
 		
 		//Get credentials for the Shakti resources
-		initShakti()
+		
+		//initShakti()
 	}
 	
 	/**
@@ -163,7 +165,6 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 		
 	}
 	
-	
 	private final func initShakti() {
 		//The "Change Plan" page. Just want a lightweight page that gets the global netflix react object
 		let changePlan = URL(string: Common.URLs.netflixChangePlan)!
@@ -193,10 +194,9 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 			
 			let json: [String: Any?] = try! JSONSerialization.jsonObject(with: finalJSON.data(using: .utf8)!, options: []) as! [String : Any?]
 			
-			print("Auth url: \(self.getAuthURLFromReactContextJSON(json))")
+			self.shakti = Shakti(fromReactContextJSON: json)
 			
-//			print(json["authURL"])
-			//print(json)
+			debugLog("Auth URL: \(self.shakti?.authURL)\nShakti Version: \(self.shakti?.shaktiVersion)")
 			
 			self.activeTasks[0] = nil
 		})
@@ -205,17 +205,6 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	}
 	
 	//Private interface
-	
-	final private func getAuthURLFromReactContextJSON(_ reactContext: [String: Any?]) -> String? {
-		if let models = (reactContext["models"] as? [String: Any?]),
-		let userInfo = models["userInfo"] as? [String: Any?],
-		let data = userInfo["data"] as? [String: Any?],
-		let authURL: String? = data["authURL"] as? String? {
-			return authURL
-		}
-		
-		return nil
-	}
 	
 	/**
 	Modifies the session provided `URLSessionConfiguration` to contain common headers that are used for `RatingsFetcher`.
