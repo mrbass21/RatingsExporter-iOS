@@ -27,16 +27,15 @@ public protocol NetflixSessionProtocol {
 	
 }
 
-class NetflixSession: NSObject, NetflixSessionProtocol {
+final class NetflixSession: NSObject, NetflixSessionProtocol {
 	
-	enum NetflixSessionError: Error {
+	public enum NetflixSessionError: Error {
 		case invalidCredentials
 	}
 	
-	var willDownloadAssets: Bool
+	public var willDownloadAssets: Bool
 	
-	var requestedConfiguration: URLSessionConfiguration?
-	
+	///Session that will be used for connections.
 	var sessionToUse: URLSession?
 	
 	private var dataTasks: [URLSessionTask] = []
