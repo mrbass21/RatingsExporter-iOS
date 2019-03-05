@@ -7,6 +7,14 @@
 //
 import Foundation.NSURLSession
 
+/*
+This object is only intended to do something _all_ connections must do. Right now this includes:
+	* Certificate Pinning
+	* Injecting Credentials
+
+Only add logic to this object if all Netflix connections need it!
+*/
+
 public protocol NetflixSessionProtocol {
 	///Determines if it should check additionally for the Asset certificate pin
 	var willDownloadAssets: Bool {get set}
@@ -24,7 +32,6 @@ class NetflixSession: NSObject, NetflixSessionProtocol {
 	enum NetflixSessionError: Error {
 		case invalidCredentials
 	}
-	
 	
 	var willDownloadAssets: Bool
 	
