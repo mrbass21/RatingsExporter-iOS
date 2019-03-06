@@ -11,12 +11,14 @@ import Foundation.NSURLSession
 This object is only intended to do something _all_ connections must do. Right now this includes:
 	* Certificate Pinning
 	* Injecting Credentials
+	* Setting the User Agent
 
 Only add logic to this object if all Netflix connections need it!
 */
 
 public protocol NetflixSessionProtocol {
-	///Determines if it should check additionally for the Asset certificate pin
+	///Determines if it should check additionally for the Asset certificate pin.
+	///If this is not set, all requests for the assets will fail.
 	var willDownloadAssets: Bool {get set}
 	
 	///URLSession to use. Otherwise, a ephimeral default connection is used
@@ -158,12 +160,12 @@ final class NetflixSession: NSObject, NetflixSessionProtocol {
 		
 		//Get a copy of the current headers
 		var headers: [AnyHashable: Any]
-		if let existingHeaders = requestedConfiguration?.httpAdditionalHeaders {
-			headers = existingHeaders
-		}
-		else {
+//		if let existingHeaders = requestedConfiguration?.httpAdditionalHeaders {
+//			headers = existingHeaders
+//		}
+//		else {
 			headers = [:]
-		}
+		//}
 		
 		//Set the user agent string
 		let userAgentString = "RatingsExporter (https://github.com/mrbass21/RatingsExporter-iOS)(iPhone; CPU iPhone OS like Mac OS X) Version/0.1"
