@@ -172,13 +172,11 @@
 		8FA78DEE21C6FBA100814E05 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				8FC6D74D2230558700D653DE /* Networking */,
 				8FA78DEF21C6FBAB00814E05 /* Credentials */,
 				8F8E85F521D95CED0097602C /* NetflixRatingsList.swift */,
 				8F8E85F721D95D290097602C /* NetflixRating.swift */,
-				8F8E85F921D96ABD0097602C /* RatingsFetcher.swift */,
 				8F28FBE221EBE44F00FBCFB0 /* NetflixRatingsManager.swift */,
-				8FFD4A8F2225D852003018B5 /* Shakti.swift */,
-				8FC6D74B222DBF6A00D653DE /* NetflixSession.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -209,6 +207,16 @@
 				8FAF780121C982360066F51A /* Info.plist */,
 			);
 			path = RatingsExporterTests;
+			sourceTree = "<group>";
+		};
+		8FC6D74D2230558700D653DE /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				8FC6D74B222DBF6A00D653DE /* NetflixSession.swift */,
+				8F8E85F921D96ABD0097602C /* RatingsFetcher.swift */,
+				8FFD4A8F2225D852003018B5 /* Shakti.swift */,
+			);
+			path = Networking;
 			sourceTree = "<group>";
 		};
 		8FFD4A8C2224AD7D003018B5 /* Extensions */ = {

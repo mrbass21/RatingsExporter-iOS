@@ -42,6 +42,8 @@ public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 		case directed
 	}
 	
+	var shakti: Shakti<NetflixCredential>?
+	
 	//TODO: Maybe change to CoreData interface?
 	///The private persistance (in memory) of the list of items.
 	private var ratingsLists: [NetflixRatingsList?]? = nil
@@ -137,11 +139,20 @@ public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 		//Set the fetch mode
 		self.fetchMode = mode
 		
+		shakti = Shakti<NetflixCredential>(forCredential: useCredentials)
+		shakti?.initializeShakti() { (success) in
+			if success {
+				debugLog("Shakti intialized successfully")
+			} else {
+				debugLog("Could not initialize")
+			}
+		}
+		
 		//Set ourselves as the delegate
-		self.fetcher.delegate = self
+		//self.fetcher.delegate = self
 		
 		//Fetch the first page
-		self.fetcher.fetchRatings(page: 0)
+		//self.fetcher.fetchRatings(page: 0)
 	}
 }
 

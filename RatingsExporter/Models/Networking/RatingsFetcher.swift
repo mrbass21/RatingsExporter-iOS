@@ -8,7 +8,7 @@
 import Foundation.NSURLSession
 
 ///Notifies the delegate of calls in the RatingsFetcher lifecycle.
-public protocol RatingsFetcherDelegate: class {
+protocol RatingsFetcherDelegate: class {
 	/**
 	The returned ratings for a specific page.
 	
@@ -35,12 +35,12 @@ public protocol RatingsFetcherProtocol: class {
 public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	
 	///Errors that can be encountered while working with RatingsFetcher
-	public enum RatingsFetcherError: Error, Equatable {
+	enum RatingsFetcherError: Error, Equatable {
 		///The credentials provided were invalid.
 		case invalidCredentials
 	}
 	
-	public enum SessionState: Equatable {
+	enum SessionState: Equatable {
 		case invalidated
 		case willInvalidate
 		case active(Timer?)
@@ -60,11 +60,11 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	}
 	
 	///The delegate to inform of updates.
-	public weak var delegate: RatingsFetcherDelegate?
+	weak var delegate: RatingsFetcherDelegate?
 	
-	private var sessionState: SessionState = .invalidated
+	var sessionState: SessionState = .invalidated
 	
-	private var requestedConfiguration: URLSessionConfiguration?
+	var requestedConfiguration: URLSessionConfiguration?
 	
 	private var activeTasks: [URLSessionTask] = []
 	
@@ -168,42 +168,7 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	}
 	
 //	private final func initShakti() {
-//		//The "Change Plan" page. Just want a lightweight page that gets the global netflix react object
-//		let changePlan = URL(string: Common.URLs.netflixChangePlan)!
-//
-//		activeTasks[0] = session.dataTask(with: changePlan, completionHandler: { (data, response, error) in
-//			guard (response as! HTTPURLResponse).statusCode == 200, let data = data else {
-//				debugLog("Unable to fetch account settings page!")
-//				return
-//			}
-//
-//			//Find the global object
-//			let html = String(bytes: data, encoding: .utf8)!
-//
-//			//How we find the start of the JSON
-//			let searchMatchStartElement = "netflix.reactContext = "
-//			let searchMatchEndElement = ";</script><script "
-//
-//			//The indexes for the start and end of the string
-//			let globalJSONStartIndex = html.range(of: searchMatchStartElement)!
-//			let globalJSONEndIndex = html.range(of: searchMatchEndElement)!
-//
-//			//Finally. The JSON!
-//			let globalJSON = String(html[globalJSONStartIndex.upperBound..<globalJSONEndIndex.lowerBound])
-//
-//			//Remove the hex codes
-//			let finalJSON = globalJSON.deencodeHexToUTF8()
-//
-//			let json: [String: Any?] = try! JSONSerialization.jsonObject(with: finalJSON.data(using: .utf8)!, options: []) as! [String : Any?]
-//
-//			//self.shakti = Shakti(fromReactContextJSON: json)
-//
-//			//debugLog("Auth URL: \(self.shakti?.authURL)\nShakti Version: \(self.shakti?.shaktiVersion)")
-//
-//			self.activeTasks[0] = nil
-//		})
-//
-//		activeTasks[0]?.resume()
+
 //	}
 //
 	//Private interface
