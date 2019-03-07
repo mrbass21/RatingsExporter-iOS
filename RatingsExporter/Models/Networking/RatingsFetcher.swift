@@ -7,28 +7,17 @@
 //
 import Foundation.NSURLSession
 
-///Notifies the delegate of calls in the RatingsFetcher lifecycle.
-protocol RatingsFetcherDelegate: class {
+///Protocol that a RatingsFetcher implements.
+public protocol RatingsFetcherProtocol: class {
 	/**
 	The returned ratings for a specific page.
 	
-	- Parameter ratings : The list of retrieved ratings.
-	*/
-	func didFetchRatings(_ ratings: NetflixRatingsList)
+	On a successful fetch, the completeion handler will be invoked with a `NetflixRatingsList`. Nil otherwise.
 	
-	//TODO: Pass the error, maybe?.
-	/**
-	An error occured fetching a specific page.
-	
-	- Parameter page : The page that failed to retrieve.
+	- Parameter page: The page of ratings to fetch.
+	- Parameter withCompletion: The completion handler invoked after a fetch.
 	*/
-	func errorFetchingRatingsForPage(_ page: UInt)
-}
-
-///Protocol that a RatingsFetcher implements.
-public protocol RatingsFetcherProtocol: class {
-	var authURL: String? {get set}
-	func fetchRatings(page: UInt)
+	func fetchRatings(page: UInt, withCompletion: @escaping (NetflixRatingsList?) -> ())
 }
 
 ///Fetches Netflix ratings
@@ -59,42 +48,13 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 		}
 	}
 	
-	///The delegate to inform of updates.
-	weak var delegate: RatingsFetcherDelegate?
-	
-	var sessionState: SessionState = .invalidated
-	
-	var requestedConfiguration: URLSessionConfiguration?
-	
 	private var activeTasks: [URLSessionTask] = []
 	
 	///The credentials to use for the fetch
 	private let credential: NetflixCredential
-	//private var shakti: ShaktiProtocol?
 	
-	public var authURL: String?
+	private var netflixSession: NetflixSessionProtocol
 	
-	var netflixSession: NetflixSessionProtocol
-	
-	/**
-	Initialize a RatingsFetcher object.
-	
-	- Parameter forCredential: The `NetflixCredential` to use for fetching ratings.
-	- Parameter with: An URLSession to use for fetching. If none is provided, a default URLSession (not default) is created with
-	ephemeral storage. If a session is provided, RatingsFetcher will try and inject the credentials into the data store
-	for the provided session.
-	*/
-	public init<NetflixCredentialType: NetflixCredentialProtocol>(forCredential credential: NetflixCredentialType) {
-		
-		//Set the credential
-		self.credential = NetflixCredential(netflixID: credential.netflixID, secureNetflixID: credential.secureNetflixID)
-		
-		//Create a new session
-		self.netflixSession = NetflixSession(withCredential: credential)
-		
-		//Continue initialization
-		super.init()
-	}
 	
 	public init<NetflixCredentialType: NetflixCredentialProtocol,
 		netflixSessionType: NetflixSessionProtocol>
@@ -119,13 +79,8 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 		
 		self.activeTasks.removeAll()
 	}
-	
-	/**
-	Initialize a RatingsFetcher object. If the page is fetched, `didRetrieveList(list:)` is called, otherwise `errorFetchingRatingsForPage` is called.
-	
-	- Parameter page: The page number to fetch.
-	*/
-	public final func fetchRatings(page: UInt) {
+
+	public final func fetchRatings(page: UInt, withCompletion: @escaping (NetflixRatingsList?) -> ()) {
 		
 		let ratingsURL = URL(string: "\(Common.URLs.netflixRatingsURL)?pg=\(page)")
 		
@@ -185,11 +140,6 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	private final func didRetrieveList(list: NetflixRatingsList) {
 		//Release the task. We're done.
 		self.activeTasks.remove(at: list.page)
-		
-		//return it to the delegate
-		DispatchQueue.main.async {
-			self.delegate?.didFetchRatings(list)
-		}
 	}
 	
 	private final func invalidateAndCancelSession() {

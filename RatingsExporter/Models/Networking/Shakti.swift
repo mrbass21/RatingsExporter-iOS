@@ -70,7 +70,7 @@ protocol ShaktiProtocol {
 	The Bool option is set to true if Shakti was setup properly, and false otherwise.
 	*/
 	func initializeShaktiWithSession<NetflixSessionType: NetflixSessionProtocol>(_ session: NetflixSessionType?, completion: @escaping (Bool) -> ())
-	
+
 }
 
 public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: ShaktiProtocol {
@@ -182,6 +182,12 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 		}
 		
 		return nil
+	}
+	
+	final func getRatingsList<NetflixSessionType: NetflixSessionProtocol>(usingCredential credential: NetflixCredentialType,
+																		  withSession session: NetflixSessionType,
+																		  completion: @escaping (NetflixRatingsList) -> ()) {
+		let ratingsFetcher = RatingsFetcher(forCredential: credential, with: session)
 	}
 }
 
