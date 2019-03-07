@@ -170,7 +170,7 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 	Extracts the currently AuthURL for the specific user profile from the react context.
 	
 	- Parameter reactContext: A JSON object that represents the reactContext retrieved from any Netflix front-end page.
-	- Returns: The ShaktVersion extracted from reactContext as a String, or nil if it was not found.
+	- Returns: The AuthURL extracted from reactContext as a String, or nil if it was not found.
 	*/
 	final private func getAuthURLFromReactContextJSON(_ reactContext: [String: Any?]) -> String? {
 		if let models = (reactContext["models"] as? [String: Any?]),
