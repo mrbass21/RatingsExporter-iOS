@@ -88,6 +88,9 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 	
 	private var netflixSession: NetflixSessionProtocol
 	
+	
+	var task: URLSessionTask?
+	
 	public init(forCredential credential: NetflixCredentialType) {
 		//Store the credential
 		netflixCredential = credential
@@ -184,10 +187,11 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 		return nil
 	}
 	
-	final func getRatingsList<NetflixSessionType: NetflixSessionProtocol>(usingCredential credential: NetflixCredentialType,
-																		  withSession session: NetflixSessionType,
-																		  completion: @escaping (NetflixRatingsList) -> ()) {
-		let ratingsFetcher = RatingsFetcher(forCredential: credential, with: session)
+	final func getRatingsList(page: UInt, completion: @escaping (NetflixRatingsList?) -> ()) {
+		let ratingsFetcher = RatingsFetcher(forCredential: self.netflixCredential, with: self.netflixSession)
+		self.task = ratingsFetcher.fetchRatings(page: page) { (list) in
+			completion(list)
+		}
 	}
 }
 

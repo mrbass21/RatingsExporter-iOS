@@ -31,7 +31,7 @@ final class RatingsViewController: UITableViewController {
 		else {
 			if ratingsLists == nil {
 				ratingsLists = NetflixRatingsManager(fetcher: nil, withCredentials: nil)
-				ratingsLists!.delegate = self
+				//ratingsLists!.delegate = self
 			}
 		}
 	}

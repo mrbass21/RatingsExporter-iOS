@@ -17,7 +17,7 @@ public protocol RatingsFetcherProtocol: class {
 	- Parameter page: The page of ratings to fetch.
 	- Parameter withCompletion: The completion handler invoked after a fetch.
 	*/
-	func fetchRatings(page: UInt, withCompletion: @escaping (NetflixRatingsList?) -> ())
+	func fetchRatings(page: UInt, withCompletion: @escaping (NetflixRatingsList?) -> ()) -> URLSessionTask?
 }
 
 ///Fetches Netflix ratings
@@ -56,10 +56,9 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	private var netflixSession: NetflixSessionProtocol
 	
 	
-	public init<NetflixCredentialType: NetflixCredentialProtocol,
-		netflixSessionType: NetflixSessionProtocol>
+	public init<NetflixCredentialType: NetflixCredentialProtocol>
 		(forCredential credential: NetflixCredentialType,
-		 with netflixSession: netflixSessionType) {
+		with netflixSession: NetflixSessionProtocol) {
 		
 		//Set the credential
 		self.credential = NetflixCredential(netflixID: credential.netflixID, secureNetflixID: credential.secureNetflixID)
@@ -80,84 +79,37 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 		self.activeTasks.removeAll()
 	}
 
-	public final func fetchRatings(page: UInt, withCompletion: @escaping (NetflixRatingsList?) -> ()) {
+	public final func fetchRatings(page: UInt, withCompletion: @escaping (NetflixRatingsList?) -> ()) -> URLSessionTask?{
 		
-		let ratingsURL = URL(string: "\(Common.URLs.netflixRatingsURL)?pg=\(page)")
+		guard let ratingsURL = URL(string: "\(Common.URLs.netflixRatingsURL)?pg=\(page)") else {
+			return nil
+		}
 		
-		if let ratingsURL = ratingsURL {
-			let task = netflixSession.netflixRequest(url: ratingsURL) { [weak self] (data, urlResponse, error) in
-				if let httpResponse = (urlResponse as? HTTPURLResponse) {
+		let task = netflixSession.netflixRequest(url: ratingsURL) { (data, urlResponse, error) in
+			if let httpResponse = (urlResponse as? HTTPURLResponse) {
+				debugLog("Got a response")
+				guard httpResponse.statusCode == 200  else {
+					//TODO: Make this a little more friendly for the consuming API
+					withCompletion(nil)
+					return
+				}
 					
-					if httpResponse.statusCode != 200 {
-						//TODO: Make this a little more friendly for the consuming API
-						DispatchQueue.main.async {
-							self?.delegate?.errorFetchingRatingsForPage(page)
+				if let responseData = data {
+					//Serialize the data
+					let json = try? JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any]
+					
+					if let json = json, let finalJson = json {
+						guard let ratings = NetflixRatingsList(json: finalJson) else {
+							withCompletion(nil)
+							return
 						}
-					}
-					
-					if let responseData = data {
-						//Serialize the data
-						let json = try? JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any]
-						
-						if let json = json, let finalJson = json {
-							guard let ratings = NetflixRatingsList(json: finalJson) else {
-								self?.delegate?.errorFetchingRatingsForPage(page)
-								return
-							}
 							
-							self?.didRetrieveList(list: ratings)
-						}
+						withCompletion(ratings)
 					}
 				}
 			}
-			if let task = task {
-				self.activeTasks.insert(task, at: Int(page))
-			}
 		}
 		
-		
+		return task
 	}
-	
-	public func getStreamingBoxArtForTitle(_ title: Int) {
-		
-	}
-	
-//	private final func initShakti() {
-
-//	}
-//
-	//Private interface
-	
-	
-	
-	
-	
-	/**
-	Manages the activeTasks and alerts the delegate of success.
-	
-	- Parameter list: The list of returned Netflix ratings.
-	*/
-	private final func didRetrieveList(list: NetflixRatingsList) {
-		//Release the task. We're done.
-		self.activeTasks.remove(at: list.page)
-	}
-	
-	private final func invalidateAndCancelSession() {
-		//session.invalidateAndCancel()
-		sessionState = .willInvalidate
-	}
-	
-	private final func invalidateButFinishSession() {
-		//session.finishTasksAndInvalidate()
-		sessionState = .willInvalidate
-	}
-}
-
-///Handling invalidation
-extension RatingsFetcher {
-//	public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
-//		if session === self.session && sessionState != .invalidated {
-//			sessionState = .invalidated
-//		}
-//	}
 }

@@ -96,7 +96,7 @@ public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 			let returnRating = ratingsLists?[page]?.ratingItems[pageNormalizedItemNumber]
 			
 			if fetchMode == .sequential, returnRating == nil {
-				fetcher.fetchRatings(page: UInt(page))
+				//fetcher.fetchRatings(page: UInt(page))
 			}
 			
 			return returnRating
@@ -125,20 +125,22 @@ public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 			useCredentials = credentials!
 		}
 		
-		//Create a fetcher instance if one was not provided to us
-		if fetcher == nil {
-			//It's fine to force unwrap here. We checked that credentials has a value.
-			self.fetcher = RatingsFetcher(forCredential: useCredentials)
-			guard self.fetcher != nil else {
-				return nil
-			}
-		} else {
-			self.fetcher = fetcher!
-		}
-		
-		//Set the fetch mode
 		self.fetchMode = mode
 		
+		//Create a fetcher instance if one was not provided to us
+//		if fetcher == nil {
+//			//It's fine to force unwrap here. We checked that credentials has a value.
+//			//self.fetcher = RatingsFetcher(forCredential: useCredentials)
+//			guard self.fetcher != nil else {
+//				return nil
+//			}
+//		} else {
+//			self.fetcher = fetcher!
+//		}
+//
+//		//Set the fetch mode
+//		self.fetchMode = mode
+//
 		shakti = Shakti<NetflixCredential>(forCredential: useCredentials)
 		shakti?.initializeShakti() { (success) in
 			if success {
@@ -149,33 +151,17 @@ public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 			}
 		}
 		
+		shakti?.getRatingsList(page: 0, completion: { (list) in
+			if let list = list {
+				debugLog(list)
+			} else {
+				debugLog("List was Nil")
+			}
+		})
 		//Set ourselves as the delegate
 		//self.fetcher.delegate = self
 		
 		//Fetch the first page
 		//self.fetcher.fetchRatings(page: 0)
-	}
-}
-
-
-extension NetflixRatingsManager: RatingsFetcherDelegate {
-	public func errorFetchingRatingsForPage(_ page: UInt) {
-		debugLog("Error on page \(page)")
-	}
-	
-	public func didFetchRatings(_ ratings: NetflixRatingsList) {
-		if ratingsLists == nil {
-			//This is the first run of the object and we are preloading the first page and setting up the lists
-			ratingsLists = [NetflixRatingsList?].init(repeating: nil, count: (ratings.totalRatings / ratings.numberOfRequestedItems) + 1)
-			ratingsLists![ratings.page] = ratings
-		} else {
-			//Append this list to the list... of lists... I probably should refactor for clarity
-			//TODO: Refactor so that it's not immensely confusing how this works.
-			ratingsLists![ratings.page] = ratings
-		}
-		
-		let indexRange = (ratings.page * 100)...(((ratings.page + 1) * 100) - 1)
-		
-		delegate?.NetflixRatingsManagerDelegate(self, didLoadRatingIndexes: indexRange)
 	}
 }
