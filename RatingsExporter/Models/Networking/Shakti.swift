@@ -22,8 +22,25 @@ protocol ShaktiProtocol {
 	var shaktiVersion: String? {get}
 	
 	/**
-	Initialize Shakti. The initialization requires a network call to setup. If this fails for any reason,
-	`isInitialized` will be set to false.
+	Initialize the Shakti Object. Initialization is not complete until the `initializeShakti(:ShaktiInitCompletion)`
+	or `initializeShaktiWithSession(:NetflixSession,:ShaktiInitCompletion)` is called. Once Shakti is initialized,
+	`isInitialized` will return `true`. It will return `false` if Shakti is not initialized.
+	
+	The following functions are still available even if `isInitialized` is false:
+	
+	* fetchRatings
+	* getBoxArt for DVD titles
+	*/
+	init(forCredential: CredentialType)
+	
+	/**
+	Initializes Shakti using a default `NetflixSession`. The completion handler is called passing a Bool representing if Shakti
+	initialized or not.
+	
+	The default session will be used for all subsequent calls and initializes it with the `willDownloadAssets` set to `true`.
+	The initialization requires a network call to setup. If this fails for any reason, `isInitialized` will be set to false.
+	
+	The completion handler Bool will contain `true` if Shakti initialized properly, and false otherwise.
 	
 	The following functions are still available even if `isInitialized` is false:
 	
@@ -33,7 +50,26 @@ protocol ShaktiProtocol {
 	- Parameter completion: A completion handler that will fire once Shakti is properly initialized.
 	The Bool option is set to true if Shakti was setup properly, and false otherwise.
 	*/
-	init(forCredential: CredentialType)
+	func initializeShakti(completion: @escaping (Bool) -> ())
+	
+	/**
+	Initializes Shakti using the provided `NetflixSession`. The completion handler is called passing a Bool representing if Shakti
+	initialized or not.
+	
+	The default session will be used for all subsequent calls and initializes it with the `willDownloadAssets` set to `true`.
+	The initialization requires a network call to setup. If this fails for any reason, `isInitialized` will be set to false.
+	
+	The completion handler Bool will contain `true` if Shakti initialized properly, and false otherwise.
+	
+	The following functions are still available even if `isInitialized` is false:
+	
+	* fetchRatings
+	* getBoxArt for DVD titles
+	
+	- Parameter completion: A completion handler that will fire once Shakti is properly initialized.
+	The Bool option is set to true if Shakti was setup properly, and false otherwise.
+	*/
+	func initializeShaktiWithSession<NetflixSessionType: NetflixSessionProtocol>(_ session: NetflixSessionType?, completion: @escaping (Bool) -> ())
 	
 }
 
@@ -112,6 +148,12 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 		initializeShakti(completion: completion)
 	}
 	
+	/**
+	Extracts the currently deployed Shakti version Netflix is using from the react context.
+	
+	- Parameter reactContext: A JSON object that represents the reactContext retrieved from any Netflix front-end page.
+	- Returns: The ShaktVersion extracted from reactContext as a String, or nil if it was not found.
+	*/
 	final private func getShaktiVersionFromReactContextJSON(_ reactContext: [String: Any?]) -> String? {
 		
 		if let models = (reactContext["models"] as? [String: Any?]),
@@ -124,6 +166,12 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 		return nil
 	}
 	
+	/**
+	Extracts the currently AuthURL for the specific user profile from the react context.
+	
+	- Parameter reactContext: A JSON object that represents the reactContext retrieved from any Netflix front-end page.
+	- Returns: The ShaktVersion extracted from reactContext as a String, or nil if it was not found.
+	*/
 	final private func getAuthURLFromReactContextJSON(_ reactContext: [String: Any?]) -> String? {
 		if let models = (reactContext["models"] as? [String: Any?]),
 			let userInfo = models["userInfo"] as? [String: Any?],
