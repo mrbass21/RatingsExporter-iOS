@@ -112,7 +112,7 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	}
 	
 	deinit {
-		debugLog("De-initializing")
+		debugLog("Deinit")
 		let _ = self.activeTasks.map {
 			$0.cancel()
 		}

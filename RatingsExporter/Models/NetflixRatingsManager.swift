@@ -143,6 +143,7 @@ public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 		shakti?.initializeShakti() { (success) in
 			if success {
 				debugLog("Shakti intialized successfully")
+				print(self.shakti!)
 			} else {
 				debugLog("Could not initialize")
 			}

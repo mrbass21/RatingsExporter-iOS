@@ -136,3 +136,9 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 		return nil
 	}
 }
+
+extension Shakti: CustomStringConvertible {
+	public var description: String {
+		return "Shakti Version: \(self.shaktiVersion ?? "Not Found")\nAuth URL Set: \(self.authURL != nil)"
+	}
+}
