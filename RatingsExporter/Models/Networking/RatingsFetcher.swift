@@ -79,36 +79,36 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 		self.activeTasks.removeAll()
 	}
 
-	public final func fetchRatings(page: UInt, withCompletion: @escaping (NetflixRatingsList?) -> ()) -> URLSessionTask?{
-		
-		guard let ratingsURL = URL(string: "\(Common.URLs.netflixRatingsURL)?pg=\(page)") else {
-			return nil
-		}
-		
-		let task = netflixSession.netflixRequest(url: ratingsURL) { (data, urlResponse, error) in
-			if let httpResponse = (urlResponse as? HTTPURLResponse) {
-				guard httpResponse.statusCode == 200  else {
-					//TODO: Make this a little more friendly for the consuming API
-					withCompletion(nil)
-					return
-				}
-					
-				if let responseData = data {
-					//Serialize the data
-					let json = try? JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any]
-					
-					if let json = json, let finalJson = json {
-						guard let ratings = NetflixRatingsList(json: finalJson) else {
-							withCompletion(nil)
-							return
-						}
-							
-						withCompletion(ratings)
-					}
-				}
-			}
-		}
-		
-		return task
-	}
+//	public final func fetchRatings(page: UInt, withCompletion: @escaping (NetflixRatingsList?) -> ()) -> URLSessionTask?{
+//		
+//		guard let ratingsURL = URL(string: "\(Common.URLs.netflixRatingsURL)?pg=\(page)") else {
+//			return nil
+//		}
+//		
+//		let task = netflixSession.netflixRequest(url: ratingsURL) { (data, urlResponse, error) in
+//			if let httpResponse = (urlResponse as? HTTPURLResponse) {
+//				guard httpResponse.statusCode == 200  else {
+//					//TODO: Make this a little more friendly for the consuming API
+//					withCompletion(nil)
+//					return
+//				}
+//					
+//				if let responseData = data {
+//					//Serialize the data
+//					let json = try? JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any]
+//					
+//					if let json = json, let finalJson = json {
+//						guard let ratings = NetflixRatingsList(json: finalJson) else {
+//							withCompletion(nil)
+//							return
+//						}
+//							
+//						withCompletion(ratings)
+//					}
+//				}
+//			}
+//		}
+//		
+//		return task
+//	}
 }

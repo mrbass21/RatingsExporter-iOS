@@ -6,6 +6,8 @@
 //  Copyright © 2019 Jason Beck. All rights reserved.
 //
 
+import Foundation.NSURLSession
+
 ///Notifications that NetflixRatingsManger will send to notify the delegate of status.
 public protocol NetflixRatingsManagerDelegate: class {
 	/**
@@ -33,15 +35,14 @@ public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 	
 	var shakti: Shakti<NetflixCredential>?
 	
+	var activeTasks: [Int: URLSessionTask?] = [:]
+	
 	//TODO: Maybe change to CoreData interface?
 	///The private persistance (in memory) of the list of items.
 	private var ratingsLists: [NetflixRatingsList?]? = nil
 	
 	///A delegate to inform of updates
 	public var delegate: NetflixRatingsManagerDelegate?
-	
-	///Public for dependency injection!
-	public var fetcher: RatingsFetcher!
 	
 	///Returns the number of pages in the lists
 	public var totalPages: Int {
@@ -110,7 +111,7 @@ public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 		shakti = Shakti<NetflixCredential>(forCredential: useCredentials)
 		shakti?.initializeShakti() { [weak self] (success) in
 			if success {
-				self?.shakti?.getRatingsList(page: 0, completion: { (list) in
+				self?.activeTasks[page] self?.shakti?.getRatingsList(page: 0, completion: { (list) in
 					
 					guard let list = list else {
 						return

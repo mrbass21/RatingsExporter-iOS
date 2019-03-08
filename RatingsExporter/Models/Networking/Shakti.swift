@@ -89,7 +89,7 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 	private var netflixSession: NetflixSessionProtocol
 	
 	
-	var task: URLSessionTask?
+	var tasks: URLSessionTask?
 	
 	public init(forCredential credential: NetflixCredentialType) {
 		//Store the credential
@@ -187,11 +187,53 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 		return nil
 	}
 	
-	final func getRatingsList(page: UInt, completion: @escaping (NetflixRatingsList?) -> ()) {
+	final func getRatingsList(page: UInt, completion: @escaping (NetflixRatingsList?) -> ()) -> URLSessionTask? {
 		let ratingsFetcher = RatingsFetcher(forCredential: self.netflixCredential, with: self.netflixSession)
-		self.task = ratingsFetcher.fetchRatings(page: page) { (list) in
+		let task = ratingsFetcher.fetchRatings(page: page) { (list) in
+			debugLog("Downloaded page: \(page)")
 			completion(list)
 		}
+		
+		return task
+	}
+	
+	
+	//Private Interface
+	private final func fetchRatings(page: UInt, withCompletion: @escaping (NetflixRatingsList?) -> ()) -> URLSessionTask?{
+		
+		guard let ratingsURL = URL(string: "\(Common.URLs.netflixRatingsURL)?pg=\(page)") else {
+			return nil
+		}
+		
+		let task = netflixSession.netflixRequest(url: ratingsURL) { (data, urlResponse, error) in
+			if let httpResponse = (urlResponse as? HTTPURLResponse) {
+				guard httpResponse.statusCode == 200  else {
+					//TODO: Make this a little more friendly for the consuming API
+					withCompletion(nil)
+					return
+				}
+				
+				if let responseData = data {
+					//Serialize the data
+					let json = try? JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any]
+					
+					if let json = json, let finalJson = json {
+						guard let ratings = NetflixRatingsList(json: finalJson) else {
+							withCompletion(nil)
+							return
+						}
+						
+						withCompletion(ratings)
+					}
+				}
+			}
+		}
+		
+		return task
+	}
+	
+	final private func setBoxArtURLForRating(_ rating: inout NetflixRating) {
+		
 	}
 }
 
