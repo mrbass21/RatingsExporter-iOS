@@ -59,10 +59,6 @@ final class NetflixSession: NSObject, NetflixSessionProtocol {
 			completion(data, urlResponse, error)
 		})
 		
-		if let task = task {
-			task.resume()
-		}
-		
 		return task
 	}
 	

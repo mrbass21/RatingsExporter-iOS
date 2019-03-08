@@ -30,8 +30,8 @@ final class RatingsViewController: UITableViewController {
 		}
 		else {
 			if ratingsLists == nil {
-				ratingsLists = NetflixRatingsManager(fetcher: nil, withCredentials: nil)
-				//ratingsLists!.delegate = self
+				ratingsLists = NetflixRatingsManager(withCredentials: nil)
+				ratingsLists!.delegate = self
 			}
 		}
 	}
@@ -96,15 +96,16 @@ extension RatingsViewController {
 
 extension RatingsViewController: NetflixRatingsManagerDelegate {
 	func NetflixRatingsManagerDelegate(_: NetflixRatingsManagerProtocol, didLoadRatingIndexes indexes: ClosedRange<Int>) {
-		
-		if tableView.numberOfRows(inSection: 0) == 0 {
-			tableView.reloadData()
+		DispatchQueue.main.async {
+			if self.tableView.numberOfRows(inSection: 0) == 0 {
+				self.tableView.reloadData()
+			}
+			
+			let indexPaths = indexes.map { (index) -> IndexPath in
+				IndexPath(row: index, section: 0)
+			}
+			
+			self.tableView.reloadRows(at: indexPaths, with: .automatic)
 		}
-		
-		let indexPaths = indexes.map { (index) -> IndexPath in
-			IndexPath(row: index, section: 0)
-		}
-		
-		tableView.reloadRows(at: indexPaths, with: .automatic)
 	}
 }

@@ -87,7 +87,6 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 		
 		let task = netflixSession.netflixRequest(url: ratingsURL) { (data, urlResponse, error) in
 			if let httpResponse = (urlResponse as? HTTPURLResponse) {
-				debugLog("Got a response")
 				guard httpResponse.statusCode == 200  else {
 					//TODO: Make this a little more friendly for the consuming API
 					withCompletion(nil)

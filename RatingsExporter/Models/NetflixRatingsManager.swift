@@ -19,7 +19,6 @@ public protocol NetflixRatingsManagerDelegate: class {
 
 ///The protocol that a RatingsManager should conform to.
 public protocol NetflixRatingsManagerProtocol: class {
-	var fetchMode: NetflixRatingsManager.FetchMode {get set}
 	var delegate: NetflixRatingsManagerDelegate? {get set}
 	var fetcher: RatingsFetcher! {get set}
 	var totalPages: Int {get}
@@ -32,24 +31,11 @@ public protocol NetflixRatingsManagerProtocol: class {
 ///A class used to manage the ratings NetflixFetcher retuns, and deals with device persistance.
 public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 	
-	///Describes the fetching behavior desired.
-	public enum FetchMode {
-		///Loads ratings as they are requested form the subscript.
-		case sequential
-		///Pre-loads all the ratings before alerting the delegate.
-		case preloadAll
-		///Let the protocol implementer request pre-fetches.
-		case directed
-	}
-	
 	var shakti: Shakti<NetflixCredential>?
 	
 	//TODO: Maybe change to CoreData interface?
 	///The private persistance (in memory) of the list of items.
 	private var ratingsLists: [NetflixRatingsList?]? = nil
-	
-	///The selected fetch mode
-	public var fetchMode: FetchMode
 	
 	///A delegate to inform of updates
 	public var delegate: NetflixRatingsManagerDelegate?
@@ -95,10 +81,6 @@ public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 			
 			let returnRating = ratingsLists?[page]?.ratingItems[pageNormalizedItemNumber]
 			
-			if fetchMode == .sequential, returnRating == nil {
-				//fetcher.fetchRatings(page: UInt(page))
-			}
-			
 			return returnRating
 		}
 	}
@@ -110,7 +92,7 @@ public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 	- Parameter withCredentials: An NetflixCredential to use for the fetcher.
 	- Parameter usingFetchmode: The FetchMode to use when managing the ratings. If `nil` is specified, the value is `sequential`.
 	*/
-	public init?(fetcher: RatingsFetcher?, withCredentials credentials: NetflixCredential?, usingFetchMode mode: FetchMode = .sequential) {
+	public init?(withCredentials credentials: NetflixCredential?) {
 		
 		//Check if we were provided credentials. If not, try and harvest them from the internal store
 		let useCredentials: NetflixCredential
@@ -124,44 +106,37 @@ public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 		else {
 			useCredentials = credentials!
 		}
-		
-		self.fetchMode = mode
-		
-		//Create a fetcher instance if one was not provided to us
-//		if fetcher == nil {
-//			//It's fine to force unwrap here. We checked that credentials has a value.
-//			//self.fetcher = RatingsFetcher(forCredential: useCredentials)
-//			guard self.fetcher != nil else {
-//				return nil
-//			}
-//		} else {
-//			self.fetcher = fetcher!
-//		}
-//
-//		//Set the fetch mode
-//		self.fetchMode = mode
-//
+
 		shakti = Shakti<NetflixCredential>(forCredential: useCredentials)
-		shakti?.initializeShakti() { (success) in
+		shakti?.initializeShakti() { [weak self] (success) in
 			if success {
-				debugLog("Shakti intialized successfully")
-				print(self.shakti!)
+				self?.shakti?.getRatingsList(page: 0, completion: { (list) in
+					
+					guard let list = list else {
+						return
+					}
+					
+					if self?.ratingsLists == nil {
+						//This is the first run of the object and we are preloading the first page and setting up the lists
+						self?.ratingsLists = [NetflixRatingsList?].init(repeating: nil, count: ((list.totalRatings) / (list.numberOfRequestedItems)) + 1)
+						self?.ratingsLists![list.page] = list
+					} else {
+						//Append this list to the list... of lists... I probably should refactor for clarity
+						//TODO: Refactor so that it's not immensely confusing how this works.
+					
+						self?.ratingsLists![list.page] = list
+					}
+					
+					let indexRange = (list.page * 100)...(((list.page + 1) * 100) - 1)
+					
+					if self != nil {
+						self!.delegate?.NetflixRatingsManagerDelegate(self!, didLoadRatingIndexes: indexRange)
+					}
+					
+				})
 			} else {
 				debugLog("Could not initialize")
 			}
 		}
-		
-		shakti?.getRatingsList(page: 0, completion: { (list) in
-			if let list = list {
-				debugLog(list)
-			} else {
-				debugLog("List was Nil")
-			}
-		})
-		//Set ourselves as the delegate
-		//self.fetcher.delegate = self
-		
-		//Fetch the first page
-		//self.fetcher.fetchRatings(page: 0)
 	}
 }
