@@ -29,6 +29,17 @@ public struct NetflixRating: Equatable {
 	
 	var boxArtWasFound: Bool = false
 	
+	var streamingBoxArtLargeURL: URL?
+	
+	var boxArtURL: URL? {
+		switch self.ratingType {
+		case .star:
+			return self.getBoxArtURL(boxArtType: .S197)
+		case .thumb:
+			return self.streamingBoxArtLargeURL
+		}
+	}
+	
 	public enum ratingType: String {
 		case star = "star"
 		case thumb = "thumb"
@@ -83,16 +94,12 @@ public struct NetflixRating: Equatable {
 	}
 	
 	public func getBoxArtURL(boxArtType: DVDBoxArtType) -> URL? {
-		let boxArtURL: URL?
-		if self.ratingType == .star {
-			//Box art on the DVD site is probably available
-			boxArtURL = URL(string:"\(Common.URLs.netflixDVDBoxArtBaseURL)/\(boxArtType.rawValue)/\(self.movieID).jpg")
-			
-		} else {
-			//Don't have any logic for this endpoint yet. Need to reverse engineer it.
-			boxArtURL = nil
+		
+		guard self.ratingType == .star else {
+			return nil
 		}
 		
-		return boxArtURL
+		//Box art on the DVD site is probably available
+		return URL(string:"\(Common.URLs.netflixDVDBoxArtBaseURL)/\(boxArtType.rawValue)/\(self.movieID).jpg")
 	}
 }
