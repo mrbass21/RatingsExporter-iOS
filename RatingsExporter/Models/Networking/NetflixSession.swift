@@ -27,6 +27,8 @@ public protocol NetflixSessionProtocol {
 	///Performs a request that handles cert pinning
 	func netflixGetRequest(url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> () ) -> URLSessionTask?
 	
+	func netflixPostRequest(url: URL, withBody body: Data?, completion: @escaping (Data?, URLResponse?, Error?) -> () ) -> URLSessionTask?
+	
 }
 
 final class NetflixSession: NSObject, NetflixSessionProtocol {
@@ -67,6 +69,7 @@ final class NetflixSession: NSObject, NetflixSessionProtocol {
 		var request = URLRequest(url: url)
 		request.httpMethod = "POST"
 		request.httpBody = body
+		request.addValue("application/json;charset=UTF-8", forHTTPHeaderField: "Content-Type")
 		
 		let task = sessionToUse?.dataTask(with: request, completionHandler: completion)
 		

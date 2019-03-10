@@ -116,9 +116,14 @@ public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 						return
 					}
 					
-					self?.shakti?.fetchBoxArtURLForList(list, completion: {
+					let task = self?.shakti?.fetchBoxArtURLForList(list, completion: {
 						
 					})
+					
+					if let task = task {
+						self?.activeTasks[1] = task
+						task.resume()
+					}
 					
 					if self?.ratingsLists == nil {
 						//This is the first run of the object and we are preloading the first page and setting up the lists

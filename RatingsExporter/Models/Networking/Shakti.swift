@@ -237,11 +237,11 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 		
 	}
 	
-	final public func fetchBoxArtURLForList(_ list: NetflixRatingsList, completion: @escaping () -> ()) {
+	final public func fetchBoxArtURLForList(_ list: NetflixRatingsList, completion: @escaping () -> ()) -> URLSessionTask? {
 		
 		//We need authURL for this request
 		guard let authURL = self.authURL else {
-			return
+			return nil
 		}
 		
 		//Create the JSON scructure requred for pathEval
@@ -252,28 +252,43 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 		
 		let finalJSON = try? JSONSerialization.data(withJSONObject: fetchJSON, options: .sortedKeys)
 		
+		guard let finalJSONUnwrap = finalJSON else {
+			return nil
+		}
 		
+		let testString = String(bytes: finalJSONUnwrap, encoding: .utf8)!
+		let decodeTestString = testString.deencodeHexToUTF8()
 		
-		let task = self.netflixSession.netflixGetRequest(url: <#T##URL#>, completion: <#T##(Data?, URLResponse?, Error?) -> ()#>)
+		print(decodeTestString.data(using: .utf8))
+		
+		let requestURL = URL(string: Common.URLs.netflixPathEval)!
+		
+		let task = self.netflixSession.netflixPostRequest(url: requestURL, withBody: finalJSON) { (data, response, error) in
+			debugLog("Fetched Streaming Box Art")
+			
+			if let data = data {
+				debugLog(String(bytes: data, encoding: .utf8))
+			}
+		}
+		
+		return task
 	}
 	
-	final private func getPathsForEval(_ list: NetflixRatingsList) -> [String: Any?]{
-		var paths: [String: Any?] = [:]
+	final private func getPathsForEval(_ list: NetflixRatingsList) -> [[String]] {
 		
 		var videos: [[String]] = []
 		for rating in list.ratingItems {
 			let videoInfo: [String] = [
+				"videos",
 				"\(rating.movieID)",
-				"_342x192",
-				"jpg"
+				"tallBoxarts",
+				"userRating"
 			]
 			
 			videos.append(videoInfo)
 		}
 		
-		paths["paths"] = videos
-		
-		return paths
+		return videos
 	}
 }
 
