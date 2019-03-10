@@ -25,7 +25,7 @@ public protocol NetflixSessionProtocol {
 	var sessionToUse: URLSession? {get set}
 	
 	///Performs a request that handles cert pinning
-	func netflixRequest(url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> () ) -> URLSessionTask?
+	func netflixGetRequest(url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> () ) -> URLSessionTask?
 	
 }
 
@@ -54,10 +54,21 @@ final class NetflixSession: NSObject, NetflixSessionProtocol {
 		debugLog("De-initializing")
 	}
 	
-	public func netflixRequest(url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> () ) -> URLSessionTask? {
+	public func netflixGetRequest(url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> () ) -> URLSessionTask? {
 		let task = sessionToUse?.dataTask(with: url, completionHandler: { (data, urlResponse, error) in
 			completion(data, urlResponse, error)
 		})
+		
+		return task
+	}
+	
+	public func netflixPostRequest(url: URL, withBody body: Data?, completion: @escaping (Data?, URLResponse?, Error?) -> () ) -> URLSessionTask? {
+		
+		var request = URLRequest(url: url)
+		request.httpMethod = "POST"
+		request.httpBody = body
+		
+		let task = sessionToUse?.dataTask(with: request, completionHandler: completion)
 		
 		return task
 	}

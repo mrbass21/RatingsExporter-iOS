@@ -108,7 +108,7 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 		//The "Change Plan" page. Just want a lightweight page that gets the global netflix react object
 		let changePlanURL = URL(string: Common.URLs.netflixChangePlan)!
 		
-		let _ = netflixSession.netflixRequest(url: changePlanURL) { [weak self] (data, response, error) in
+		let task = netflixSession.netflixGetRequest(url: changePlanURL) { (data, response, error) in
 			guard (response as! HTTPURLResponse).statusCode == 200, let data = data else {
 				debugLog("Unable to fetch account settings page!")
 				return
@@ -134,11 +134,13 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 			
 			let reactContext: [String: Any?] = try! JSONSerialization.jsonObject(with: finalJSON.data(using: .utf8)!, options: []) as! [String : Any?]
 			
-			self?.authURL = self?.getAuthURLFromReactContextJSON(reactContext)
-			self?.shaktiVersion = self?.getShaktiVersionFromReactContextJSON(reactContext)
+			self.authURL = self.getAuthURLFromReactContextJSON(reactContext)
+			self.shaktiVersion = self.getShaktiVersionFromReactContextJSON(reactContext)
 		
-			completion(self?.isInitialized ?? false)
+			completion(self.isInitialized)
 		}
+		
+		task?.resume()
 	}
 	
 	final public func initializeShaktiWithSession<NetflixSessionType: NetflixSessionProtocol>(_ session: NetflixSessionType?, completion: @escaping ShaktiInitCompletion) {
@@ -188,8 +190,7 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 	}
 	
 	final func getRatingsList(page: UInt, completion: @escaping (NetflixRatingsList?) -> ()) -> URLSessionTask? {
-		let ratingsFetcher = RatingsFetcher(forCredential: self.netflixCredential, with: self.netflixSession)
-		let task = ratingsFetcher.fetchRatings(page: page) { (list) in
+		let task = fetchRatings(page: page) { (list) in
 			debugLog("Downloaded page: \(page)")
 			completion(list)
 		}
@@ -205,7 +206,7 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 			return nil
 		}
 		
-		let task = netflixSession.netflixRequest(url: ratingsURL) { (data, urlResponse, error) in
+		let task = netflixSession.netflixGetRequest(url: ratingsURL) { (data, urlResponse, error) in
 			if let httpResponse = (urlResponse as? HTTPURLResponse) {
 				guard httpResponse.statusCode == 200  else {
 					//TODO: Make this a little more friendly for the consuming API
@@ -234,6 +235,45 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 	
 	final private func setBoxArtURLForRating(_ rating: inout NetflixRating) {
 		
+	}
+	
+	final public func fetchBoxArtURLForList(_ list: NetflixRatingsList, completion: @escaping () -> ()) {
+		
+		//We need authURL for this request
+		guard let authURL = self.authURL else {
+			return
+		}
+		
+		//Create the JSON scructure requred for pathEval
+		var fetchJSON: [String: Any?] = [:]
+		
+		fetchJSON["authURL"] = authURL
+		fetchJSON["paths"] = getPathsForEval(list)
+		
+		let finalJSON = try? JSONSerialization.data(withJSONObject: fetchJSON, options: .sortedKeys)
+		
+		
+		
+		let task = self.netflixSession.netflixGetRequest(url: <#T##URL#>, completion: <#T##(Data?, URLResponse?, Error?) -> ()#>)
+	}
+	
+	final private func getPathsForEval(_ list: NetflixRatingsList) -> [String: Any?]{
+		var paths: [String: Any?] = [:]
+		
+		var videos: [[String]] = []
+		for rating in list.ratingItems {
+			let videoInfo: [String] = [
+				"\(rating.movieID)",
+				"_342x192",
+				"jpg"
+			]
+			
+			videos.append(videoInfo)
+		}
+		
+		paths["paths"] = videos
+		
+		return paths
 	}
 }
 

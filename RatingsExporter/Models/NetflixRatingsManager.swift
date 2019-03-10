@@ -22,7 +22,6 @@ public protocol NetflixRatingsManagerDelegate: class {
 ///The protocol that a RatingsManager should conform to.
 public protocol NetflixRatingsManagerProtocol: class {
 	var delegate: NetflixRatingsManagerDelegate? {get set}
-	var fetcher: RatingsFetcher! {get set}
 	var totalPages: Int {get}
 	var itemsPerPage: Int {get}
 	var totalRatings: Int {get}
@@ -111,11 +110,15 @@ public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 		shakti = Shakti<NetflixCredential>(forCredential: useCredentials)
 		shakti?.initializeShakti() { [weak self] (success) in
 			if success {
-				self?.activeTasks[page] self?.shakti?.getRatingsList(page: 0, completion: { (list) in
+				self?.activeTasks[0] = self?.shakti?.getRatingsList(page: 0, completion: { (list) in
 					
 					guard let list = list else {
 						return
 					}
+					
+					self?.shakti?.fetchBoxArtURLForList(list, completion: {
+						
+					})
 					
 					if self?.ratingsLists == nil {
 						//This is the first run of the object and we are preloading the first page and setting up the lists
@@ -134,7 +137,10 @@ public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 						self!.delegate?.NetflixRatingsManagerDelegate(self!, didLoadRatingIndexes: indexRange)
 					}
 					
+					
 				})
+				
+				self?.activeTasks[0]??.resume()
 			} else {
 				debugLog("Could not initialize")
 			}

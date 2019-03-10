@@ -64,6 +64,8 @@ public struct Common {
 		static let netflixDVDBoxArtBaseURL = "https://assets.nflxext.com/us/boxshots"
 		///The "Your Accounts" page. This is used to resolve the global netflix object for authentication with Shakti.
 		static let netflixChangePlan = "https://www.netflix.com/ChangePlan"
+		///The pathEval endpoint for almost all streaming API calls
+		static let netflixPathEval = "https://www.netflix.com/api/shakti/\(NetflixAPIConstants.shaktiVersion)/pathEvaluator"
 	}
 	
 	///Constants used to talk to the Netflix API
@@ -82,4 +84,3 @@ public func debugLog(_ items: Any, file: String = #file, lineNumber: UInt = #lin
 		print("file: \(fileURL.lastPathComponent) line: \(lineNumber) \(items)", separator: separator, terminator: terminator)
 	}
 }
-

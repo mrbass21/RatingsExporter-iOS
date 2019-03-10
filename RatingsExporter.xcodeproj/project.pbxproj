@@ -27,7 +27,6 @@
 		8F8E85F321D814D60097602C /* MockWKNavigationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8E85F221D814D60097602C /* MockWKNavigationAction.swift */; };
 		8F8E85F621D95CED0097602C /* NetflixRatingsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8E85F521D95CED0097602C /* NetflixRatingsList.swift */; };
 		8F8E85F821D95D290097602C /* NetflixRating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8E85F721D95D290097602C /* NetflixRating.swift */; };
-		8F8E85FA21D96ABD0097602C /* RatingsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8E85F921D96ABD0097602C /* RatingsFetcher.swift */; };
 		8FA78DEC21C6FB7F00814E05 /* NetflixCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FA78DEB21C6FB7F00814E05 /* NetflixCredential.swift */; };
 		8FA78DF121C7104E00814E05 /* UserCredentialStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FA78DF021C7104E00814E05 /* UserCredentialStore.swift */; };
 		8FAF780021C982360066F51A /* RatingsExporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FAF77FF21C982360066F51A /* RatingsExporterTests.swift */; };
@@ -81,7 +80,6 @@
 		8F8E85F221D814D60097602C /* MockWKNavigationAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWKNavigationAction.swift; sourceTree = "<group>"; };
 		8F8E85F521D95CED0097602C /* NetflixRatingsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixRatingsList.swift; sourceTree = "<group>"; };
 		8F8E85F721D95D290097602C /* NetflixRating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixRating.swift; sourceTree = "<group>"; };
-		8F8E85F921D96ABD0097602C /* RatingsFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingsFetcher.swift; sourceTree = "<group>"; };
 		8FA78DEB21C6FB7F00814E05 /* NetflixCredential.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixCredential.swift; sourceTree = "<group>"; };
 		8FA78DF021C7104E00814E05 /* UserCredentialStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCredentialStore.swift; sourceTree = "<group>"; };
 		8FAF77FD21C982360066F51A /* RatingsExporterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RatingsExporterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -213,7 +211,6 @@
 			isa = PBXGroup;
 			children = (
 				8FC6D74B222DBF6A00D653DE /* NetflixSession.swift */,
-				8F8E85F921D96ABD0097602C /* RatingsFetcher.swift */,
 				8FFD4A8F2225D852003018B5 /* Shakti.swift */,
 			);
 			path = Networking;
@@ -388,7 +385,6 @@
 				8F03A58621BF802700F466A5 /* RatingsViewController.swift in Sources */,
 				8F03A58421BF802700F466A5 /* AppDelegate.swift in Sources */,
 				8F28FBE121EBD68200FBCFB0 /* RatingsDetailViewController.swift in Sources */,
-				8F8E85FA21D96ABD0097602C /* RatingsFetcher.swift in Sources */,
 				8F7B040D2216402700A0EBA7 /* UIImageView+DownloadImage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
