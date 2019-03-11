@@ -116,7 +116,7 @@ public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 						return
 					}
 					
-					let task = self?.shakti?.fetchBoxArtURLForList(list, completion: {
+					let task = self?.shakti?.fetchBoxArtURLForList(list, completion: { urlList in
 						
 					})
 					

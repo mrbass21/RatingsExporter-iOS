@@ -237,7 +237,7 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 		
 	}
 	
-	final public func fetchBoxArtURLForList(_ list: NetflixRatingsList, completion: @escaping () -> ()) -> URLSessionTask? {
+	final public func fetchBoxArtURLForList(_ list: NetflixRatingsList, completion: @escaping ([String: URL]?) -> ()) -> URLSessionTask? {
 		
 		//We need authURL for this request
 		guard let authURL = self.authURL else {
@@ -253,16 +253,38 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 		let finalJSON = try? JSONSerialization.data(withJSONObject: fetchJSON, options: .sortedKeys)
 
 		let requestURL = URL(string: Common.URLs.netflixPathEval)!
-		
+			
 		let task = self.netflixSession.netflixPostRequest(url: requestURL, withBody: finalJSON) { (data, response, error) in
 			debugLog("Fetched Streaming Box Art")
-			
-			if let data = data {
-				debugLog(String(bytes: data, encoding: .utf8))
+			if let data = data, let json = try? JSONSerialization.jsonObject(with: data, options: []), let jsonCast = json as? [String: Any?] {
+				let finalBoxArtList = self.parseNetflixBoxartToBoxartList(json: jsonCast)
+				completion(finalBoxArtList)
 			}
 		}
 		
 		return task
+	}
+	
+	final private func parseNetflixBoxartToBoxartList(json: [String: Any?]) -> [String: URL]? {
+		var urlList: [String: URL] = [:]
+		
+		guard let value = json["value"] as? [String: Any?], let videos = value["videos"] as? [String: Any?] else {
+			//TODO: Throw here
+			return nil
+		}
+		
+		for title in videos {
+			if let titleValue = title.value as? [String: Any?],
+				let boxarts = titleValue["boxarts"] as? [String: Any?],
+				let expectedSize = boxarts["_342x192"] as? [String: Any?],
+				let jpg = expectedSize["jpg"] as?  [String: Any?],
+				let jpgURLString = jpg["url"] as? String,
+				let jpgURL = URL(string: jpgURLString) {
+				urlList[title.key] = jpgURL
+			}
+		}
+		
+		return urlList
 	}
 	
 	final private func getPathsForBoxartEval(_ list: NetflixRatingsList) -> [[Any]] {
@@ -272,8 +294,9 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 			let videoInfo: [String] = [
 				"videos",
 				"\(rating.movieID)",
-				"tallBoxarts",
-				"userRating"
+				"boxarts",
+				"_342x192",
+				"jpg"
 			]
 			
 			videos.append(videoInfo)

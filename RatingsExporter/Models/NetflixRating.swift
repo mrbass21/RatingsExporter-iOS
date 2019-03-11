@@ -45,6 +45,8 @@ public struct NetflixRating: Equatable {
 		case thumb = "thumb"
 	}
 	
+	
+	
 	public enum DVDBoxArtType: String {
 		case TINY = "tiny"
 		case SMALL = "small"
