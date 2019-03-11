@@ -251,16 +251,7 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 		fetchJSON["paths"] = getPathsForEval(list)
 		
 		let finalJSON = try? JSONSerialization.data(withJSONObject: fetchJSON, options: .sortedKeys)
-		
-		guard let finalJSONUnwrap = finalJSON else {
-			return nil
-		}
-		
-		let testString = String(bytes: finalJSONUnwrap, encoding: .utf8)!
-		let decodeTestString = testString.deencodeHexToUTF8()
-		
-		print(decodeTestString.data(using: .utf8))
-		
+
 		let requestURL = URL(string: Common.URLs.netflixPathEval)!
 		
 		let task = self.netflixSession.netflixPostRequest(url: requestURL, withBody: finalJSON) { (data, response, error) in
