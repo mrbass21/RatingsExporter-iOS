@@ -248,7 +248,7 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 		var fetchJSON: [String: Any?] = [:]
 		
 		fetchJSON["authURL"] = authURL
-		fetchJSON["paths"] = getPathsForEval(list)
+		fetchJSON["paths"] = getPathsForBoxartEval(list)
 		
 		let finalJSON = try? JSONSerialization.data(withJSONObject: fetchJSON, options: .sortedKeys)
 
@@ -265,9 +265,9 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 		return task
 	}
 	
-	final private func getPathsForEval(_ list: NetflixRatingsList) -> [[String]] {
+	final private func getPathsForBoxartEval(_ list: NetflixRatingsList) -> [[Any]] {
 		
-		var videos: [[String]] = []
+		var videos: [[Any]] = []
 		for rating in list.ratingItems {
 			let videoInfo: [String] = [
 				"videos",
