@@ -136,6 +136,8 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 			
 			self.authURL = self.getAuthURLFromReactContextJSON(reactContext)
 			self.shaktiVersion = self.getShaktiVersionFromReactContextJSON(reactContext)
+			
+			print("Deplyoed Shakti version is: \(self.shaktiVersion ?? "Unknown")\nUsing Shakti version: \(Common.NetflixAPIConstants.shaktiVersion)")
 		
 			completion(self.isInitialized)
 		}
@@ -253,7 +255,7 @@ public final class Shakti<NetflixCredentialType: NetflixCredentialProtocol>: Sha
 		let finalJSON = try? JSONSerialization.data(withJSONObject: fetchJSON, options: .sortedKeys)
 
 		let requestURL = URL(string: Common.URLs.netflixPathEval)!
-			
+		
 		let task = self.netflixSession.netflixPostRequest(url: requestURL, withBody: finalJSON) { (data, response, error) in
 			debugLog("Fetched Streaming Box Art")
 			if let data = data, let json = try? JSONSerialization.jsonObject(with: data, options: []), let jsonCast = json as? [String: Any?] {
