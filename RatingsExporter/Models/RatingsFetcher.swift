@@ -136,7 +136,7 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 				
 				if let responseData = data {
 					//Serialize the data
-					let json = try? JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any]
+					let json = ((try? JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any]) as [String : Any]??)
 					
 					if let json = json, let finalJson = json {
 						guard let ratings = NetflixRatingsList(json: finalJson) else {
@@ -263,7 +263,7 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	*/
 	private final func createValidSession(withConfiguration configuration: URLSessionConfiguration?) {
 		//Create the configuration
-		let useConfiguration: URLSessionConfiguration!
+        var useConfiguration: URLSessionConfiguration!
 		
 		if let configuration = configuration {
 			//If we've been passed a session, get a copy of the current configuration

@@ -32,10 +32,8 @@ class RatingsDetailViewControllerTest: XCTestCase {
 		controller.loadViewIfNeeded()
 		
 		//then
-		XCTAssertNotNil(controller.movieTitle.text)
 		XCTAssertNotNil(controller.dateRated.text)
 		XCTAssertNotNil(controller.rating.text)
-		XCTAssertEqual(controller.movieTitle.text!, "TestTitle")
 		XCTAssertEqual(controller.dateRated.text!, "1/1/2019")
 		XCTAssertEqual(controller.rating.text!, "5")
 	}
@@ -48,10 +46,8 @@ class RatingsDetailViewControllerTest: XCTestCase {
 		controller.loadViewIfNeeded()
 		
 		//then
-		XCTAssertNotNil(controller.movieTitle.text)
 		XCTAssertNotNil(controller.dateRated.text)
 		XCTAssertNotNil(controller.rating.text)
-		XCTAssertEqual(controller.movieTitle.text!, NSLocalizedString("Unknown Title", comment: "An unknown movie title"))
 		XCTAssertEqual(controller.dateRated.text!, NSLocalizedString("Unknown Date", comment: "An unknown date when the movie was rated"))
 		XCTAssertEqual(controller.rating.text!, "0")
 	}
