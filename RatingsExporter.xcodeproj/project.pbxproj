@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8C4ED3ED23554BB600EEC8AE /* netflix-assets.cer in Resources */ = {isa = PBXBuildFile; fileRef = 8C4ED3EC23554BB500EEC8AE /* netflix-assets.cer */; };
 		8F03A58421BF802700F466A5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F03A58321BF802700F466A5 /* AppDelegate.swift */; };
 		8F03A58621BF802700F466A5 /* RatingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F03A58521BF802700F466A5 /* RatingsViewController.swift */; };
 		8F03A58921BF802700F466A5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8F03A58721BF802700F466A5 /* Main.storyboard */; };
@@ -36,10 +37,8 @@
 		8FF66E4821F528B0001ED348 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF66E4721F528B0001ED348 /* Common.swift */; };
 		8FFF272E21D454CE006E45FC /* NetflixCredentialTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FFF272D21D454CE006E45FC /* NetflixCredentialTest.swift */; };
 		8FFF4BE921D550E700FEAA59 /* netflix.cer in Resources */ = {isa = PBXBuildFile; fileRef = 8FFF4BE821D550E700FEAA59 /* netflix.cer */; };
-		8FFF4BEB21D5561100FEAA59 /* netflix-assets.cer in Resources */ = {isa = PBXBuildFile; fileRef = 8FFF4BEA21D5561100FEAA59 /* netflix-assets.cer */; };
 		8FFF4BED21D562B200FEAA59 /* NetflixLoginViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FFF4BEC21D562B200FEAA59 /* NetflixLoginViewControllerTests.swift */; };
 		8FFF4BF021D576F300FEAA59 /* netflix.cer in Resources */ = {isa = PBXBuildFile; fileRef = 8FFF4BE821D550E700FEAA59 /* netflix.cer */; };
-		8FFF4BF121D576FC00FEAA59 /* netflix-assets.cer in Resources */ = {isa = PBXBuildFile; fileRef = 8FFF4BEA21D5561100FEAA59 /* netflix-assets.cer */; };
 		8FFF4BF421D6CCD100FEAA59 /* MockURLProtectionSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FFF4BF321D6CCD100FEAA59 /* MockURLProtectionSpace.swift */; };
 		8FFF4BF721D6EF5700FEAA59 /* bad-Netflix-self-signed.cer in Resources */ = {isa = PBXBuildFile; fileRef = 8FFF4BF521D6ECB400FEAA59 /* bad-Netflix-self-signed.cer */; };
 /* End PBXBuildFile section */
@@ -55,6 +54,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8C4ED3EC23554BB500EEC8AE /* netflix-assets.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "netflix-assets.cer"; sourceTree = "<group>"; };
 		8F03A58021BF802700F466A5 /* RatingsExporter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RatingsExporter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F03A58321BF802700F466A5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8F03A58521BF802700F466A5 /* RatingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingsViewController.swift; sourceTree = "<group>"; };
@@ -88,7 +88,6 @@
 		8FF66E4721F528B0001ED348 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		8FFF272D21D454CE006E45FC /* NetflixCredentialTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixCredentialTest.swift; sourceTree = "<group>"; };
 		8FFF4BE821D550E700FEAA59 /* netflix.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = netflix.cer; sourceTree = "<group>"; };
-		8FFF4BEA21D5561100FEAA59 /* netflix-assets.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "netflix-assets.cer"; sourceTree = "<group>"; };
 		8FFF4BEC21D562B200FEAA59 /* NetflixLoginViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixLoginViewControllerTests.swift; sourceTree = "<group>"; };
 		8FFF4BF321D6CCD100FEAA59 /* MockURLProtectionSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLProtectionSpace.swift; sourceTree = "<group>"; };
 		8FFF4BF521D6ECB400FEAA59 /* bad-Netflix-self-signed.cer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "bad-Netflix-self-signed.cer"; sourceTree = "<group>"; };
@@ -203,7 +202,7 @@
 		8FFF4BE721D550BF00FEAA59 /* Certs */ = {
 			isa = PBXGroup;
 			children = (
-				8FFF4BEA21D5561100FEAA59 /* netflix-assets.cer */,
+				8C4ED3EC23554BB500EEC8AE /* netflix-assets.cer */,
 				8FFF4BE821D550E700FEAA59 /* netflix.cer */,
 			);
 			path = Certs;
@@ -320,9 +319,9 @@
 			files = (
 				8FFF4BE921D550E700FEAA59 /* netflix.cer in Resources */,
 				8F28FBDD21EAA2AD00FBCFB0 /* NetflixRatingsCell.xib in Resources */,
-				8FFF4BEB21D5561100FEAA59 /* netflix-assets.cer in Resources */,
 				8F03A58B21BF803800F466A5 /* Assets.xcassets in Resources */,
 				8F03A58921BF802700F466A5 /* Main.storyboard in Resources */,
+				8C4ED3ED23554BB600EEC8AE /* netflix-assets.cer in Resources */,
 				8F28FBDF21EBCCDC00FBCFB0 /* LoadingRatingsCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -332,7 +331,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8FFF4BF721D6EF5700FEAA59 /* bad-Netflix-self-signed.cer in Resources */,
-				8FFF4BF121D576FC00FEAA59 /* netflix-assets.cer in Resources */,
 				8F8E85F121D80E930097602C /* bad-Netflix-Assets-self-signed.cer in Resources */,
 				8FFF4BF021D576F300FEAA59 /* netflix.cer in Resources */,
 			);
