@@ -99,15 +99,20 @@ extension NetflixLoginViewController: WKNavigationDelegate {
 		var result: SecTrustResultType = .invalid
 		SecTrustEvaluate(serverTrust, &result)
 		let isServerTrusted: Bool = (result == .proceed || result == .unspecified)
-		
-		//Actualy do the pinning junk here
-		let remoteNetflixCertProvided: NSData = SecCertificateCopyData(certificate!)
-		if(isServerTrusted && netflixCertsMatch(remoteServerCertData: (remoteNetflixCertProvided as Data))) {
-			let credential = URLCredential(trust: serverTrust)
-			completionHandler(.useCredential, credential)
-		} else {
-			completionHandler(.cancelAuthenticationChallenge, nil)
-		}
+        
+        //Only check pinning for the login page. Asset certs change all the time and are different for every CDN.
+        if challenge.protectionSpace.host == "www.netflix.com" {
+            
+            //Actualy do the pinning junk here
+            let remoteNetflixCertProvided: NSData = SecCertificateCopyData(certificate!)
+            if(!(isServerTrusted && netflixCertsMatch(remoteServerCertData: (remoteNetflixCertProvided as Data)))) {
+                //If we don't trust the login certificate, cancel the call
+                completionHandler(.cancelAuthenticationChallenge, nil)
+            }
+        }
+        
+        let credential = URLCredential(trust: serverTrust)
+        completionHandler(.useCredential, credential)
 	}
 	
 	func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
@@ -132,8 +137,7 @@ extension NetflixLoginViewController {
 		//We need to check both.
 		
 		//Load the certificates
-		guard let knownNetflixCertPath = Bundle.main.path(forResource: "netflix", ofType: "cer"),
-			let knownNetflixAssetCertPath = Bundle.main.path(forResource: "netflix-assets", ofType: "cer") else {
+		guard let knownNetflixCertPath = Bundle.main.path(forResource: "netflix", ofType: "cer") else {
 				//We couldn't get the path to the resources. Return failure case.
 				//TODO: Throw here instead?
 				return false
@@ -141,8 +145,8 @@ extension NetflixLoginViewController {
 		
 		do {
 			let knownNetflixCertData = try Data(contentsOf: URL(fileURLWithPath: knownNetflixCertPath))
-			let knownNetflixAssetCertData = try Data(contentsOf: URL(fileURLWithPath: knownNetflixAssetCertPath))
-			if remoteServerCertData.elementsEqual(knownNetflixCertData) || remoteServerCertData.elementsEqual(knownNetflixAssetCertData) {
+
+			if remoteServerCertData.elementsEqual(knownNetflixCertData) {
 				return true
 			}
 		} catch {
