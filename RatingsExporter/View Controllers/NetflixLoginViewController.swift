@@ -137,8 +137,7 @@ extension NetflixLoginViewController {
 		//We need to check both.
 		
 		//Load the certificates
-		guard let knownNetflixCertPath = Bundle.main.path(forResource: "netflix", ofType: "cer"),
-			let knownNetflixAssetCertPath = Bundle.main.path(forResource: "netflix-assets", ofType: "cer") else {
+		guard let knownNetflixCertPath = Bundle.main.path(forResource: "netflix", ofType: "cer") else {
 				//We couldn't get the path to the resources. Return failure case.
 				//TODO: Throw here instead?
 				return false
@@ -146,9 +145,8 @@ extension NetflixLoginViewController {
 		
 		do {
 			let knownNetflixCertData = try Data(contentsOf: URL(fileURLWithPath: knownNetflixCertPath))
-			let knownNetflixAssetCertData = try Data(contentsOf: URL(fileURLWithPath: knownNetflixAssetCertPath))
 
-			if remoteServerCertData.elementsEqual(knownNetflixCertData) || remoteServerCertData.elementsEqual(knownNetflixAssetCertData) {
+			if remoteServerCertData.elementsEqual(knownNetflixCertData) {
 				return true
 			}
 		} catch {
