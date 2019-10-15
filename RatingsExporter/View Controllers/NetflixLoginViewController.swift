@@ -108,6 +108,7 @@ extension NetflixLoginViewController: WKNavigationDelegate {
             if(!(isServerTrusted && netflixCertsMatch(remoteServerCertData: (remoteNetflixCertProvided as Data)))) {
                 //If we don't trust the login certificate, cancel the call
                 completionHandler(.cancelAuthenticationChallenge, nil)
+                return
             }
         }
         
