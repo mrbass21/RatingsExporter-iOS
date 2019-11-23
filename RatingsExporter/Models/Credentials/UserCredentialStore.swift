@@ -218,7 +218,7 @@ public final class UserCredentialStore {
 		let keychainGetQuery: [CFString: Any] = [
 			kSecClass: kSecClassGenericPassword,
 			kSecAttrAccount: storageItem.key as CFString,
-			kSecReturnData: kCFBooleanFalse,
+			kSecReturnData: kCFBooleanFalse!,
 			kSecMatchLimit: kSecMatchLimitOne
 		]
 		
@@ -253,7 +253,7 @@ public final class UserCredentialStore {
 			let keychainGetQuery: [CFString: Any] = [
 				kSecClass: kSecClassGenericPassword,
 				kSecAttrAccount: storageItem.key as CFString,
-				kSecReturnData: kCFBooleanTrue,
+				kSecReturnData: kCFBooleanTrue!,
 				kSecMatchLimit: kSecMatchLimitOne
 			]
 			
@@ -347,7 +347,7 @@ public final class UserCredentialStore {
 			kSecAttrDescription: storageItem.description ?? "No Description",
 			kSecAttrAccount: storageItem.key as CFString,
 			kSecValueData: UTF8data,
-			kSecReturnData: kCFBooleanFalse
+			kSecReturnData: kCFBooleanFalse!
 		]
 		
 		//Save the item

@@ -35,7 +35,7 @@ class RatingsDetailViewControllerTest: XCTestCase {
 		XCTAssertNotNil(controller.dateRated.text)
 		XCTAssertNotNil(controller.rating.text)
 		XCTAssertEqual(controller.dateRated.text!, "1/1/2019")
-		XCTAssertEqual(controller.rating.text!, "5")
+		XCTAssertEqual(controller.rating.text!, "5 Stars")
 	}
 	
 	func testInitsWithNoRating() {
@@ -49,7 +49,7 @@ class RatingsDetailViewControllerTest: XCTestCase {
 		XCTAssertNotNil(controller.dateRated.text)
 		XCTAssertNotNil(controller.rating.text)
 		XCTAssertEqual(controller.dateRated.text!, NSLocalizedString("Unknown Date", comment: "An unknown date when the movie was rated"))
-		XCTAssertEqual(controller.rating.text!, "0")
+		XCTAssertEqual(controller.rating.text!, "0 Stars")
 	}
 
 }

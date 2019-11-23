@@ -34,7 +34,7 @@ class NetflixRatingsListTest: XCTestCase {
 	func testJsonInit() {
 		//given
 		guard let JSONData = TestData.validJSONRatingsString.data(using: .utf8),
-			let JSONObject = try? JSONSerialization.jsonObject(with: JSONData, options:[]) as! [String: Any] else {
+            let JSONObject = try? (JSONSerialization.jsonObject(with: JSONData, options:[]) as! [String : Any]) else {
 				XCTFail()
 				return
 		}
@@ -64,7 +64,7 @@ class NetflixRatingsListTest: XCTestCase {
 	func testInvalidJSONInit() {
 		//given
 		guard let JSONData = TestData.invalidJSONRatingsString.data(using: .utf8),
-			let JSONObject = try? JSONSerialization.jsonObject(with: JSONData, options:[]) as! [String: Any] else {
+			let JSONObject = try? (JSONSerialization.jsonObject(with: JSONData, options:[]) as! [String: Any]) else {
 				XCTFail()
 				return
 		}
