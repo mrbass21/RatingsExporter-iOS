@@ -31,8 +31,8 @@ class MockWKNavigationAction: WKNavigationAction {
 		get {
 			return mockRequestURL
 		}
-		set{
-			mockRequestURL = request
+		set {
+			mockRequestURL = newValue
 		}
 	}
 }

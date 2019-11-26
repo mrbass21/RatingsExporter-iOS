@@ -142,7 +142,7 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 				
 				if let responseData = data {
 					//Serialize the data
-					let json = try? JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any]
+					let json = ((try? JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any]) as [String : Any]??)
 					
 					if let json = json, let finalJson = json {
 						guard let ratings = NetflixRatingsList(json: finalJson) else {
@@ -190,13 +190,11 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 			
 			//Remove the hex codes
 			let finalJSON = globalJSON.deencodeHexToUTF8()
-			
-			let json: [String: Any?] = try! JSONSerialization.jsonObject(with: finalJSON.data(using: .utf8)!, options: []) as! [String : Any?]
-			
-			print("Auth url: \(self.getAuthURLFromReactContextJSON(json))")
-			
-//			print(json["authURL"])
-			//print(json)
+            
+            let decoder = JSONDecoder()
+            let shakti = try! decoder.decode(Shakti.self, from: finalJSON.data(using: .utf8)!)
+            
+            print("Shakti version: \(shakti.version) and authURL: \(shakti.authURL)")
 			
 			self.activeTasks[0] = nil
 		})
@@ -325,7 +323,7 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	*/
 	private final func createValidSession(withConfiguration configuration: URLSessionConfiguration?) {
 		//Create the configuration
-		let useConfiguration: URLSessionConfiguration!
+        var useConfiguration: URLSessionConfiguration!
 		
 		if let configuration = configuration {
 			//If we've been passed a session, get a copy of the current configuration

@@ -40,8 +40,8 @@ class RatingsFetcherTest: XCTestCase {
 
 	func testSomething() {
 		//given
-		let credential = NetflixCredential(netflixID: "fakeID", secureNetflixID: "FakeSecureID")
-		let ratingsFetcher = RatingsFetcher(forCredential: credential, with: nil)
+		//let credential = NetflixCredential(netflixID: "fakeID", secureNetflixID: "FakeSecureID")
+		//let ratingsFetcher = RatingsFetcher(forCredential: credential, with: nil)
 		
 		//when
 		//then
