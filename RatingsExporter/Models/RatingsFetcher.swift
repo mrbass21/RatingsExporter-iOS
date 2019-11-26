@@ -166,7 +166,7 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	
 	private final func initShakti() {
 		//The "Change Plan" page. Just want a lightweight page that gets the global netflix react object
-		let changePlan = URL(string: Common.URLs.netflixChangePlan)!
+        let changePlan = URL(string: Common.URLs.netflixMarketingSettings)!
 		
 		activeTasks[0] = session.dataTask(with: changePlan, completionHandler: { (data, response, error) in
 			guard (response as! HTTPURLResponse).statusCode == 200, let data = data else {
@@ -203,17 +203,6 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	}
 	
 	//Private interface
-	
-	final private func getAuthURLFromReactContextJSON(_ reactContext: [String: Any?]) -> String? {
-		if let models = (reactContext["models"] as? [String: Any?]),
-		let userInfo = models["userInfo"] as? [String: Any?],
-		let data = userInfo["data"] as? [String: Any?],
-		let authURL: String? = data["authURL"] as? String? {
-			return authURL
-		}
-		
-		return nil
-	}
 	
 	/**
 	Modifies the session provided `URLSessionConfiguration` to contain common headers that are used for `RatingsFetcher`.
