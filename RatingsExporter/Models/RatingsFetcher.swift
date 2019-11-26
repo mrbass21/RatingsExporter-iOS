@@ -166,9 +166,9 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	
 	private final func initShakti() {
 		//The "Change Plan" page. Just want a lightweight page that gets the global netflix react object
-        let changePlan = URL(string: Common.URLs.netflixMarketingSettings)!
+        let lightweightEndpoint = URL(string: Common.URLs.netflixMarketingSettings)!
 		
-		activeTasks[0] = session.dataTask(with: changePlan, completionHandler: { (data, response, error) in
+		activeTasks[0] = session.dataTask(with: lightweightEndpoint, completionHandler: { (data, response, error) in
 			guard (response as! HTTPURLResponse).statusCode == 200, let data = data else {
 				debugLog("Unable to fetch account settings page!")
 				return
