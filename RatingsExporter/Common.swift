@@ -63,12 +63,6 @@ public struct Common {
         ///The "Marketing Settings section of the site. Currently the most light weight"
         static let netflixMarketingSettings = "https://www.netflix.com/MarketingCommunications"
 	}
-	
-	///Constants used to talk to the Netflix API
-	public struct NetflixAPIConstants {
-		///The version of the shakti API to use.
-		public static let shaktiVersion = "ve059a69f"
-	}
 }
 
 
