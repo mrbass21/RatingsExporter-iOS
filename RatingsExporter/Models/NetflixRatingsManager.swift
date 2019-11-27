@@ -5,6 +5,7 @@
 //  Created by Jason Beck on 1/13/19.
 //  Copyright © 2019 Jason Beck. All rights reserved.
 //
+import Foundation
 
 ///Notifications that NetflixRatingsManger will send to notify the delegate of status.
 public protocol NetflixRatingsManagerDelegate: class {
@@ -54,6 +55,8 @@ public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 	
 	///Public for dependency injection!
 	public var fetcher: RatingsFetcher!
+    
+    private var fetchingList: Set<UInt> = []
 	
 	///Returns the number of pages in the lists
 	public var totalPages: Int {
@@ -93,9 +96,11 @@ public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 			
 			let returnRating = ratingsLists?[page]?.ratingItems[pageNormalizedItemNumber]
 			
-			if fetchMode == .sequential, returnRating == nil {
-				fetcher.fetchRatings(page: UInt(page))
-			}
+            if fetchMode == .sequential, returnRating == nil, !fetchingList.contains(UInt(page)){
+                fetchingList.insert(UInt(page))
+                fetcher.fetchRatings(page: UInt(page))
+                debugLog("Loading page: \(page)")
+            }
 			
 			return returnRating
 		}
@@ -152,6 +157,7 @@ extension NetflixRatingsManager: RatingsFetcherDelegate {
 	}
 	
 	public func didFetchRatings(_ ratings: NetflixRatingsList) {
+        fetchingList.remove(UInt(ratings.page))
 		if ratingsLists == nil {
 			//This is the first run of the object and we are preloading the first page and setting up the lists
 			ratingsLists = [NetflixRatingsList?].init(repeating: nil, count: (ratings.totalRatings / ratings.numberOfRequestedItems) + 1)

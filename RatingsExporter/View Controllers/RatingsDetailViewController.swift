@@ -10,7 +10,7 @@ import UIKit.UIViewController
 import UIKit.UIImageView
 
 final class RatingsDetailViewController: UIViewController {
-	@IBOutlet weak var boxArt197: UIImageView!
+	@IBOutlet weak var boxArtImageView: UIImageView!
 	@IBOutlet weak var rating: UILabel!
 	@IBOutlet weak var dateRated: UILabel!
 	
@@ -21,7 +21,7 @@ final class RatingsDetailViewController: UIViewController {
 	
 	override func viewDidLoad() {
 		if let boxArtURL = movie?.getBoxArtURL(boxArtType: .GHD) {
-			downloadTask = boxArt197.loadImage(url: boxArtURL)
+			downloadTask = boxArtImageView.loadImage(url: boxArtURL)
 		}
 		
 		rating.text = "\(movie?.intRating ?? 0) Stars"

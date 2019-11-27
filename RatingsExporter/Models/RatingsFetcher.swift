@@ -27,7 +27,7 @@ public protocol RatingsFetcherDelegate: class {
 
 ///Protocol that a RatingsFetcher implements.
 public protocol RatingsFetcherProtocol: class {
-	func fetchRatings(page: UInt)
+    func fetchRatings(page: UInt)
 }
 
 ///Fetches Netflix ratings
@@ -70,10 +70,32 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	private var requestedConfiguration: URLSessionConfiguration?
 	
 	///The array of currently executing dataTasks.
-	private var activeTasks: [UInt : URLSessionDataTask] = [:]
+	private var activeTasks: [NetflixDataTaskProtocol] = []
+    
+    ///Temporary queue of jobs to run once the manager is initialized
+    private var queuedTasks: [NetflixDataTaskProtocol] =  []
+    
+    ///Maximum number of items allowed in the queue
+    private let MaxQueueSize = 5;
 	
 	///The credentials to use for the fetch
 	private let credential: NetflixCredential
+    
+    //Tracks if we've been initialized
+    private var shaktiInstance: Shakti? {
+        didSet {
+            if let shakti = shaktiInstance {
+                queuedTasks.forEach { (netflixDataTask) in
+                    activeTasks.append(netflixDataTask)
+                    netflixDataTask.executeRequestWithURL(url: URL(string: "\(shakti.streamingBaseURL)/ratinghistory?pg=\(netflixDataTask.pageRequest)")!)
+                }
+                
+                queuedTasks.removeAll(keepingCapacity: true)
+                
+                debugLog("All queued tasks executed and removed")
+            }
+        }
+    }
 	
 	/**
 	Initialize a RatingsFetcher object.
@@ -96,6 +118,9 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 		
 		//Configure the connection
 		createValidSession(withConfiguration: sessionConfig)
+		
+		//Get credentials for the Shakti resources
+		initShakti()
 	}
 	
 	/**
@@ -103,12 +128,7 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	
 	- Parameter page: The page number to fetch.
 	*/
-	public final func fetchRatings(page: UInt) {
-		
-		//Check if we are already fetching this page and return back nil if we are.
-		if activeTasks[page] != nil {
-			return
-		}
+    public final func fetchRatings(page: UInt) {
 		
 		//Check that the session is still valid
 		if sessionState == SessionState.invalidated {
@@ -119,38 +139,80 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 			debugLog("The session is starting to be invalidated, but not yet invalidated. Doing nothing.")
 			return
 		}
+        
+        let fetchRatingsRequest = NetflixDataTask(pageRequest: page, usingSession: session) { (netflixRatingsList, error) in
+            
+            if let _ = error {
+                //Error occured
+                //TODO: Make this a little more friendly for the consuming API
+                DispatchQueue.main.async {
+                    self.delegate?.errorFetchingRatingsForPage(page)
+                }
+            } else if let _netflixRatingsList = netflixRatingsList{
+                //Success
+                self.didRetrieveList(list: _netflixRatingsList)
+            } else {
+                DispatchQueue.main.async {
+                    debugLog("Somehow the request succeeded, but no movies were found, or parsed incorrectly")
+                    self.delegate?.errorFetchingRatingsForPage(page)
+                }
+            }
+            
+            debugLog("Finished NetflixDataTask callback")
+        }
 		
-		debugLog("Downloading page \(page)")
+        //If we are initialized, fire off the request. If not, add the task to a small queue to start later.
+        if let _shaktiInstance = shaktiInstance {
+            debugLog("Executing Job Now")
+            activeTasks.append(fetchRatingsRequest)
+            fetchRatingsRequest.executeRequestWithURL(url: URL(string: "\(_shaktiInstance.streamingBaseURL)/ratinghistory?pg=\(page)")!)
+        } else if queuedTasks.count < self.MaxQueueSize {
+            debugLog("Shakti not initialized. Queueing job.")
+            queuedTasks.append(fetchRatingsRequest)
+        } else {
+            //Probably should throw here....
+            debugLog("Queue is full. Page request not queued!")
+        }
+	}
+	
+	public func getStreamingBoxArtForTitle(_ title: Int) {
+	}
+	
+	
+	private final func initShakti() {
+		//The "Change Plan" page. Just want a lightweight page that gets the global netflix react object
+        let lightweightEndpoint = URL(string: Common.URLs.netflixMarketingSettings)!
 		
-		let ratingsURL = URL(string: "\(Common.URLs.netflixRatingsURL)?pg=\(page)")!
-		
-		let dataTask = session.dataTask(with: ratingsURL, completionHandler: { [weak self](data: Data?, response: URLResponse?, error: Error?) in
-			if let httpResponse = (response as? HTTPURLResponse) {
-				
-				if httpResponse.statusCode != 200 {
-					//TODO: Make this a little more friendly for the consuming API
-					DispatchQueue.main.async {
-						self?.delegate?.errorFetchingRatingsForPage(page)
-					}
-				}
-				
-				if let responseData = data {
-					//Serialize the data
-					let json = ((try? JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any]) as [String : Any]??)
-					
-					if let json = json, let finalJson = json {
-						guard let ratings = NetflixRatingsList(json: finalJson) else {
-							self?.delegate?.errorFetchingRatingsForPage(page)
-							return
-						}
-						
-						self?.didRetrieveList(list: ratings)
-					}
-				}
+		let dataTask = session.dataTask(with: lightweightEndpoint, completionHandler: { [weak self](data, response, error) in
+			guard (response as! HTTPURLResponse).statusCode == 200, let data = data else {
+				debugLog("Unable to fetch account settings page!")
+				return
 			}
+			
+			//Find the global object
+			let html = String(bytes: data, encoding: .utf8)!
+			
+			//How we find the start of the JSON
+			let searchMatchStartElement = "netflix.reactContext = "
+			let searchMatchEndElement = ";</script><script "
+			
+			//The indexes for the start and end of the string
+			let globalJSONStartIndex = html.range(of: searchMatchStartElement)!
+			let globalJSONEndIndex = html.range(of: searchMatchEndElement)!
+			
+			//Finally. The JSON!
+			let globalJSON = String(html[globalJSONStartIndex.upperBound..<globalJSONEndIndex.lowerBound])
+			
+			//Remove the hex codes
+			let finalJSON = globalJSON.deencodeHexToUTF8()
+            
+            let decoder = JSONDecoder()
+            let shakti = try! decoder.decode(Shakti.self, from: finalJSON.data(using: .utf8)!)
+            
+            self?.shaktiInstance = shakti
 		})
+		
 		dataTask.resume()
-		activeTasks[page] = dataTask
 	}
 	
 	//Private interface
@@ -243,7 +305,7 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	*/
 	private final func didRetrieveList(list: NetflixRatingsList) {
 		//Release the task. We're done.
-		self.activeTasks[UInt(list.page)] = nil
+		//self.activeTasks[UInt(list.page)] = nil
 		
 		if activeTasks.count <= 0 {
 			debugLog("Invalidating URLSession")
