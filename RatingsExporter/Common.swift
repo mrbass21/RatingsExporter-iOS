@@ -52,10 +52,6 @@ public struct Common {
 	
 	///URLs used on Netflixs back end.
 	public struct URLs {
-		///The URL where the ratings are fetched from.
-		public static var netflixRatingsURL: String  {
-			return "https://www.netflix.com/api/shakti/\(NetflixAPIConstants.shaktiVersion)/ratinghistory"
-		}
 		///The login URL. This is where users are directed to login.
 		static let netflixLoginURL = "https://www.netflix.com/login"
 		///The redirect URL users are sent to if they have a valid login.
