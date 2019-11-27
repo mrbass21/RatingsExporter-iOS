@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8C66D17F238C8DA30045C05D /* Shakti.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C66D17E238C8DA30045C05D /* Shakti.swift */; };
+		8CC63FA2238F06D9009D4869 /* NetflixDataTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC63FA1238F06D9009D4869 /* NetflixDataTask.swift */; };
 		8F03A58421BF802700F466A5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F03A58321BF802700F466A5 /* AppDelegate.swift */; };
 		8F03A58621BF802700F466A5 /* RatingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F03A58521BF802700F466A5 /* RatingsViewController.swift */; };
 		8F03A58921BF802700F466A5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8F03A58721BF802700F466A5 /* Main.storyboard */; };
@@ -55,6 +56,7 @@
 
 /* Begin PBXFileReference section */
 		8C66D17E238C8DA30045C05D /* Shakti.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shakti.swift; sourceTree = "<group>"; };
+		8CC63FA1238F06D9009D4869 /* NetflixDataTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixDataTask.swift; sourceTree = "<group>"; };
 		8F03A58021BF802700F466A5 /* RatingsExporter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RatingsExporter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F03A58321BF802700F466A5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8F03A58521BF802700F466A5 /* RatingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingsViewController.swift; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 				8F8E85F921D96ABD0097602C /* RatingsFetcher.swift */,
 				8F28FBE221EBE44F00FBCFB0 /* NetflixRatingsManager.swift */,
 				8C66D17E238C8DA30045C05D /* Shakti.swift */,
+				8CC63FA1238F06D9009D4869 /* NetflixDataTask.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -360,6 +363,7 @@
 				8FA78DEC21C6FB7F00814E05 /* NetflixCredential.swift in Sources */,
 				8F5A58A221C1D9700058B77A /* UserCredential.swift in Sources */,
 				8F8E85F621D95CED0097602C /* NetflixRatingsList.swift in Sources */,
+				8CC63FA2238F06D9009D4869 /* NetflixDataTask.swift in Sources */,
 				8F8E85F821D95D290097602C /* NetflixRating.swift in Sources */,
 				8F03A58621BF802700F466A5 /* RatingsViewController.swift in Sources */,
 				8F03A58421BF802700F466A5 /* AppDelegate.swift in Sources */,
