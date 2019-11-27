@@ -176,7 +176,6 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	}
 	
 	public func getStreamingBoxArtForTitle(_ title: Int) {
-		
 	}
 	
 	
