@@ -34,7 +34,6 @@
 		8F8E85FA21D96ABD0097602C /* RatingsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8E85F921D96ABD0097602C /* RatingsFetcher.swift */; };
 		8FA78DEC21C6FB7F00814E05 /* NetflixCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FA78DEB21C6FB7F00814E05 /* NetflixCredential.swift */; };
 		8FA78DF121C7104E00814E05 /* UserCredentialStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FA78DF021C7104E00814E05 /* UserCredentialStore.swift */; };
-		8FAF780021C982360066F51A /* RatingsExporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FAF77FF21C982360066F51A /* RatingsExporterTests.swift */; };
 		8FAF780821C9829E0066F51A /* UserCredentialStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FAF780721C9829E0066F51A /* UserCredentialStoreTests.swift */; };
 		8FDBC31A220BA4B60018A513 /* RatingsDetailViewControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FDBC319220BA4B60018A513 /* RatingsDetailViewControllerTest.swift */; };
 		8FDBC31C220CC43C0018A513 /* NetflixRatingsListTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FDBC31B220CC43C0018A513 /* NetflixRatingsListTest.swift */; };
@@ -89,7 +88,6 @@
 		8FA78DEB21C6FB7F00814E05 /* NetflixCredential.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixCredential.swift; sourceTree = "<group>"; };
 		8FA78DF021C7104E00814E05 /* UserCredentialStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCredentialStore.swift; sourceTree = "<group>"; };
 		8FAF77FD21C982360066F51A /* RatingsExporterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RatingsExporterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		8FAF77FF21C982360066F51A /* RatingsExporterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingsExporterTests.swift; sourceTree = "<group>"; };
 		8FAF780121C982360066F51A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8FAF780721C9829E0066F51A /* UserCredentialStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCredentialStoreTests.swift; sourceTree = "<group>"; };
 		8FDBC319220BA4B60018A513 /* RatingsDetailViewControllerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingsDetailViewControllerTest.swift; sourceTree = "<group>"; };
@@ -121,6 +119,36 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8CC63FAD2391CB8B009D4869 /* Model Tests */ = {
+			isa = PBXGroup;
+			children = (
+				8CC63FAE2391CBAA009D4869 /* Credential Tests */,
+				8FDBC31B220CC43C0018A513 /* NetflixRatingsListTest.swift */,
+				8CC63FA32391BCF5009D4869 /* ShaktiTest.swift */,
+				8F7B04082214DF5400A0EBA7 /* RatingsFetcherTest.swift */,
+			);
+			path = "Model Tests";
+			sourceTree = "<group>";
+		};
+		8CC63FAE2391CBAA009D4869 /* Credential Tests */ = {
+			isa = PBXGroup;
+			children = (
+				8FFF272D21D454CE006E45FC /* NetflixCredentialTest.swift */,
+				8FAF780721C9829E0066F51A /* UserCredentialStoreTests.swift */,
+			);
+			path = "Credential Tests";
+			sourceTree = "<group>";
+		};
+		8CC63FAF2391CC24009D4869 /* View Controller Tests */ = {
+			isa = PBXGroup;
+			children = (
+				8FFF4BEC21D562B200FEAA59 /* NetflixLoginViewControllerTests.swift */,
+				8FDBC319220BA4B60018A513 /* RatingsDetailViewControllerTest.swift */,
+				8F76AB0C22090A2100B7529A /* RatingsViewControllerTest.swift */,
+			);
+			path = "View Controller Tests";
+			sourceTree = "<group>";
+		};
 		8F03A57721BF802700F466A5 = {
 			isa = PBXGroup;
 			children = (
@@ -198,15 +226,8 @@
 			children = (
 				8FFF4BF221D6CCAF00FEAA59 /* Mock Objects */,
 				8FFF4BEE21D5757300FEAA59 /* Resources */,
-				8FFF4BEC21D562B200FEAA59 /* NetflixLoginViewControllerTests.swift */,
-				8FFF272D21D454CE006E45FC /* NetflixCredentialTest.swift */,
-				8FAF780721C9829E0066F51A /* UserCredentialStoreTests.swift */,
-				8FAF77FF21C982360066F51A /* RatingsExporterTests.swift */,
-				8F76AB0C22090A2100B7529A /* RatingsViewControllerTest.swift */,
-				8FDBC319220BA4B60018A513 /* RatingsDetailViewControllerTest.swift */,
-				8FDBC31B220CC43C0018A513 /* NetflixRatingsListTest.swift */,
-				8F7B04082214DF5400A0EBA7 /* RatingsFetcherTest.swift */,
-				8CC63FA32391BCF5009D4869 /* ShaktiTest.swift */,
+				8CC63FAD2391CB8B009D4869 /* Model Tests */,
+				8CC63FAF2391CC24009D4869 /* View Controller Tests */,
 				8FAF780121C982360066F51A /* Info.plist */,
 			);
 			path = RatingsExporterTests;
@@ -398,7 +419,6 @@
 				8CC63FA42391BCF5009D4869 /* ShaktiTest.swift in Sources */,
 				8FFF4BED21D562B200FEAA59 /* NetflixLoginViewControllerTests.swift in Sources */,
 				8FDBC31A220BA4B60018A513 /* RatingsDetailViewControllerTest.swift in Sources */,
-				8FAF780021C982360066F51A /* RatingsExporterTests.swift in Sources */,
 				8F8E85F321D814D60097602C /* MockWKNavigationAction.swift in Sources */,
 				8FAF780821C9829E0066F51A /* UserCredentialStoreTests.swift in Sources */,
 				8FFF4BF421D6CCD100FEAA59 /* MockURLProtectionSpace.swift in Sources */,
