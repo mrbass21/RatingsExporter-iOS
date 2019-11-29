@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		8C66D17F238C8DA30045C05D /* Shakti.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C66D17E238C8DA30045C05D /* Shakti.swift */; };
 		8CC63FA2238F06D9009D4869 /* NetflixDataTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC63FA1238F06D9009D4869 /* NetflixDataTask.swift */; };
+		8CC63FA42391BCF5009D4869 /* ShaktiTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC63FA32391BCF5009D4869 /* ShaktiTest.swift */; };
+		8CC63FA82391BEFB009D4869 /* ShaktiJson.json in Resources */ = {isa = PBXBuildFile; fileRef = 8CC63FA72391BEFB009D4869 /* ShaktiJson.json */; };
+		8CC63FAA2391C3B6009D4869 /* ShaktiJsonNoAPIRoot.json in Resources */ = {isa = PBXBuildFile; fileRef = 8CC63FA92391C3B6009D4869 /* ShaktiJsonNoAPIRoot.json */; };
+		8CC63FAC2391C647009D4869 /* ShaktiJsonNoVersion.json in Resources */ = {isa = PBXBuildFile; fileRef = 8CC63FAB2391C646009D4869 /* ShaktiJsonNoVersion.json */; };
 		8F03A58421BF802700F466A5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F03A58321BF802700F466A5 /* AppDelegate.swift */; };
 		8F03A58621BF802700F466A5 /* RatingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F03A58521BF802700F466A5 /* RatingsViewController.swift */; };
 		8F03A58921BF802700F466A5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8F03A58721BF802700F466A5 /* Main.storyboard */; };
@@ -57,6 +61,10 @@
 /* Begin PBXFileReference section */
 		8C66D17E238C8DA30045C05D /* Shakti.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shakti.swift; sourceTree = "<group>"; };
 		8CC63FA1238F06D9009D4869 /* NetflixDataTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixDataTask.swift; sourceTree = "<group>"; };
+		8CC63FA32391BCF5009D4869 /* ShaktiTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShaktiTest.swift; sourceTree = "<group>"; };
+		8CC63FA72391BEFB009D4869 /* ShaktiJson.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ShaktiJson.json; sourceTree = "<group>"; };
+		8CC63FA92391C3B6009D4869 /* ShaktiJsonNoAPIRoot.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ShaktiJsonNoAPIRoot.json; sourceTree = "<group>"; };
+		8CC63FAB2391C646009D4869 /* ShaktiJsonNoVersion.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ShaktiJsonNoVersion.json; sourceTree = "<group>"; };
 		8F03A58021BF802700F466A5 /* RatingsExporter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RatingsExporter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F03A58321BF802700F466A5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8F03A58521BF802700F466A5 /* RatingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingsViewController.swift; sourceTree = "<group>"; };
@@ -198,6 +206,7 @@
 				8FDBC319220BA4B60018A513 /* RatingsDetailViewControllerTest.swift */,
 				8FDBC31B220CC43C0018A513 /* NetflixRatingsListTest.swift */,
 				8F7B04082214DF5400A0EBA7 /* RatingsFetcherTest.swift */,
+				8CC63FA32391BCF5009D4869 /* ShaktiTest.swift */,
 				8FAF780121C982360066F51A /* Info.plist */,
 			);
 			path = RatingsExporterTests;
@@ -223,6 +232,9 @@
 		8FFF4BEE21D5757300FEAA59 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8CC63FAB2391C646009D4869 /* ShaktiJsonNoVersion.json */,
+				8CC63FA92391C3B6009D4869 /* ShaktiJsonNoAPIRoot.json */,
+				8CC63FA72391BEFB009D4869 /* ShaktiJson.json */,
 				8FFF4BEF21D5758000FEAA59 /* Bad Certificates */,
 			);
 			path = Resources;
@@ -341,7 +353,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				8FFF4BF721D6EF5700FEAA59 /* bad-Netflix-self-signed.cer in Resources */,
+				8CC63FAA2391C3B6009D4869 /* ShaktiJsonNoAPIRoot.json in Resources */,
 				8FFF4BF021D576F300FEAA59 /* netflix.cer in Resources */,
+				8CC63FAC2391C647009D4869 /* ShaktiJsonNoVersion.json in Resources */,
+				8CC63FA82391BEFB009D4869 /* ShaktiJson.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -380,6 +395,7 @@
 				8F7B04092214DF5400A0EBA7 /* RatingsFetcherTest.swift in Sources */,
 				8FDBC31C220CC43C0018A513 /* NetflixRatingsListTest.swift in Sources */,
 				8FFF272E21D454CE006E45FC /* NetflixCredentialTest.swift in Sources */,
+				8CC63FA42391BCF5009D4869 /* ShaktiTest.swift in Sources */,
 				8FFF4BED21D562B200FEAA59 /* NetflixLoginViewControllerTests.swift in Sources */,
 				8FDBC31A220BA4B60018A513 /* RatingsDetailViewControllerTest.swift in Sources */,
 				8FAF780021C982360066F51A /* RatingsExporterTests.swift in Sources */,
