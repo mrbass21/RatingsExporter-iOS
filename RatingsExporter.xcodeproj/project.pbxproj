@@ -13,6 +13,7 @@
 		8CC63FA82391BEFB009D4869 /* ShaktiJson.json in Resources */ = {isa = PBXBuildFile; fileRef = 8CC63FA72391BEFB009D4869 /* ShaktiJson.json */; };
 		8CC63FAA2391C3B6009D4869 /* ShaktiJsonNoAPIRoot.json in Resources */ = {isa = PBXBuildFile; fileRef = 8CC63FA92391C3B6009D4869 /* ShaktiJsonNoAPIRoot.json */; };
 		8CC63FAC2391C647009D4869 /* ShaktiJsonNoVersion.json in Resources */ = {isa = PBXBuildFile; fileRef = 8CC63FAB2391C646009D4869 /* ShaktiJsonNoVersion.json */; };
+		8CC63FB22391CCF1009D4869 /* String+deencodeHexToUTF8Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC63FB12391CCF1009D4869 /* String+deencodeHexToUTF8Test.swift */; };
 		8F03A58421BF802700F466A5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F03A58321BF802700F466A5 /* AppDelegate.swift */; };
 		8F03A58621BF802700F466A5 /* RatingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F03A58521BF802700F466A5 /* RatingsViewController.swift */; };
 		8F03A58921BF802700F466A5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8F03A58721BF802700F466A5 /* Main.storyboard */; };
@@ -64,6 +65,7 @@
 		8CC63FA72391BEFB009D4869 /* ShaktiJson.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ShaktiJson.json; sourceTree = "<group>"; };
 		8CC63FA92391C3B6009D4869 /* ShaktiJsonNoAPIRoot.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ShaktiJsonNoAPIRoot.json; sourceTree = "<group>"; };
 		8CC63FAB2391C646009D4869 /* ShaktiJsonNoVersion.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ShaktiJsonNoVersion.json; sourceTree = "<group>"; };
+		8CC63FB12391CCF1009D4869 /* String+deencodeHexToUTF8Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+deencodeHexToUTF8Test.swift"; sourceTree = "<group>"; };
 		8F03A58021BF802700F466A5 /* RatingsExporter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RatingsExporter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F03A58321BF802700F466A5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8F03A58521BF802700F466A5 /* RatingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingsViewController.swift; sourceTree = "<group>"; };
@@ -149,6 +151,14 @@
 			path = "View Controller Tests";
 			sourceTree = "<group>";
 		};
+		8CC63FB02391CCC1009D4869 /* Extension Tests */ = {
+			isa = PBXGroup;
+			children = (
+				8CC63FB12391CCF1009D4869 /* String+deencodeHexToUTF8Test.swift */,
+			);
+			path = "Extension Tests";
+			sourceTree = "<group>";
+		};
 		8F03A57721BF802700F466A5 = {
 			isa = PBXGroup;
 			children = (
@@ -224,6 +234,7 @@
 		8FAF77FE21C982360066F51A /* RatingsExporterTests */ = {
 			isa = PBXGroup;
 			children = (
+				8CC63FB02391CCC1009D4869 /* Extension Tests */,
 				8FFF4BF221D6CCAF00FEAA59 /* Mock Objects */,
 				8FFF4BEE21D5757300FEAA59 /* Resources */,
 				8CC63FAD2391CB8B009D4869 /* Model Tests */,
@@ -423,6 +434,7 @@
 				8FAF780821C9829E0066F51A /* UserCredentialStoreTests.swift in Sources */,
 				8FFF4BF421D6CCD100FEAA59 /* MockURLProtectionSpace.swift in Sources */,
 				8F76AB0D22090A2100B7529A /* RatingsViewControllerTest.swift in Sources */,
+				8CC63FB22391CCF1009D4869 /* String+deencodeHexToUTF8Test.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
