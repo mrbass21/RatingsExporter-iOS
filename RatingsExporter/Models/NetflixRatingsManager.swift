@@ -148,6 +148,10 @@ public final class NetflixRatingsManager: NetflixRatingsManagerProtocol {
 		//Fetch the first page
 		self.fetcher.fetchRatings(page: 0)
 	}
+    
+    deinit {
+        debugLog("Deinit called!")
+    }
 }
 
 
