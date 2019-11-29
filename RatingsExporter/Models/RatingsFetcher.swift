@@ -14,7 +14,7 @@ public protocol RatingsFetcherDelegate: class {
 	
 	- Parameter ratings : The list of retrieved ratings.
 	*/
-	func didFetchRatings(_ ratings: NetflixRatingsList)
+    func didFetchRatings(_ ratings: NetflixRatingsList)
 	
 	//TODO: Pass the error, maybe?.
 	/**
@@ -122,6 +122,10 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 		//Get credentials for the Shakti resources
 		initShakti()
 	}
+    
+    deinit {
+        debugLog("Deinit called!")
+    }
 	
 	/**
 	Initialize a RatingsFetcher object. If the page is fetched, `didRetrieveList(list:)` is called, otherwise `errorFetchingRatingsForPage` is called.
@@ -140,7 +144,7 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 			return
 		}
         
-        let fetchRatingsRequest = NetflixDataTask(pageRequest: page, usingSession: session) { (netflixRatingsList, error) in
+        let fetchRatingsRequest = NetflixDataTask(pageRequest: page, usingSession: session) { (dataTask, netflixRatingsList, error) in
             
             if let _ = error {
                 //Error occured
@@ -150,7 +154,7 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
                 }
             } else if let _netflixRatingsList = netflixRatingsList{
                 //Success
-                self.didRetrieveList(list: _netflixRatingsList)
+                self.didRetrieveList(netflixDataTask: dataTask, list: _netflixRatingsList)
             } else {
                 DispatchQueue.main.async {
                     debugLog("Somehow the request succeeded, but no movies were found, or parsed incorrectly")
@@ -303,10 +307,12 @@ public final class RatingsFetcher: NSObject, RatingsFetcherProtocol {
 	
 	- Parameter list: The list of returned Netflix ratings.
 	*/
-	private final func didRetrieveList(list: NetflixRatingsList) {
+    private final func didRetrieveList(netflixDataTask: NetflixDataTaskProtocol, list: NetflixRatingsList) {
 		//Release the task. We're done.
-		//self.activeTasks[UInt(list.page)] = nil
-		
+        activeTasks.removeAll { (dataTask) -> Bool in
+            return dataTask.pageRequest == netflixDataTask.pageRequest
+        }
+
 		if activeTasks.count <= 0 {
 			debugLog("Invalidating URLSession")
 			invalidateButFinishSession()
