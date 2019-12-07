@@ -475,11 +475,11 @@
                 "showIntlTerms":false,
                 "shouldReverseNameFields":false
              },
-             "user":"user: SNGLFATL3RF6HHPD5GC2QFMPM4",
+             "user":"user: FAKE_USER_GUID",
              "userInfo":{
-                "name":"Jason",
-                "guid":"SNGLFATL3RF6HHPD5GC2QFMPM4",
-                "userGuid":"SNGLFATL3RF6HHPD5GC2QFMPM4",
+                "name":"Joe",
+                "guid":"FAKE_USER_GUID",
+                "userGuid":"FAKE_USER_GUID",
                 "countryOfSignup":"US",
                 "currentCountry":"US",
                 "membershipStatus":"CURRENT_MEMBER",
@@ -1331,9 +1331,9 @@
        },
        "userInfo":{
           "data":{
-             "name":"Jason",
-             "guid":"SNGLFATL3RF6HHPD5GC2QFMPM4",
-             "userGuid":"SNGLFATL3RF6HHPD5GC2QFMPM4",
+             "name":"Joe",
+             "guid":"FAKE_USER_GUID",
+             "userGuid":"FAKE_USER_GUID",
              "countryOfSignup":"US",
              "currentCountry":"US",
              "membershipStatus":"CURRENT_MEMBER",
@@ -2428,7 +2428,7 @@
                 "locale":"en-US",
                 "sessionLength":30,
                 "uiMode":"member",
-                "ownerToken":"SNGLFATL3RF6HHPD5GC2QFMPM4",
+                "ownerToken":"FAKE_USER_GUID",
                 "accept-language":"en-us"
              },
              "enabled":true
@@ -3121,9 +3121,9 @@
           "data":{
              "profiles":[
                 {
-                   "firstName":"Jason",
-                   "rawFirstName":"Jason",
-                   "guid":"SNGLFATL3RF6HHPD5GC2QFMPM4",
+                   "firstName":"Joe",
+                   "rawFirstName":"Joe",
+                   "guid":"FAKE_USER_GUID",
                    "isAccountOwner":true,
                    "isActive":true,
                    "defaultKidsProfile":false,
@@ -3161,7 +3161,7 @@
                 {
                    "firstName":"R&amp;C",
                    "rawFirstName":"R&C",
-                   "guid":"HYBDSD2RHFFWVA3WTJT2B4EM54",
+                   "guid":"RANDC_GUID",
                    "isAccountOwner":false,
                    "isActive":false,
                    "defaultKidsProfile":false,
@@ -3197,9 +3197,9 @@
                    "edited":false
                 },
                 {
-                   "firstName":"Andrew",
-                   "rawFirstName":"Andrew",
-                   "guid":"7J5YZT5WKJHUZNXAPKSYYA5HAU",
+                   "firstName":"Wilson",
+                   "rawFirstName":"Wilson",
+                   "guid":"WILSON_GUID",
                    "isAccountOwner":false,
                    "isActive":false,
                    "defaultKidsProfile":false,
@@ -3239,7 +3239,7 @@
                 {
                    "firstName":"R&amp;C",
                    "rawFirstName":"R&C",
-                   "guid":"HYBDSD2RHFFWVA3WTJT2B4EM54",
+                   "guid":"RANDC_GUID",
                    "isAccountOwner":false,
                    "isActive":false,
                    "defaultKidsProfile":false,
@@ -3274,9 +3274,9 @@
                    "isDefault":false
                 },
                 {
-                   "firstName":"Andrew",
-                   "rawFirstName":"Andrew",
-                   "guid":"7J5YZT5WKJHUZNXAPKSYYA5HAU",
+                   "firstName":"Wilson",
+                   "rawFirstName":"Wilson",
+                   "guid":"WILSON_GUID",
                    "isAccountOwner":false,
                    "isActive":false,
                    "defaultKidsProfile":false,
@@ -3312,9 +3312,9 @@
                 }
              ],
              "active":{
-                "firstName":"Jason",
-                "rawFirstName":"Jason",
-                "guid":"SNGLFATL3RF6HHPD5GC2QFMPM4",
+                "firstName":"Joe",
+                "rawFirstName":"Joe",
+                "guid":"FAKE_USER_GUID",
                 "isAccountOwner":true,
                 "isActive":true,
                 "defaultKidsProfile":false,
@@ -3654,7 +3654,7 @@
                 "pendingCancellation":false
              },
              "periodEndDate":"November 29, 2019",
-             "ownerEmail":"jason.len.beck@gmail.com"
+             "ownerEmail":"joe.smith@fakeemail.com"
           },
           "type":"api"
        },
